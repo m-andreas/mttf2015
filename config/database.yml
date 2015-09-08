@@ -4,13 +4,10 @@
 #   Ensure the SQLite 3 gem is defined in your Gemfile
 #   gem 'sqlite3'
 #
-default: &default
+development:
   adapter: sqlserver
   pool: 5
-  timeout: 5000
-
-development:
-  <<: *default
+  timeout: 20000
   host: 'PC'
   port: 1433
   database: 'MCS'
@@ -21,9 +18,14 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: db/test.sqlite3
+  adapter: sqlserver
+  pool: 5
+  timeout: 20000
+  host: 'PC'
+  port: 1433
+  database: 'MCS_TEST'
+  username: 'SA'
+  password: 123
 
 production:
-  <<: *default
   database: db/production.sqlite3

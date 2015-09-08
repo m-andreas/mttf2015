@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20150908121808) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -421,7 +421,101 @@ ActiveRecord::Schema.define(version: 0) do
     t.string "GruppenBezeichnng", limit: 25
   end
 
+  create_table "addresses", force: true do |t|
+    t.integer  "created_by"
+    t.string   "country"
+    t.string   "city"
+    t.string   "zip_code"
+    t.string   "address"
+    t.string   "address_short"
+    t.boolean  "inactive"
+    t.string   "opening_hours"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "companies", force: true do |t|
+    t.string   "name"
+    t.string   "address"
+    t.string   "city"
+    t.string   "zip_code"
+    t.string   "country"
+    t.string   "telephone"
+    t.string   "email"
+    t.float    "price_per_km",    limit: 24
+    t.float    "price_flat_rate", limit: 24
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "drivers", force: true do |t|
+    t.string   "first_name"
+    t.string   "last_name"
+    t.date     "entry_date"
+    t.date     "exit_date"
+    t.date     "date_of_birth"
+    t.string   "place_of_birth"
+    t.string   "address"
+    t.string   "city"
+    t.string   "zip_code"
+    t.string   "telepone"
+    t.string   "telephone2"
+    t.string   "licence_number"
+    t.string   "issuing_authority"
+    t.string   "driving_licence_category"
+    t.string   "comment"
+    t.string   "social_security_number"
+    t.boolean  "driving_licence_copy"
+    t.boolean  "registration_copy"
+    t.boolean  "service_contract"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "dtproperties", id: false, force: true do |t|
+  end
+
+  create_table "jobs", force: true do |t|
+    t.integer  "customer_job_id"
+    t.string   "mvn"
+    t.string   "driver_ids"
+    t.integer  "cost_center_id"
+    t.integer  "finished"
+    t.integer  "created_by_id"
+    t.integer  "route_id"
+    t.integer  "from_id"
+    t.integer  "to_id"
+    t.boolean  "shuttle"
+    t.string   "car_brand"
+    t.string   "car_type"
+    t.string   "registration_number"
+    t.string   "chassis_number"
+    t.string   "job_notice"
+    t.string   "transport_notice"
+    t.string   "transport_notice_extern"
+    t.datetime "scheduled_collection_date"
+    t.datetime "scheduled_delivery_date"
+    t.datetime "actual_collection_date"
+    t.datetime "actual_delivery_date"
+    t.integer  "mileage_delivery"
+    t.integer  "mileage_collection"
+    t.integer  "working_hours"
+    t.float    "price_extern",              limit: 24
+    t.integer  "times_printed"
+    t.boolean  "duplicate"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "routes", force: true do |t|
+    t.integer  "from_id"
+    t.integer  "to_id"
+    t.integer  "calculation_basis"
+    t.integer  "distance"
+    t.integer  "last_modified_by"
+    t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "stWaehrung", primary_key: "ID", force: true do |t|

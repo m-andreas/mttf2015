@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Driver ids:</strong>
+  <%= @job.driver_ids %>
+</p>
+
+<p>
+  <strong>Cost center:</strong>
+  <%= @job.cost_center_id %>
+</p>
+
+<p>
+  <strong>Finished:</strong>
+  <%= @job.finished %>
+</p>
+
+<p>
+  <strong>Created by:</strong>
+  <%= @job.created_by_id %>
+</p>
+
+<p>
+  <strong>Route:</strong>
+  <%= @job.route_id %>
+</p>
+
+<p>
+  <strong>From:</strong>
+  <%= @job.from_id %>
+</p>
+
+<p>
+  <strong>To:</strong>
+  <%= @job.to_id %>
+</p>
+
+<p>
+  <strong>Shuttle:</strong>
+  <%= @job.shuttle %>
+</p>
+
+<%= link_to 'Edit', edit_job_path(@job) %> |
+<%= link_to 'Back', jobs_path %>
