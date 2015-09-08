@@ -4,7 +4,7 @@ class DriversController < ApplicationController
   # GET /drivers
   # GET /drivers.json
   def index
-    @drivers = Driver.all
+    @drivers = Driver.paginate(:page => params[:page], :per_page => 10)
   end
 
   # GET /drivers/1

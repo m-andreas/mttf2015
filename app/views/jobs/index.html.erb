@@ -33,7 +33,7 @@
     <% end %>
   </tbody>
 </table>
-
+<%= will_paginate @jobs, renderer: FoundationPagination::Rails %>
 <br>
 
 <%= link_to 'New Job', new_job_path %>

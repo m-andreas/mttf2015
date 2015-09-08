@@ -4,7 +4,7 @@ class RoutesController < ApplicationController
   # GET /routes
   # GET /routes.json
   def index
-    @routes = Route.all
+    @routes = Route.paginate(:page => params[:page], :per_page => 30)
   end
 
   # GET /routes/1
@@ -69,6 +69,6 @@ class RoutesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def route_params
-      params.require(:route).permit(:from_id, :to_id, :calculation_basis, :km, :status)
+      params.require(:route).permit(:from_id, :to_id, :calculation_basis, :distance, :status)
     end
 end
