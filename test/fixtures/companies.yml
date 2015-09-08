@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+    id: 1
+    name: MT Trans-Fair GmbH
+    address: Ortsstrasse 18b
+    zip_code: 2331
+    email: office@mt-transfair.at
+    city: Vösendorf
+    country: Österreich
+    price_per_km: 0
+    price_flat_rate: 0
+    telephone: 01/6992010
+
+two:
+    id: 2
+    name: SIXT GmbH
+    address: Ortsstrasse 18a
+    zip_code: 2331
+    email: michael.schneider@sixt.com
+    city: Vösendorf
+    country: Österreich
+    price_per_km: 0.24
+    price_flat_rate: 19
+    telephone: 01/5052640

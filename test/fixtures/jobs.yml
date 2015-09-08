@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  driver_ids: MyString
+  cost_center_id: 1
+  finished: 1
+  created_by_id: 1
+  route_id: 1
+  from_id: 1
+  to_id: 2
+  shuttle: false 
+
+two:
+  driver_ids: MyString
+  cost_center_id: 1
+  finished: 1
+  created_by_id: 1
+  route_id: 2
+  from_id: 1
+  to_id: 2
+  shuttle: false

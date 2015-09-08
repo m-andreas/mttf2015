@@ -1,0 +1,85 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+expired:
+  first_name: Markus
+  last_name: Andreas
+  entry_date: 2014-09-08
+  exit_date: 2014-09-09
+  date_of_birth: 1980-02-18
+  place_of_birth: Wien
+  address: Teststrasse 2
+  city: Wien
+  zip_code: '1220' 
+  telepone: '123456'
+  telephone2: 
+  licence_number: ABC123
+  issuing_authority: Polizei Wien 1010
+  driving_licence_category: A/B/C
+  comment: SUper Fahrer
+  social_security_number: 1234234567
+  driving_licence_copy: true
+  registration_copy: false
+  service_contract: false
+
+not_yet_entered:
+  first_name: MyString
+  last_name: MyString
+  entry_date: 2015-09-08
+  exit_date: 2040-09-08
+  date_of_birth: 2015-09-08
+  place_of_birth: MyString
+  address: MyString
+  city: MyString
+  zip_code: MyString
+  telepone: MyString
+  telephone2: MyString
+  licence_number: MyString
+  issuing_authority: MyString
+  driving_licence_category: MyString
+  comment: MyString
+  social_security_number: MyString
+  driving_licence_copy: false
+  registration_copy: false
+  service_contract: false
+
+one:
+  first_name: Markus
+  last_name: Tester
+  entry_date: 2014-09-08
+  exit_date: 2014-09-09
+  date_of_birth: 1980-02-18
+  place_of_birth: Wien
+  address: Teststrasse 2
+  city: Wien
+  zip_code: '1220' 
+  telepone: '123456'
+  telephone2: 
+  licence_number: ABC123
+  issuing_authority: Polizei Wien 1010
+  driving_licence_category: A/B/C
+  comment: SUper Fahrer
+  social_security_number: 1234234567
+  driving_licence_copy: true
+  registration_copy: false
+  service_contract: false
+
+one:
+  first_name: Markus
+  last_name: Tester
+  entry_date: 2014-09-08
+  exit_date: 2014-09-09
+  date_of_birth: 1980-02-18
+  place_of_birth: Wien
+  address: Teststrasse 2
+  city: Wien
+  zip_code: '1220' 
+  telepone: '123456'
+  telephone2: 
+  licence_number: ABC123
+  issuing_authority: Polizei Wien 1010
+  driving_licence_category: A/B/C
+  comment: Super Fahrer
+  social_security_number: 1234234567
+  driving_licence_copy: true
+  registration_copy: false
+  service_contract: false

@@ -1,0 +1,30 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 1
+  created_by: 1
+  country: Österreich
+  city: Wien
+  zip_code: 1220
+  address: Mondstrasse 2
+  address_short: Mondstrasse Wien
+  inactive: false
+
+two:
+  id: 2
+  created_by: 1
+  country: Frankreich
+  city: Paris
+  zip_code: 123456
+  address: LeMond 2
+  address_short: LeMond Paris
+  inactive: false
+
+inactive:
+  created_by: 1
+  country: Österreich
+  city: Wien
+  zip_code: 1220
+  address: Mondstrasse 4
+  address_short: Mondstrasse Wien
+  inactive: true

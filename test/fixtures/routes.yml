@@ -1,0 +1,22 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  from_id: 1
+  to_id: 2
+  calculation_basis: 1
+  distance: 10
+  status: 1
+
+two:
+  from_id: 2
+  to_id: 1
+  calculation_basis: 1
+  distance: 10
+  status: 1
+
+not_confirmed:
+  from_id: 2
+  to_id: 1
+  calculation_basis: 1
+  distance: 10
+  status: 0
