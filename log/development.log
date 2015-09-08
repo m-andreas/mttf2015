@@ -1,0 +1,196 @@
+
+
+Started GET "/" for 127.0.0.1 at 2015-09-07 14:19:42 +0200
+Processing by Rails::WelcomeController#index as HTML
+  Rendered C:/RailsInstaller/Ruby2.1.0/lib/ruby/gems/2.1.0/gems/railties-4.1.8/lib/rails/templates/rails/welcome/index.html.erb (74.0ms)
+Completed 200 OK in 442ms (Views: 305.0ms | ActiveRecord: 0.0ms)
+  [1m[36mSQL (1.0ms)[0m  [1mUSE [master][0m
+  [1m[35mUser Load (9.0ms)[0m  EXEC sp_executesql N'SELECT TOP (1) [users].* FROM [users] ORDER BY [users].[id] DESC'
+TinyTds::Error: Invalid object name 'users'.: EXEC sp_executesql N'SELECT TOP (1) [users].* FROM [users] ORDER BY [users].[id] DESC'
+  [1m[36mUser Load (0.0ms)[0m  [1mEXEC sp_executesql N'SELECT TOP (1) [users].* FROM [users] ORDER BY [users].[id] DESC'[0m
+TinyTds::Error: Invalid object name 'users'.: EXEC sp_executesql N'SELECT TOP (1) [users].* FROM [users] ORDER BY [users].[id] DESC'
+  [1m[35mUser Load (1.0ms)[0m  EXEC sp_executesql N'SELECT TOP (1) [users].* FROM [users] ORDER BY [users].[id] ASC'
+TinyTds::Error: Invalid object name 'users'.: EXEC sp_executesql N'SELECT TOP (1) [users].* FROM [users] ORDER BY [users].[id] ASC'
+CONNECTION RETRY: ActiveRecord::ConnectionAdapters::SQLServerAdapter retry #0.
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [master][0m
+  [1m[35m (20.0ms)[0m  CREATE TABLE [schema_migrations] ([version] nvarchar(255) NOT NULL) 
+  [1m[36m (97.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''schema_migrations'''[0m
+  [1m[35m (24.0ms)[0m  CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1mEXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'[0m
+Migrating to CreateUsers (20150907124454)
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36m (12.0ms)[0m  [1mCREATE TABLE [users] ([id] int NOT NULL IDENTITY(1,1) PRIMARY KEY, [created_at] datetime, [updated_at] datetime) [0m
+  [1m[35mSQL (4.0ms)[0m  EXEC sp_executesql N'INSERT INTO [schema_migrations] ([version]) VALUES (@0); SELECT CAST(SCOPE_IDENTITY() AS bigint) AS Ident', N'@0 nvarchar(255)', @0 = N'20150907124454'  [["version", "20150907124454"]]
+  [1m[36mSQL (1.0ms)[0m  [1mCOMMIT TRANSACTION[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.0ms)[0m  EXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''MSreplication_options'''[0m
+  [1m[35m (0.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''spt_fallback_db'''
+  [1m[36m (0.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''spt_fallback_dev'''[0m
+  [1m[35m (0.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''spt_fallback_usg'''
+  [1m[36m (0.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''spt_monitor'''[0m
+  [1m[35m (24.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''spt_values'''
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''users'''[0m
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [master][0m
+  [1m[35mUser Load (0.0ms)[0m  EXEC sp_executesql N'SELECT TOP (1) [users].* FROM [users] ORDER BY [users].[id] DESC'
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (1.0ms)[0m  EXEC sp_executesql N'INSERT INTO [users] ([created_at], [updated_at]) OUTPUT inserted.id VALUES (@0, @1)', N'@0 datetime, @1 datetime', @0 = '2015-09-07T14:02:44.490', @1 = '2015-09-07T14:02:44.490'  [["created_at", Mon, 07 Sep 2015 14:02:44 UTC +00:00], ["updated_at", Mon, 07 Sep 2015 14:02:44 UTC +00:00]]
+  [1m[36mSQL (1.0ms)[0m  [1mCOMMIT TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36mSQL (1.0ms)[0m  [1mEXEC sp_executesql N'INSERT INTO [users] ([created_at], [updated_at]) OUTPUT inserted.id VALUES (@0, @1)', N'@0 datetime, @1 datetime', @0 = '2015-09-07T14:02:55.503', @1 = '2015-09-07T14:02:55.503'[0m  [["created_at", Mon, 07 Sep 2015 14:02:55 UTC +00:00], ["updated_at", Mon, 07 Sep 2015 14:02:55 UTC +00:00]]
+  [1m[35mSQL (1.0ms)[0m  COMMIT TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  COMMIT TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [test][0m
+  [1m[35m (23.0ms)[0m  CREATE TABLE [schema_migrations] ([version] nvarchar(255) NOT NULL) 
+  [1m[36m (6.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''schema_migrations'''[0m
+  [1m[35m (2.0ms)[0m  CREATE UNIQUE INDEX [unique_schema_migrations] ON [schema_migrations] ([version])
+  [1m[36mActiveRecord::SchemaMigration Load (1.0ms)[0m  [1mEXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'[0m
+  [1m[35m (0.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''users'''
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [test][0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36mSQL (23.0ms)[0m  [1mEXEC sp_executesql N'INSERT INTO [users] DEFAULT VALUES; SELECT CAST(SCOPE_IDENTITY() AS bigint) AS Ident'[0m
+  [1m[35mSQL (0.0ms)[0m  COMMIT TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [test][0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.0ms)[0m  EXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'
+Migrating to CreateAdmins (20150907141846)
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35m (21.0ms)[0m  CREATE TABLE [admins] ([id] int NOT NULL IDENTITY(1,1) PRIMARY KEY, [created_at] datetime, [updated_at] datetime) 
+  [1m[36mSQL (1.0ms)[0m  [1mEXEC sp_executesql N'INSERT INTO [schema_migrations] ([version]) VALUES (@0); SELECT CAST(SCOPE_IDENTITY() AS bigint) AS Ident', N'@0 nvarchar(255)', @0 = N'20150907141846'[0m  [["version", "20150907141846"]]
+  [1m[35mSQL (1.0ms)[0m  COMMIT TRANSACTION
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1mEXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'[0m
+  [1m[35m (3.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''admins'''
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''users'''[0m
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [test][0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.0ms)[0m  EXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1mEXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'[0m
+Migrating to CreateAdmins (20150907141846)
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36m (16.0ms)[0m  [1mDROP TABLE [admins][0m
+  [1m[35mSQL (2.0ms)[0m  EXEC sp_executesql N'DELETE FROM [schema_migrations] WHERE [schema_migrations].[version] = N''20150907141846''; SELECT @@ROWCOUNT AS AffectedRows'
+  [1m[36mSQL (1.0ms)[0m  [1mCOMMIT TRANSACTION[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.0ms)[0m  EXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'
+  [1m[36m (0.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''users'''[0m
+  [1m[36mSQL (1.0ms)[0m  [1mUSE [test][0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.0ms)[0m  EXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'
+Migrating to CreateAdmins (20150907142022)
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  CREATE TABLE [admins] ([id] int NOT NULL IDENTITY(1,1) PRIMARY KEY, [name] nvarchar(255), [created_at] datetime, [updated_at] datetime) 
+  [1m[36mSQL (0.0ms)[0m  [1mEXEC sp_executesql N'INSERT INTO [schema_migrations] ([version]) VALUES (@0); SELECT CAST(SCOPE_IDENTITY() AS bigint) AS Ident', N'@0 nvarchar(255)', @0 = N'20150907142022'[0m  [["version", "20150907142022"]]
+  [1m[35mSQL (1.0ms)[0m  COMMIT TRANSACTION
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1mEXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'[0m
+  [1m[35m (1.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''admins'''
+  [1m[36m (0.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''users'''[0m
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [test][0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36mSQL (1.0ms)[0m  [1mEXEC sp_executesql N'INSERT INTO [admins] ([created_at], [updated_at]) OUTPUT inserted.id VALUES (@0, @1)', N'@0 datetime, @1 datetime', @0 = '2015-09-07T14:21:24.315', @1 = '2015-09-07T14:21:24.315'[0m  [["created_at", Mon, 07 Sep 2015 14:21:24 UTC +00:00], ["updated_at", Mon, 07 Sep 2015 14:21:24 UTC +00:00]]
+  [1m[35mSQL (1.0ms)[0m  COMMIT TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (2.0ms)[0m  EXEC sp_executesql N'UPDATE [admins] SET [name] = @0, [updated_at] = @1 WHERE [admins].[id] = 1; SELECT @@ROWCOUNT AS AffectedRows', N'@0 nvarchar(255), @1 datetime', @0 = N'test', @1 = '2015-09-07T14:21:33.016'  [["name", "test"], ["updated_at", Mon, 07 Sep 2015 14:21:33 UTC +00:00]]
+  [1m[36mSQL (0.0ms)[0m  [1mCOMMIT TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mEXEC sp_executesql N'INSERT INTO [users] DEFAULT VALUES; SELECT CAST(SCOPE_IDENTITY() AS bigint) AS Ident'[0m
+  [1m[35mSQL (1.0ms)[0m  COMMIT TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (1.0ms)[0m  EXEC sp_executesql N'INSERT INTO [users] DEFAULT VALUES; SELECT CAST(SCOPE_IDENTITY() AS bigint) AS Ident'
+  [1m[36mSQL (0.0ms)[0m  [1mCOMMIT TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mIF @@TRANCOUNT > 0 ROLLBACK TRANSACTION[0m
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [test][0m
+  [1m[35mSQL (1.0ms)[0m  BEGIN TRANSACTION
+  [1m[36mSQL (23.0ms)[0m  [1mEXEC sp_executesql N'INSERT INTO [guests] OUTPUT inserted.id DEFAULT VALUES'[0m
+TinyTds::Error: Cannot insert the value NULL into column 'id', table 'test.dbo.guests'; column does not allow nulls. INSERT fails.: EXEC sp_executesql N'INSERT INTO [guests] OUTPUT inserted.id DEFAULT VALUES'
+  [1m[35mSQL (1.0ms)[0m  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+  [1m[36mSQL (1.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  EXEC sp_executesql N'INSERT INTO [guests] ([id]) OUTPUT inserted.id VALUES (@0)', N'@0 int', @0 = 1  [["id", 1]]
+  [1m[36mSQL (1.0ms)[0m  [1mCOMMIT TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36mSQL (2.0ms)[0m  [1mEXEC sp_executesql N'UPDATE [guests] SET [name] = @0 WHERE [guests].[id] = 1; SELECT @@ROWCOUNT AS AffectedRows', N'@0 nvarchar(max)', @0 = 'bla'[0m  [["name", "bla"]]
+  [1m[35mSQL (1.0ms)[0m  COMMIT TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  EXEC sp_executesql N'INSERT INTO [guests] OUTPUT inserted.id DEFAULT VALUES'
+TinyTds::Error: Cannot insert the value NULL into column 'id', table 'test.dbo.guests'; column does not allow nulls. INSERT fails.: EXEC sp_executesql N'INSERT INTO [guests] OUTPUT inserted.id DEFAULT VALUES'
+  [1m[36mSQL (0.0ms)[0m  [1mIF @@TRANCOUNT > 0 ROLLBACK TRANSACTION[0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36mSQL (1.0ms)[0m  [1mEXEC sp_executesql N'INSERT INTO [guests] OUTPUT inserted.id DEFAULT VALUES'[0m
+TinyTds::Error: Cannot insert the value NULL into column 'id', table 'test.dbo.guests'; column does not allow nulls. INSERT fails.: EXEC sp_executesql N'INSERT INTO [guests] OUTPUT inserted.id DEFAULT VALUES'
+  [1m[35mSQL (0.0ms)[0m  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (1.0ms)[0m  EXEC sp_executesql N'INSERT INTO [guests] OUTPUT inserted.id DEFAULT VALUES'
+TinyTds::Error: Cannot insert the value NULL into column 'id', table 'test.dbo.guests'; column does not allow nulls. INSERT fails.: EXEC sp_executesql N'INSERT INTO [guests] OUTPUT inserted.id DEFAULT VALUES'
+  [1m[36mSQL (0.0ms)[0m  [1mIF @@TRANCOUNT > 0 ROLLBACK TRANSACTION[0m
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [test][0m
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [test][0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36mSQL (1.0ms)[0m  [1mEXEC sp_executesql N'INSERT INTO [visitors] ([name]) OUTPUT inserted.id VALUES (@0)', N'@0 nvarchar(max)', @0 = 'test'[0m  [["name", "test"]]
+  [1m[35mSQL (1.0ms)[0m  COMMIT TRANSACTION
+  [1m[36mVisitor Load (1.0ms)[0m  [1mEXEC sp_executesql N'SELECT TOP (1) [visitors].* FROM [visitors] ORDER BY [visitors].[id] DESC'[0m
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [test][0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.0ms)[0m  EXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'
+Migrating to AddTimestampsToVisitor (20150907145353)
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35m (1.0ms)[0m  ALTER TABLE [visitors] ADD [created_at] datetime
+  [1m[36m (0.0ms)[0m  [1mALTER TABLE [visitors] ADD [updated_at] datetime[0m
+  [1m[35mSQL (0.0ms)[0m  EXEC sp_executesql N'INSERT INTO [schema_migrations] ([version]) VALUES (@0); SELECT CAST(SCOPE_IDENTITY() AS bigint) AS Ident', N'@0 nvarchar(255)', @0 = N'20150907145353'  [["version", "20150907145353"]]
+  [1m[36mSQL (1.0ms)[0m  [1mCOMMIT TRANSACTION[0m
+  [1m[35mActiveRecord::SchemaMigration Load (0.0ms)[0m  EXEC sp_executesql N'SELECT [schema_migrations].* FROM [schema_migrations]'
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''admins'''[0m
+  [1m[35m (1.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''users'''
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''visitors'''[0m
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [test][0m
+  [1m[35mSQL (0.0ms)[0m  BEGIN TRANSACTION
+  [1m[36mSQL (1.0ms)[0m  [1mEXEC sp_executesql N'INSERT INTO [visitors] ([created_at], [name], [updated_at]) OUTPUT inserted.id VALUES (@0, @1, @2)', N'@0 datetime, @1 nvarchar(max), @2 datetime', @0 = '2015-09-07T14:55:31.716', @1 = 'b”a', @2 = '2015-09-07T14:55:31.716'[0m  [["created_at", Mon, 07 Sep 2015 14:55:31 UTC +00:00], ["name", "b\x94a"], ["updated_at", Mon, 07 Sep 2015 14:55:31 UTC +00:00]]
+TinyTds::Error: Error converting characters into server's character set. Some character(s) could not be converted: EXEC sp_executesql N'INSERT INTO [visitors] ([created_at], [name], [updated_at]) OUTPUT inserted.id VALUES (@0, @1, @2)', N'@0 datetime, @1 nvarchar(max), @2 datetime', @0 = '2015-09-07T14:55:31.716', @1 = 'b”a', @2 = '2015-09-07T14:55:31.716'
+  [1m[35mSQL (15.0ms)[0m  IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+TinyTds::Error: Unclosed quotation mark after the character string '@0 dIF @@TRANCOUNT > 0 ROLLBACK TRANSACTION'.: IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN TRANSACTION[0m
+  [1m[35mSQL (1.0ms)[0m  EXEC sp_executesql N'INSERT INTO [visitors] ([created_at], [name], [updated_at]) OUTPUT inserted.id VALUES (@0, @1, @2)', N'@0 datetime, @1 nvarchar(max), @2 datetime', @0 = '2015-09-07T14:55:31.716', @1 = 'baa', @2 = '2015-09-07T14:55:31.716'  [["created_at", Mon, 07 Sep 2015 14:55:31 UTC +00:00], ["name", "baa"], ["updated_at", Mon, 07 Sep 2015 14:55:31 UTC +00:00]]
+  [1m[36mSQL (0.0ms)[0m  [1mCOMMIT TRANSACTION[0m
+  [1m[35mVisitor Load (1.0ms)[0m  EXEC sp_executesql N'SELECT TOP (1) [visitors].* FROM [visitors] ORDER BY [visitors].[id] DESC'
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [MCS][0m
+  [1m[35m (23.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''Adressenpool'''
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''ArbeitsAuftrag'''[0m
+  [1m[35m (1.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''Betriebsmittel'''
+  [1m[36m (2.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''FahrerAbrechnung'''[0m
+  [1m[35m (1.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''FahrerJounal'''
+  [1m[36m (2.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''Fahrtauftrag'''[0m
+  [1m[35m (2.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''Kundenauftrag'''
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''Login_Archive_LOGFILE'''[0m
+  [1m[35m (1.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''MailImport_Log'''
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''MailImport_Queue'''[0m
+  [1m[35m (1.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''MailImport_Settings'''
+  [1m[36m (2.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''Schaden'''[0m
+  [1m[35m (1.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''SchadenFiles'''
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''SchadenStatus'''[0m
+  [1m[35m (2.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''ShuttelAuftrag'''
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''ShuttelFahrerEntlohnung'''[0m
+  [1m[35m (1.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''ShuttelFahrtDetails'''
+  [1m[36m (2.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''StAbrechnunsModus'''[0m
+  [1m[35m (1.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''StBerechtigung'''
+  [1m[36m (3.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''StFahrer'''[0m
+  [1m[35m (2.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''StFirma'''
+  [1m[36m (2.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''StKMTabelle'''[0m
+  [1m[35m (1.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''StKMTabelleNeu'''
+  [1m[36m (2.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''StKostenstelle'''[0m
+  [1m[35m (3.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''StLogin'''
+  [1m[36m (2.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''StUsergruppen'''[0m
+  [1m[35m (2.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''dtproperties'''
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''stWaehrung'''[0m
+  [1m[35m (3.0ms)[0m  EXEC sp_executesql N'EXEC sp_helpindex N''sysdiagrams'''
+  [1m[36m (1.0ms)[0m  [1mEXEC sp_executesql N'EXEC sp_helpindex N''tabMobileRsAUserLogin'''[0m
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [MCS][0m
+  [1m[35mArbeitsauftrag Load (1.0ms)[0m  EXEC sp_executesql N'SELECT TOP (1) [ArbeitsAuftrag].* FROM [ArbeitsAuftrag] ORDER BY [ArbeitsAuftrag].[ArbeitstAuftragID] DESC'
+  [1m[36mSQL (0.0ms)[0m  [1mUSE [MCS][0m
+  [1m[35mKundenauftrag Load (1.0ms)[0m  EXEC sp_executesql N'SELECT TOP (1) [Kundenauftrag].* FROM [Kundenauftrag] ORDER BY [Kundenauftrag].[KundenauftragID] DESC'
+  [1m[36mKundenauftrag Load (1.0ms)[0m  [1mEXEC sp_executesql N'SELECT TOP (1) [Kundenauftrag].* FROM [Kundenauftrag] ORDER BY [Kundenauftrag].[KundenauftragID] DESC'[0m
