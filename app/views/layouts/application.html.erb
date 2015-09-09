@@ -4,16 +4,79 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title><%= content_for?(:title) ? yield(:title) : "foundation-rails" %></title>
+    <title><%= content_for?(:title) ? yield(:title) : "MT Transfair" %></title>
 
     <%= stylesheet_link_tag    "application" %>
     <%= javascript_include_tag "vendor/modernizr" %>
-    <%= javascript_include_tag "application" 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag "application", 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
   </head>
 
   <body>
 
+    <% if user_signed_in? %>
+      <nav class="top-bar" data-topbar role="navigation">
+        <section class="top-bar-section">
+          <ul class="left">
+            <li><%= link_to 'Auftrag erfassen', new_job_path %></li>
+            <li class="has-dropdown">
+              <a href="#">Fahrer</a>
+              <ul class="dropdown">
+                <li><%= link_to 'Lenkerauskunft', drivers_path %></li>
+                <li><%= link_to 'Fahrer anzeigen', drivers_path %></li>
+                <li><%= link_to 'Fahrer hinzufügen', new_driver_path %></li>
+              </ul>
+            </li>
+            <li class="has-dropdown">
+              <a href="#">Routen</a>
+              <ul class="dropdown">
+                <li><a href="#">Neue Routen</a></li>
+                <li><%= link_to 'Alle Routen', routes_path %></li>
+              </ul>
+            </li>
+            <li class="has-dropdown">
+              <a href="#">Adressen</a>
+              <ul class="dropdown">
+                <li><%= link_to 'Adressen', addresses_path %></li>
+                <li><%= link_to 'Adresse hinzufügen', new_address_path %></li>
+              </ul>
+            </li>            
+
+
+          </ul>
+        </section>
+
+        <section class="top-bar-section">
+          <!-- Right Nav Section -->
+          <ul class="right">
+            <li class="has-dropdown">
+              <a href="#">Administration</a>
+              <ul class="dropdown">
+                <li><%= link_to 'Firmen anzeigen', companies_path %></li>
+                <li class="has-dropdown not-click"><a href="#">Benutzer</a>
+                  <ul class="dropdown">
+                    <li><%= link_to 'Benutzer anzeigen', users_path %></li>
+                    <li><%= link_to 'Neuer Benutzer', new_user_invitation_path %></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li class="name">
+              <h1><%= link_to 'Abmelden', destroy_user_session_path, :method=>'delete' %></h1>
+            </li>
+
+          </ul>
+        </section>
+      </nav>
+    <% end %>
+    <% flash.each do |name, msg| %>
+      <% if msg.is_a?(String) %>
+        <div data-alert class="alert-box round <%= name.to_s == 'notice' ? 'success' : 'alert' %>">
+          <%= content_tag :div, msg %>
+          <a href="#" class="close">&times;</a>
+        </div>
+      <% end %>
+    <% end %>
     <%= yield %>
 
   </body>

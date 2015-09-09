@@ -5,6 +5,8 @@ source 'http://rubygems.org'
 gem 'rails', '4.1.9'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
+#i18n for internationalisation
+gem 'rails-i18n', '~> 4.0.0'
 #foundation is used for graphics
 gem 'foundation-rails', '~> 5.5.0'
 # Use SCSS for stylesheets
@@ -49,3 +51,7 @@ gem 'yaml_db'
 
 #includes will paginate into foundation
 gem 'will_paginate-foundation'
+
+#devise is used for login
+gem 'devise'
+gem 'devise_invitable', '~> 1.5.2'

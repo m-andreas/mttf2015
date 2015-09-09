@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150908121808) do
+ActiveRecord::Schema.define(version: 20150909164054) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -461,6 +461,7 @@ ActiveRecord::Schema.define(version: 20150908121808) do
     t.string   "telepone"
     t.string   "telephone2"
     t.string   "licence_number"
+    t.string   "licence"
     t.string   "issuing_authority"
     t.string   "driving_licence_category"
     t.string   "comment"
@@ -536,5 +537,36 @@ ActiveRecord::Schema.define(version: 20150908121808) do
     t.datetime "Datum",                      null: false
     t.string   "ShortPhoneNumber", limit: 3
   end
+
+  create_table "users", force: true do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.integer  "company_id"
+    t.string   "username"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "invitation_token"
+    t.datetime "invitation_created_at"
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
+    t.integer  "invitation_limit"
+    t.integer  "invited_by_id"
+    t.string   "invited_by_type"
+    t.integer  "invitations_count",      default: 0
+  end
+
+  add_index "users", ["invitations_count"], name: "index_users_on_invitations_count"
+  add_index "users", ["invited_by_id"], name: "index_users_on_invited_by_id"
+  add_index "users", ["username"], name: "index_users_on_username", unique: true
 
 end
