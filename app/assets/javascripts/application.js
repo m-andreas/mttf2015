@@ -12,7 +12,12 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require dataTables/jquery.dataTables
+//= require dataTables/extras/dataTables.responsive
+//= require jquery-ui
 //= require foundation
+//= require dataTables/jquery.dataTables
+//= require dataTables/jquery.dataTables.foundation
 //= require turbolinks
 //= require_tree .
 
@@ -23,4 +28,7 @@ $(document).ready(function(){
   setTimeout(function(){
     $('.alert-box').remove();
   }, 5000);
+  $(function() {
+    $('.datepicker').datepicker();
+  });
  })

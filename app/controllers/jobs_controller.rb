@@ -15,6 +15,8 @@ class JobsController < ApplicationController
   # GET /jobs/new
   def new
     @job = Job.new
+    @drivers = Driver.get_active
+    @addresses = Address.get_active
   end
 
   # GET /jobs/1/edit
@@ -25,9 +27,11 @@ class JobsController < ApplicationController
   # POST /jobs.json
   def create
     @job = Job.new(job_params)
-
+    driver_id = params[:driver_id]
+    @job.created_by_id = current_user.id
+    @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
     respond_to do |format|
-      if @job.save
+      if @job.save && @job.add_driver( driver_id )
         format.html { redirect_to @job, notice: 'Job was successfully created.' }
         format.json { render :show, status: :created, location: @job }
       else
@@ -69,6 +73,6 @@ class JobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
-      params.require(:job).permit(:driver_ids, :cost_center_id, :finished, :created_by_id, :route_id, :from_id, :to_id, :shuttle)
+      params.require(:job).permit(:driver_id, :cost_center_id, :route_id, :from_id, :to_id, :shuttle)
     end
 end

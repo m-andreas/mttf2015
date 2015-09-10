@@ -10,84 +10,88 @@
       </ul>
     </div>
   <% end %>
-
+  <div class="actions">
+    <%= f.submit 'Fahrer abspeichern'%>
+  </div>
   <div class="field">
-    <%= f.label :first_name %><br>
+    <%= f.label :Vorname %><br>
     <%= f.text_field :first_name %>
   </div>
   <div class="field">
-    <%= f.label :last_name %><br>
+    <%= f.label :Nachname %><br>
     <%= f.text_field :last_name %>
   </div>
   <div class="field">
-    <%= f.label :entry_date %><br>
-    <%= f.date_select :entry_date %>
+    <%= f.label :Eintrittsdatum %><br>
+    <%= f.text_field :entry_date %>
   </div>
   <div class="field">
-    <%= f.label :exit_date %><br>
-    <%= f.date_select :exit_date %>
+    <%= f.label :Austrittsdatum %><br>
+    <%= f.text_field :exit_date %>
   </div>
   <div class="field">
-    <%= f.label :date_of_birth %><br>
-    <%= f.date_select :date_of_birth %>
+    <%= f.label :Geburtsdatum %><br>
+    <%= f.text_field :date_of_birth %>
   </div>
   <div class="field">
-    <%= f.label :place_of_birth %><br>
+    <%= f.label :Geburtsort %><br>
     <%= f.text_field :place_of_birth %>
   </div>
   <div class="field">
-    <%= f.label :address %><br>
+    <%= f.label :Adresse %><br>
     <%= f.text_field :address %>
   </div>
   <div class="field">
-    <%= f.label :city %><br>
+    <%= f.label :Stadt %><br>
     <%= f.text_field :city %>
   </div>
   <div class="field">
-    <%= f.label :zip_code %><br>
+    <%= f.label :PLZ %><br>
     <%= f.text_field :zip_code %>
   </div>
   <div class="field">
-    <%= f.label :telepone %><br>
+    <%= f.label :Telefon %><br>
     <%= f.text_field :telepone %>
   </div>
   <div class="field">
-    <%= f.label :telephone2 %><br>
+    <%= f.label "Telefon 2" %><br>
     <%= f.text_field :telephone2 %>
   </div>
   <div class="field">
-    <%= f.label :licence_number %><br>
+    <%= f.label :Führerscheinnummer %><br>
     <%= f.text_field :licence_number %>
   </div>
   <div class="field">
-    <%= f.label :issuing_authority %><br>
+    <%= f.label "Ausstellende Behörde" %><br>
     <%= f.text_field :issuing_authority %>
   </div>
   <div class="field">
-    <%= f.label :driving_licence_category %><br>
+    <%= f.label "Führerscheinkatgorien" %><br>
     <%= f.text_field :driving_licence_category %>
   </div>
   <div class="field">
-    <%= f.label :comment %><br>
+    <%= f.label :Kommentar %><br>
     <%= f.text_field :comment %>
   </div>
   <div class="field">
-    <%= f.label :social_security_number %><br>
+    <%= f.label :Sozialversicherungsnummer %><br>
     <%= f.text_field :social_security_number %>
   </div>
-  <div class="field">
-    <%= f.label :driving_licence_copy %><br>
-    <%= f.check_box :driving_licence_copy %>
-  </div>
-  <div class="field">
-    <%= f.label :registration_copy %><br>
-    <%= f.check_box :registration_copy %>
-  </div>
-  <div class="field">
-    <%= f.label :service_contract %><br>
-    <%= f.check_box :service_contract %>
+  <div class=".large-12.columns row   ">
+    <div class="field large-3.columns">
+      <%= f.label :Führerscheinkopie %><br>
+      <%= f.check_box :driving_licence_copy %>
+    </div>
+    <div class="field large-3.columns">
+      <%= f.label :Meldezettel %><br>
+      <%= f.check_box :registration_copy %>
+    </div>
+    <div class="field large-3.columns">
+      <%= f.label :Werkvertrag %><br>
+      <%= f.check_box :service_contract %>
+    </div>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit 'Fahrer abspeichern'%>
   </div>
 <% end %>

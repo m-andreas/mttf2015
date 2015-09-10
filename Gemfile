@@ -49,6 +49,9 @@ gem 'activerecord-sqlserver-adapter', '~> 4.1-stable'
 # load database entries
 gem 'yaml_db'
 
+
+gem 'jquery-datatables-rails', '~> 3.3.0'
+gem 'jquery-ui-rails'
 #includes will paginate into foundation
 gem 'will_paginate-foundation'
 

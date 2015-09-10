@@ -1,7 +1,6 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  driver_ids: MyString
   cost_center_id: 1
   finished: 1
   created_by_id: 1
@@ -11,7 +10,6 @@ one:
   shuttle: false 
 
 two:
-  driver_ids: MyString
   cost_center_id: 1
   finished: 1
   created_by_id: 1

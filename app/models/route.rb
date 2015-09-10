@@ -6,4 +6,15 @@ class Route < ActiveRecord::Base
   PROCESSED = 1
   DELETED = 2
 
+  def self.find_or_create( from_id, to_id)
+    route = find_by( from_id: from_id, to_id: to_id )
+    if route.nil?
+      route = Route.create(
+        from_id: from_id,
+        to_id: to_id
+      )
+
+    end
+    return route.id
+  end
 end

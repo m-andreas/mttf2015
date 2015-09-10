@@ -4,15 +4,24 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: 
-  id: 1
-  username: one
-  email: test@test.de
-  company_id: 1
+chauffeur:
+  driver: one
+  job: one
+  chauffeur: true
 # column: value
 #
-two: 
-  username: two
-  email: test2@test.de
-  company_id: 2
+co_driver1:
+  driver: exit_nil
+  job: one
+  chauffeur: false
+
+co_driver2:
+  driver: entered_today
+  job: one
+  chauffeur: false
+
+single:
+  driver: one
+  job: two
+  chauffeur: true
 #  column: value

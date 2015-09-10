@@ -12,8 +12,6 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :driver_ids %><br>
-    <%= f.text_field :driver_ids %>
   </div>
   <div class="field">
     <%= f.label :cost_center_id %><br>
@@ -27,10 +25,7 @@
     <%= f.label :created_by_id %><br>
     <%= f.number_field :created_by_id %>
   </div>
-  <div class="field">
-    <%= f.label :route_id %><br>
-    <%= f.number_field :route_id %>
-  </div>
+
   <div class="field">
     <%= f.label :from_id %><br>
     <%= f.number_field :from_id %>
@@ -41,7 +36,7 @@
   </div>
   <div class="field">
     <%= f.label :shuttle %><br>
-    <%= f.text_field :shuttle %>
+    <%= f.check_box :shuttle %>
   </div>
   <div class="actions">
     <%= f.submit %>

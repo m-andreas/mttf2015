@@ -4,7 +4,7 @@ expired:
   first_name: Markus
   last_name: Andreas
   entry_date: <%= 2.years.ago.to_s(:db) %>
-  exit_date: <%= 5.day.ago.to_s(:db) %>
+  exit_date: <%= 5.days.ago.to_s(:db) %>
   date_of_birth: <%= 10.years.ago.to_s(:db) %>
   place_of_birth: Wien
   address: Teststrasse 2
@@ -22,10 +22,51 @@ expired:
   service_contract: false
 
 not_yet_entered:
-  first_name: MyString
+  first_name: not_yet_entered
+  last_name: MyString
+  entry_date: <%= 2.days.from_now.to_s(:db) %>
+  exit_date: <%= 5.days.from_now.to_s(:db) %>
+  date_of_birth: <%= 10.years.ago.to_s(:db) %>
+  place_of_birth: MyString
+  address: MyString
+  city: MyString
+  zip_code: MyString
+  telepone: MyString
+  telephone2: MyString
+  licence_number: MyString
+  issuing_authority: MyString
+  driving_licence_category: MyString
+  comment: MyString
+  social_security_number: MyString
+  driving_licence_copy: false
+  registration_copy: false
+  service_contract: false
+
+entered_today:
+  first_name: entered_today
+  last_name: MyString
+  entry_date: <%= 1.minute.from_now.to_s(:db) %>
+  exit_date: <%= 5.days.from_now.to_s(:db) %>
+  date_of_birth: <%= 10.years.ago.to_s(:db) %>
+  place_of_birth: MyString
+  address: MyString
+  city: MyString
+  zip_code: MyString
+  telepone: MyString
+  telephone2: MyString
+  licence_number: MyString
+  issuing_authority: MyString
+  driving_licence_category: MyString
+  comment: MyString
+  social_security_number: MyString
+  driving_licence_copy: false
+  registration_copy: false
+  service_contract: false
+
+exit_nil:
+  first_name: exit_nil
   last_name: MyString
   entry_date: <%= 2.years.ago.to_s(:db) %>
-  exit_date: <%= 5.day.ago.to_s(:db) %>
   date_of_birth: <%= 10.years.ago.to_s(:db) %>
   place_of_birth: MyString
   address: MyString
@@ -43,10 +84,11 @@ not_yet_entered:
   service_contract: false
 
 one:
-  first_name: Markus
+  id: 1
+  first_name: one
   last_name: Tester
   entry_date: <%= 2.years.ago.to_s(:db) %>
-  exit_date: <%= 5.day.ago.to_s(:db) %>
+  exit_date: <%= 5.day.from_now.to_s(:db) %>
   date_of_birth: <%= 10.years.ago.to_s(:db) %>
   place_of_birth: Wien
   address: Teststrasse 2
@@ -58,28 +100,7 @@ one:
   issuing_authority: Polizei Wien 1010
   driving_licence_category: A/B/C
   comment: SUper Fahrer
-  social_security_number: 1234234567
-  driving_licence_copy: true
-  registration_copy: false
-  service_contract: false
-
-one:
-  first_name: Markus
-  last_name: Tester
-  entry_date: <%= 2.years.ago.to_s(:db) %>
-  exit_date: <%= 5.day.ago.to_s(:db) %>
-  date_of_birth: <%= 10.years.ago.to_s(:db) %>
-  place_of_birth: Wien
-  address: Teststrasse 2
-  city: Wien
-  zip_code: '1220' 
-  telepone: '123456'
-  telephone2: 
-  licence_number: ABC123
-  issuing_authority: Polizei Wien 1010
-  driving_licence_category: A/B/C
-  comment: Super Fahrer
-  social_security_number: 1234234567
+  social_security_number: '1234234567'
   driving_licence_copy: true
   registration_copy: false
   service_contract: false

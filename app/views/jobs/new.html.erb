@@ -1,5 +1,47 @@
-<h1>New job</h1>
+<h1>Neuen Auftrag erfassen</h1>
 
-<%= render 'form' %>
 
-<%= link_to 'Back', jobs_path %>
+<div class="selection large-8 columns"> 
+  <%= form_for(@job) do |f| %>
+    <% if @job.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@job.errors.count, "error") %> haben diesen Auftag vom Speichern zurückgehalten:</h2>
+
+        <ul>
+        <% @job.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class="field">
+      <h3>Fahrer</h3><br>
+      Fahrer hier filtern <input id="driver_filter" type="text">
+      <%= select_tag :driver_id, options_from_collection_for_select(@drivers, "id", "fullname")%>
+    </div>
+    <div class="field">
+    <%= f.label :Startpunkt %><br>
+      Startpunkte hier filtern <input id="from_filter" type="text">
+      <%= f.select :from_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
+    </div>
+    <div class="field">
+      <%= f.label :Endpunkt %><br>
+      Endpunkte hier filtern <input id="to_filter" type="text">
+      <%= f.select :to_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
+    </div>
+    <div class="field">
+      <%= f.label :Kostenstelle %><br>
+      <%= f.text_field :cost_center_id %>
+    </div>
+    <div class="field">
+      <%= f.label :shuttle %><br>
+      <%= f.check_box :shuttle %>
+    </div>
+    <div class="actions">
+      <%= f.submit %>
+    </div>
+  <% end %>
+</div>
+<div class="large 4 columns">
+test sidebar
+</div>

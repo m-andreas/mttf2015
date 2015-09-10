@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class AddressTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test "get_active" do
+     assert_equal 3, Address.get_active.length
+  end
 end
