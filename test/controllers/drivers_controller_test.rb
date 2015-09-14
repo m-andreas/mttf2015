@@ -48,7 +48,8 @@ class DriversControllerTest < ActionController::TestCase
 
   test "should destroy driver" do
     sign_in @user
-    assert_difference('Driver.count', -1) do
+    old_length = Driver.get_active.length
+    assert_difference('Driver.get_active.length', -1) do
       delete :destroy, id: @driver
     end
 

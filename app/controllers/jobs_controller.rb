@@ -4,8 +4,12 @@ class JobsController < ApplicationController
   # GET /jobs
   # GET /jobs.json
   def index
-    @jobs = Job.paginate(:page => params[:page], :per_page => 30)
+    @jobs = Job.page params[:page]
   end
+
+  def datatable_ajax 
+    render json: JobsDatatable.new(view_context) 
+  end 
 
   # GET /jobs/1
   # GET /jobs/1.json
@@ -27,15 +31,20 @@ class JobsController < ApplicationController
   # POST /jobs.json
   def create
     @job = Job.new(job_params)
-    driver_id = params[:driver_id]
+    logger.info params.inspect
+    co_jobs = params[:co_jobs]
+    driver = Driver.find(params[:driver_id])
+    @job.driver = driver
     @job.created_by_id = current_user.id
     @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
     respond_to do |format|
-      if @job.save && @job.add_driver( driver_id )
+      if @job.save && @job.add_co_jobs( co_jobs )
         format.html { redirect_to @job, notice: 'Job was successfully created.' }
         format.json { render :show, status: :created, location: @job }
       else
-        format.html { render :new }
+        @drivers = Driver.get_active
+        @addresses = Address.get_active
+        format.html { render :new, error: "Fehler beim speichern" }
         format.json { render json: @job.errors, status: :unprocessable_entity }
       end
     end
@@ -73,6 +82,6 @@ class JobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
-      params.require(:job).permit(:driver_id, :cost_center_id, :route_id, :from_id, :to_id, :shuttle)
+      params.require(:job).permit(:driver_id, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids)
     end
 end

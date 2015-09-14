@@ -16,5 +16,6 @@
  *= require_self
  *= require_tree .
  *= require dataTables/extras/dataTables.responsive
+ *= require font-awesome
 
  */

@@ -18,7 +18,7 @@
   <tbody>
     <% @jobs.each do |job| %>
       <tr>
-        <td><%= job.driver_ids %></td>
+        <td><%= job.driver.fullname unless job.driver.nil? %></td>
         <td><%= job.cost_center_id %></td>
         <td><%= job.finished %></td>
         <td><%= job.created_by_id %></td>
@@ -33,7 +33,7 @@
     <% end %>
   </tbody>
 </table>
-<%= will_paginate @jobs, renderer: FoundationPagination::Rails %>
+<%= paginate @jobs %>
 <br>
 
 <%= link_to 'New Job', new_job_path %>

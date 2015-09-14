@@ -1,47 +1,85 @@
+<div class="custom-row">
 <h1>Neuen Auftrag erfassen</h1>
 
+  <div class="selection large-8 small-12 columns"> 
+    <%= form_for(@job) do |f| %>
+      <% if @job.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@job.errors.count, "error") %> haben diesen Auftag vom Speichern zurückgehalten:</h2>
 
-<div class="selection large-8 columns"> 
-  <%= form_for(@job) do |f| %>
-    <% if @job.errors.any? %>
-      <div id="error_explanation">
-        <h2><%= pluralize(@job.errors.count, "error") %> haben diesen Auftag vom Speichern zurückgehalten:</h2>
+          <ul>
+          <% @job.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="field">
+        <h3>Fahrer</h3><br>
+        Fahrer hier filtern <input id="driver_filter" type="text">
+        <%= select_tag :driver_id, options_from_collection_for_select(@drivers, "id", "fullname")%>
+      </div>
+      <div class="field">
+      <h3><%= f.label :Startpunkt %></h3><br>
+        Startpunkte hier filtern <input id="from_filter" type="text">
+        <%= f.select :from_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
+      </div>
+      <div class="field">
+        <h3><%= f.label :Endpunkt %></h3><br>
+        Endpunkte hier filtern <input id="to_filter" type="text">
+        <%= f.select :to_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
+      </div>
+      <div class="field">
+        <h3><%= f.label :Kostenstelle %></h3><br>
+        <%= f.text_field :cost_center_id %>
+      </div>
+      <div class="field">
+        <h3><%= f.label :shuttle %></h3><br>
+        <%= f.check_box :shuttle %>
+      </div>
 
-        <ul>
-        <% @job.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-        </ul>
+
+      <table id="shuttle_jobs" class="display" data-source="<%= jobs_url(format: "json") %>">
+        <thead>
+          <tr>
+            <th class="dont_show">id</th>
+            <th>Auftrag hinzufügen</th>
+            <th>Auftragnummer</th>
+            <th>Name</th>
+            <th>Von</th>
+            <th>Nach</th>
+            <th>Erstellungsdatum</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+
+
+
+    </div>
+    <div class="large-4 small-12 columns sidebar">
+      <%= hidden_field_tag 'co_jobs',  '' %>
+      <h2>Auftragszusammenfassung:</h2>
+      <table>
+          <tr><td>Fahrername:</td><td><span id="drivername"></span></td></tr>
+          <tr><td>Startpunkt:</td><td><span id="from"></span></td></tr>
+          <tr><td>Endpunkt:</td><td><span id="to"></span></td></tr>
+          <tr><td>Kostenstelle:</td><td><span id="cost-center"></span></td></tr>
+        </table>
+      <div id="shuttle-co-drivers">
+        <table>
+          <thead>
+            <th>Mitfahrer</th>
+            <th>Auftragsnummer</th>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <%= f.submit %>
       </div>
     <% end %>
-    <div class="field">
-      <h3>Fahrer</h3><br>
-      Fahrer hier filtern <input id="driver_filter" type="text">
-      <%= select_tag :driver_id, options_from_collection_for_select(@drivers, "id", "fullname")%>
-    </div>
-    <div class="field">
-    <%= f.label :Startpunkt %><br>
-      Startpunkte hier filtern <input id="from_filter" type="text">
-      <%= f.select :from_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
-    </div>
-    <div class="field">
-      <%= f.label :Endpunkt %><br>
-      Endpunkte hier filtern <input id="to_filter" type="text">
-      <%= f.select :to_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
-    </div>
-    <div class="field">
-      <%= f.label :Kostenstelle %><br>
-      <%= f.text_field :cost_center_id %>
-    </div>
-    <div class="field">
-      <%= f.label :shuttle %><br>
-      <%= f.check_box :shuttle %>
-    </div>
-    <div class="actions">
-      <%= f.submit %>
-    </div>
-  <% end %>
-</div>
-<div class="large 4 columns">
-test sidebar
+  </div>
 </div>

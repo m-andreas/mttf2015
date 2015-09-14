@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :addresses
 
   resources :jobs
+  get 'jobs_ajax/datatable_ajax', to: 'jobs#datatable_ajax' 
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -50,10 +50,13 @@ gem 'activerecord-sqlserver-adapter', '~> 4.1-stable'
 gem 'yaml_db'
 
 
-gem 'jquery-datatables-rails', '~> 3.3.0'
+gem 'jquery-datatables-rails'
+
 gem 'jquery-ui-rails'
 #includes will paginate into foundation
-gem 'will_paginate-foundation'
+gem 'kaminari'                    # Pagination 
+
+gem 'font-awesome-rails'          # Icons 
 
 #devise is used for login
 gem 'devise'

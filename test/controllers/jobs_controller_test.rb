@@ -25,7 +25,7 @@ class JobsControllerTest < ActionController::TestCase
   test "should create job" do
     sign_in @user
     assert_difference('Job.count') do
-      post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, shuttle: false, to_id: routes(:one).to_id }, driver_id: drivers(:one).id
+      post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, shuttle: false, to_id: routes(:one).to_id }, driver_id: drivers(:one).id, co_jobs: ""
     end
     assert_equal users(:one), assigns(:job).created_by
     assert_equal routes(:one), assigns(:job).route
@@ -49,7 +49,7 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should update job" do
     sign_in @user
-    patch :update, id: @job, job: { cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_ids: @job.driver_ids, finished: @job.finished, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
+    patch :update, id: @job, job: { cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, finished: @job.finished, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
     assert_redirected_to job_path(assigns(:job))
   end
 

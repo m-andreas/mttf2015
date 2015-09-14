@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   devise :invitable, :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
   attr_accessor :login
   belongs_to :company
+  paginates_per 10
 
   def is_intern?
     return self.company_id == Company::TRANSFAIR

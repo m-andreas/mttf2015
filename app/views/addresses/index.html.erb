@@ -31,8 +31,7 @@
     <% end %>
   </tbody>
 </table>
-<%= will_paginate @addresses, renderer: FoundationPagination::Rails %>
-
+<%= paginate @addresses %>
 <br>
 
 <%= link_to 'New Address', new_address_path %>

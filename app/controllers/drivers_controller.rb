@@ -4,7 +4,7 @@ class DriversController < ApplicationController
   # GET /drivers
   # GET /drivers.json
   def index
-    @drivers = Driver.all
+    @drivers = Driver.where( deleted: false ).page params[:page]
   end
 
   # GET /drivers/1
@@ -54,7 +54,8 @@ class DriversController < ApplicationController
   # DELETE /drivers/1
   # DELETE /drivers/1.json
   def destroy
-    @driver.destroy
+    @driver.deleted = true
+    @driver.save!
     respond_to do |format|
       format.html { redirect_to drivers_url, notice: 'Driver was successfully destroyed.' }
       format.json { head :no_content }

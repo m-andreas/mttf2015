@@ -15,6 +15,7 @@
   <body>
 
     <% if user_signed_in? %>
+    <div class="">
       <nav class="top-bar" data-topbar role="navigation">
         <section class="top-bar-section">
           <ul class="left">
@@ -68,6 +69,7 @@
           </ul>
         </section>
       </nav>
+    </div>
     <% end %>
     <% flash.each do |name, msg| %>
       <% if msg.is_a?(String) %>

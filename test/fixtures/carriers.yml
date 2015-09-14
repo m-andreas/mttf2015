@@ -4,24 +4,20 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-chauffeur:
-  driver: one
-  job: one
-  chauffeur: true
+co_driver1:
+  job: shuttle
+  co_job: one
 # column: value
 #
-co_driver1:
-  driver: exit_nil
-  job: one
-  chauffeur: false
-
 co_driver2:
-  driver: entered_today
-  job: one
-  chauffeur: false
+  job: shuttle
+  co_job: two
 
-single:
-  driver: one
-  job: two
-  chauffeur: true
+no_shuttle:
+  job: one
+  co_job: two
+
+self:
+  job: one
+  co_job: one
 #  column: value

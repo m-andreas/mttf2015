@@ -43,6 +43,7 @@ not_yet_entered:
   service_contract: false
 
 entered_today:
+  id: 2
   first_name: entered_today
   last_name: MyString
   entry_date: <%= 1.minute.from_now.to_s(:db) %>
@@ -104,3 +105,4 @@ one:
   driving_licence_copy: true
   registration_copy: false
   service_contract: false
+  deleted: false
