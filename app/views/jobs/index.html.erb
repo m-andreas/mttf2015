@@ -1,39 +1,32 @@
-<h1>Listing jobs</h1>
-
-<table>
+<h1>Alle Aufträge</h1>
+<%= form_tag 'jobs_ajax/show_all', method: 'get' do %>
+  <div class="row">
+    <div class="medium-5 column">
+      <%= label_tag "start_from_date", "Von" %><br>
+      <%= text_field_tag :start_from_date %>
+    </div>
+    <div class="medium-5 column">
+      <%= label_tag "end_at_date", "Bis" %><br>
+      <%= text_field_tag :end_at_date %>    
+    </div>
+  </div>
+<% end %>
+<table id="show_jobs" class="display">
   <thead>
     <tr>
-      <th>Driver ids</th>
-      <th>Cost center</th>
-      <th>Finished</th>
-      <th>Created by</th>
-      <th>Route</th>
-      <th>From</th>
-      <th>To</th>
+      <th>Auftragnummer</th>
+      <th>Fahrer</th>
+      <th>Kennzeichen</th>
+      <th>Datum Abfahrt</th>
+      <th>Datum Ankunft</th>
+      <th>Von</th>
+      <th>Nach</th>
       <th>Shuttle</th>
-      <th colspan="3"></th>
+      <th></th>
+      <th></th>
     </tr>
   </thead>
 
   <tbody>
-    <% @jobs.each do |job| %>
-      <tr>
-        <td><%= job.driver.fullname unless job.driver.nil? %></td>
-        <td><%= job.cost_center_id %></td>
-        <td><%= job.finished %></td>
-        <td><%= job.created_by_id %></td>
-        <td><%= job.route_id %></td>
-        <td><%= job.from_id %></td>
-        <td><%= job.to_id %></td>
-        <td><%= job.shuttle %></td>
-        <td><%= link_to 'Show', job %></td>
-        <td><%= link_to 'Edit', edit_job_path(job) %></td>
-        <td><%= link_to 'Destroy', job, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
   </tbody>
 </table>
-<%= paginate @jobs %>
-<br>
-
-<%= link_to 'New Job', new_job_path %>

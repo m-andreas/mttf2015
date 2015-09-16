@@ -11,6 +11,10 @@ class JobsController < ApplicationController
     render json: JobsDatatable.new(view_context) 
   end 
 
+  def show_all
+    render json: JobsAllDatatable.new(view_context) 
+  end
+
   # GET /jobs/1
   # GET /jobs/1.json
   def show
@@ -31,9 +35,10 @@ class JobsController < ApplicationController
   # POST /jobs.json
   def create
     @job = Job.new(job_params)
-    logger.info params.inspect
+    job_params[ :actual_collection_date ] = job_params[ :scheduled_collection_date ]
+    job_params[ :actual_delivery_date ] = job_params[ :scheduled_delivery_date ]
     co_jobs = params[:co_jobs]
-    driver = Driver.find(params[:driver_id])
+    driver = Driver.find(job_params[:driver_id])
     @job.driver = driver
     @job.created_by_id = current_user.id
     @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
@@ -82,6 +87,7 @@ class JobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
-      params.require(:job).permit(:driver_id, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids)
+      params.require(:job).permit(:driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number, 
+        :scheduled_collection_date, :scheduled_delivery_date, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
     end
 end

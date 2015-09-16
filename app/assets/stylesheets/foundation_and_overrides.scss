@@ -1452,6 +1452,10 @@ $include-html-global-classes: $include-html-classes;
   cursor: pointer;
 }
 @media only screen and (min-width: 64.0625em){
+  #job_cost_center_id{
+    margin-top:16px;
+  }
+
   .sidebar {
     background: #d3d3d3;
     color: white;
@@ -1461,8 +1465,15 @@ $include-html-global-classes: $include-html-classes;
     padding: 10px;
     position: fixed !important;
     width: 300px;
-    margin-top: 45px;
+    padding-top: 45px;
+    z-index: -1;
   }
 }
+
+.lightgray{
+  background: #d1d3d6;
+}
+
+
 
 @import 'foundation';

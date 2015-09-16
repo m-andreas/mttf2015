@@ -13,17 +13,23 @@
   </head>
 
   <body>
-
     <% if user_signed_in? %>
-    <div class="">
+    <div class="sticky">
       <nav class="top-bar" data-topbar role="navigation">
+  <ul class="title-area">
+    <li class="name">
+      <h1><a href="#">My Site</a></h1>
+    </li>
+     <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+    <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+  </ul>
         <section class="top-bar-section">
           <ul class="left">
             <li><%= link_to 'Auftrag erfassen', new_job_path %></li>
+            <li><%= link_to 'Alle Aufträge', jobs_path %></li>
             <li class="has-dropdown">
               <a href="#">Fahrer</a>
               <ul class="dropdown">
-                <li><%= link_to 'Lenkerauskunft', drivers_path %></li>
                 <li><%= link_to 'Fahrer anzeigen', drivers_path %></li>
                 <li><%= link_to 'Fahrer hinzufügen', new_driver_path %></li>
               </ul>
@@ -54,7 +60,7 @@
               <a href="#">Administration</a>
               <ul class="dropdown">
                 <li><%= link_to 'Firmen anzeigen', companies_path %></li>
-                <li class="has-dropdown not-click"><a href="#">Benutzer</a>
+                <li class="has-dropdown"><a href="#">Benutzer</a>
                   <ul class="dropdown">
                     <li><%= link_to 'Benutzer anzeigen', users_path %></li>
                     <li><%= link_to 'Neuer Benutzer', new_user_invitation_path %></li>
@@ -110,5 +116,7 @@
     });
   };
 <% end %>
+  <script> $(document).foundation();</script>
+
   </body>
 </html>

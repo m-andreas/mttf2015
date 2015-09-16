@@ -14,24 +14,78 @@
           </ul>
         </div>
       <% end %>
-      <div class="field">
-        <h3>Fahrer</h3><br>
-        Fahrer hier filtern <input id="driver_filter" type="text">
-        <%= select_tag :driver_id, options_from_collection_for_select(@drivers, "id", "fullname")%>
-      </div>
-      <div class="field">
-      <h3><%= f.label :Startpunkt %></h3><br>
+      <div class="field row">
+      <h3>Startpunkt</h3><br>
         Startpunkte hier filtern <input id="from_filter" type="text">
         <%= f.select :from_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
       </div>
-      <div class="field">
-        <h3><%= f.label :Endpunkt %></h3><br>
+      <div class="field row">
+        <h3>Endpunkt</h3><br>
         Endpunkte hier filtern <input id="to_filter" type="text">
         <%= f.select :to_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
       </div>
-      <div class="field">
-        <h3><%= f.label :Kostenstelle %></h3><br>
-        <%= f.text_field :cost_center_id %>
+      <div class="row">
+        <div class="field large-8 columns">
+          <h3>Fahrer</h3><br>
+          Fahrer hier filtern <input id="driver_filter" type="text">
+          <%= f.select :driver_id, options_from_collection_for_select(@drivers, "id", "fullname")%>
+        </div>
+        <div class="field large-4 columns">
+          <h3>Kostenstelle</h3><br>
+          <%= f.text_field :cost_center_id %>
+        </div>
+      </div>
+      <div class="row lightgray">
+        <div class="field large-4 columns">
+          <h3><%= f.label :Fahrzeugmarke %></h3><br>
+          <%= f.text_field :car_brand %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label :Fahrzeugtype %></h3><br>
+          <%= f.text_field :car_type %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label :Kennzeichen %></h3><br>
+          <%= f.text_field :registration_number %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field large-6 columns">
+          <h3><%= f.label "Abholdatum" %></h3><br>
+          <%= f.date_field :scheduled_collection_date %>
+        </div>
+        <div class="field large-6 columns">
+          <h3><%= f.label "Lieferdatum" %></h3><br>
+          <%= f.date_field :scheduled_delivery_date %>
+        </div>
+      </div>
+      <div class="row lightgray">
+        <div class="field large-4 columns">
+          <h3><%= f.label "chassis_number", :Fahrgestellnummer %></h3><br>
+          <%= f.text_field :chassis_number %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label "mileage_delivery", "Kilometerstand Abholung" %></h3><br>
+          <%= f.text_field :mileage_delivery %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label "mileage_collection", "Kilometerstand Lieferung" %></h3><br>
+          <%= f.text_field :mileage_collection %>
+        </div>
+      </div>  
+      <div class="row">
+        <div class="field large-4 columns">
+          <h3><%= f.label :Auftragsbemerkungen %></h3><br>
+          <%= f.text_field :job_notice %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label :Transportbemerkungen %></h3><br>
+          <%= f.text_field :transport_notice %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label "Transportbemerkungen extern" %></h3><br>
+          <%= f.text_field :transport_notice_extern %>
+        </div>
       </div>
       <div class="field">
         <h3><%= f.label :shuttle %></h3><br>
@@ -66,6 +120,11 @@
           <tr><td>Startpunkt:</td><td><span id="from"></span></td></tr>
           <tr><td>Endpunkt:</td><td><span id="to"></span></td></tr>
           <tr><td>Kostenstelle:</td><td><span id="cost-center"></span></td></tr>
+          <tr><td>Fahrzeugmarke:</td><td><span id="car_brand"></span></td></tr>
+          <tr><td>Fahrzeugtype:</td><td><span id="car_type"></span></td></tr>
+          <tr><td>Kennzeichen:</td><td><span id="registration_number"></span></td></tr>
+          <tr><td>Abholdatum:</td><td><span id="scheduled_collection_date"></span></td></tr>
+          <tr><td>Lieferdatum:</td><td><span id="scheduled_delivery_date"></span></td></tr>
         </table>
       <div id="shuttle-co-drivers">
         <table>

@@ -7,6 +7,7 @@ class Job < ActiveRecord::Base
   belongs_to :route
   belongs_to :created_by, class_name: "User"
   paginates_per 10
+
   def co_drivers
     co_drivers = []
     co_jobs.each do |co_job|
@@ -28,5 +29,9 @@ class Job < ActiveRecord::Base
     else
       return true
     end
+  end
+
+  def is_shuttle?
+    return self.shuttle
   end
 end

@@ -1,12 +1,12 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Driver ids:</strong>
+  <strong>Fahrer:</strong>
   <%= @job.driver.fullname %>
 </p>
 
 <p>
-  <strong>Cost center:</strong>
+  <strong>Kostenstelle:</strong>
   <%= @job.cost_center_id %>
 </p>
 
@@ -16,28 +16,23 @@
 </p>
 
 <p>
-  <strong>Created by:</strong>
-  <%= @job.created_by_id %>
-</p>
-
-<p>
-  <strong>Route:</strong>
-  <%= @job.route_id %>
+  <strong>Erstellt von:</strong>
+  <%= @job.created_by.first_name + " " + @job.created_by.last_name %>
 </p>
 
 <p>
   <strong>From:</strong>
-  <%= @job.from_id %>
+  <%= @job.from.address_short %>
 </p>
 
 <p>
   <strong>To:</strong>
-  <%= @job.to_id %>
+  <%= @job.to.address_short %>
 </p>
 
 <p>
   <strong>Shuttle:</strong>
-  <%= @job.shuttle %>
+  <%= @job.is_shuttle? ? "Ja" : "Nein" %>
 </p>
 
 <%= link_to 'Edit', edit_job_path(@job) %> |

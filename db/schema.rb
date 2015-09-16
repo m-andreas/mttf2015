@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150914201317) do
+ActiveRecord::Schema.define(version: 20150915103914) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -466,6 +466,7 @@ ActiveRecord::Schema.define(version: 20150914201317) do
     t.string   "telepone"
     t.string   "telephone2"
     t.string   "licence_number"
+    t.string   "licence"
     t.string   "issuing_authority"
     t.string   "driving_licence_category"
     t.string   "comment"
@@ -498,10 +499,10 @@ ActiveRecord::Schema.define(version: 20150914201317) do
     t.string   "job_notice"
     t.string   "transport_notice"
     t.string   "transport_notice_extern"
-    t.datetime "scheduled_collection_date"
-    t.datetime "scheduled_delivery_date"
-    t.datetime "actual_collection_date"
-    t.datetime "actual_delivery_date"
+    t.date     "scheduled_collection_date"
+    t.date     "scheduled_delivery_date"
+    t.date     "actual_collection_date"
+    t.date     "actual_delivery_date"
     t.integer  "mileage_delivery"
     t.integer  "mileage_collection"
     t.integer  "working_hours"
@@ -571,7 +572,6 @@ ActiveRecord::Schema.define(version: 20150914201317) do
     t.boolean  "deleted",                default: false
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
   add_index "users", ["invitations_count"], name: "index_users_on_invitations_count"
   add_index "users", ["invited_by_id"], name: "index_users_on_invited_by_id"
   add_index "users", ["username"], name: "index_users_on_username", unique: true

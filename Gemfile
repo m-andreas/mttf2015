@@ -61,3 +61,6 @@ gem 'font-awesome-rails'          # Icons
 #devise is used for login
 gem 'devise'
 gem 'devise_invitable', '~> 1.5.2'
+
+#thin used because webbrick cannot handle long requests
+gem 'thin'
