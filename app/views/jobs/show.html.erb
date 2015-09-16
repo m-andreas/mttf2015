@@ -17,7 +17,7 @@
 
 <p>
   <strong>Erstellt von:</strong>
-  <%= @job.created_by.first_name + " " + @job.created_by.last_name %>
+  <%= @job.created_by.first_name + " " + @job.created_by.last_name unless @job.created_by.nil? %>
 </p>
 
 <p>
