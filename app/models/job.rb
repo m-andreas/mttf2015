@@ -34,4 +34,20 @@ class Job < ActiveRecord::Base
   def is_shuttle?
     return self.shuttle
   end
+
+  def get_shuttle_array
+    shuttle = []
+    self.co_jobs.each do |job|
+      shuttle << [ job.driver.fullname, job.id ]
+    end
+    shuttle
+  end
+
+  def get_co_jobs_string
+    co_jobs_string = ""
+    self.co_jobs.each do |job|
+      co_jobs_string += "," + job.id.to_s
+    end
+    co_jobs_string
+  end
 end

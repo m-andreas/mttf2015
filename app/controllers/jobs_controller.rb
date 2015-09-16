@@ -25,10 +25,15 @@ class JobsController < ApplicationController
     @job = Job.new
     @drivers = Driver.get_active
     @addresses = Address.get_active
+    @shuttles = []
   end
 
   # GET /jobs/1/edit
   def edit
+    @drivers = Driver.get_active
+    @addresses = Address.get_active
+    @shuttles = @job.get_shuttle_array
+    @co_jobs = @job.get_co_jobs_string
   end
 
   # POST /jobs
@@ -58,8 +63,9 @@ class JobsController < ApplicationController
   # PATCH/PUT /jobs/1
   # PATCH/PUT /jobs/1.json
   def update
+    co_jobs = params[:co_jobs]
     respond_to do |format|
-      if @job.update(job_params)
+      if @job.update(job_params) && @job.add_co_jobs( co_jobs )
         format.html { redirect_to @job, notice: 'Job was successfully updated.' }
         format.json { render :show, status: :ok, location: @job }
       else

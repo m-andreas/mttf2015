@@ -1466,7 +1466,11 @@ $include-html-global-classes: $include-html-classes;
     position: fixed !important;
     width: 300px;
     padding-top: 45px;
-    z-index: -1;
+    z-index: 1;
+  }
+
+  .top-bar {
+    z-index: 2;
   }
 }
 

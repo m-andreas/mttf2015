@@ -7,12 +7,7 @@ jQuery ->
 
 
 ready = ->
-  $("#shuttle-co-drivers").hide();
-  $("#shuttle_jobs_wrapper").hide();
-  $("#job_driver_id").change()
-  $("#job_to_id").change();
-  $("#job_from_id").change();
-  $("#job_cost_center_id").keyup();
+  console.log("ready")
   $("#start_from_date").datepicker( dateFormat: "dd.mm.yy" );
   $("#end_at_date").datepicker( dateFormat: "dd.mm.yy" );
 
@@ -24,7 +19,7 @@ ready = ->
 
   $('#job_from_id').filterByText($('#from_filter'), true);
   $('#job_to_id').filterByText($('#to_filter'), true);
-  $('#driver_id').filterByText($('#driver_filter'), true);
+  $('#job_driver_id').filterByText($('#driver_filter'), true);
 
   $('#shuttle_jobs').DataTable
     processing: true 
@@ -44,80 +39,100 @@ ready = ->
     ] 
     order: [ [1,'desc'] ] 
 
-    $('#show_jobs').DataTable
-      processing: true 
-      serverSide: true 
-      ajax: 
-        url: '/jobs_ajax/show_all' 
-        data: (d) -> 
-          d.start_from_date = $('#start_from_date').val() 
-          d.end_at_date = $('#end_at_date').val() 
-          return 
-      columns: [ 
-        { width: "10%", className: "center", orderable: false }
-        { width: "10%", className: "row_config", searchable: false, orderable: false }
-        { width: "10%", className: "row_config", searchable: false, orderable: false }
-        { width: "10%", className: "row_config", searchable: false, orderable: false }
-        { width: "10%", className: "center", searchable: false, orderable: false }
-        { width: "10%", className: "center", searchable: false, orderable: false }
-        { width: "10%", className: "center", searchable: false, orderable: false }
-        { width: "10%", className: "center", searchable: false, orderable: false }
-        { width: "10%", className: "center", searchable: false, orderable: false }
-        { width: "10%", className: "center", searchable: false, orderable: false }
-      ] 
-      order: [ [1,'desc'] ]
-
-    $("#job_shuttle").click ->
-      if $('#job_shuttle').prop('checked')
-        $("#shuttle_jobs_wrapper").show();
-        $("#shuttle-co-drivers").show();
-      else
-        $("#shuttle_jobs_wrapper").hide();
-        $("#shuttle-co-drivers").hide();
-
-    $("#job_driver_id").change ->
-      $("#drivername").text($( "#job_driver_id option:selected" ).text();)
-
-    $("#job_to_id").change ->
-      $("#to").text($( "#job_to_id option:selected" ).text();)
-
-    $("#job_from_id").change ->
-      $("#from").text($( "#job_from_id option:selected" ).text();)
-
-    $("#job_cost_center_id").keyup ->
-      $("#cost-center").text($("#job_cost_center_id").val());
-
-    $("#job_car_brand").keyup ->
-      $("#car_brand").text($("#job_car_brand").val());
-
-    $("#job_car_type").keyup ->
-      $("#car_type").text($("#job_car_type").val());
-
-    $("#job_registration_number").keyup ->
-      $("#registration_number").text($("#job_registration_number").val());
-
-    $("#job_scheduled_collection_date").keyup ->
-      $("#scheduled_collection_date").text($("#job_scheduled_collection_date").val());
-
-    $("#job_scheduled_delivery_date").keyup ->
-      $("#scheduled_delivery_date").text($("#job_scheduled_delivery_date").val());
-
-    $("#driver_filter").keyup ->
-      $("#job_driver_id").change()
-
-    $("#to_filter").keyup ->
-      $("#job_to_id").change();
-
-    $("#from_filter").keyup ->
-      $("#job_from_id").change();
-
-    $("#shuttle_jobs").on "click", ".add", ->
-      pos = $('#shuttle_jobs').dataTable().fnGetPosition(this)
-      id = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[0];
-      name = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[3]
-      $('#co_jobs').val($('#co_jobs').val() + "," + id )
-      $("#shuttle-co-drivers table tbody").append("<tr><td>" + name + "</td><td>" + id + "</th></tr>")
-      console.log("click");
-      console.log($(this).parent().find("dont_show"));
+  $('#show_jobs').DataTable
+    processing: true 
+    serverSide: true 
+    ajax: 
+      url: '/jobs_ajax/show_all' 
+      data: (d) -> 
+        d.start_from_date = $('#start_from_date').val() 
+        d.end_at_date = $('#end_at_date').val() 
+        return 
+    columns: [ 
+      { width: "10%", className: "center", orderable: false }
+      { width: "10%", className: "row_config", searchable: false, orderable: false }
+      { width: "10%", className: "row_config", searchable: false, orderable: false }
+      { width: "10%", className: "row_config", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+    ] 
+    order: [ [1,'desc'] ]
 
 
+
+  $("#job_driver_id").change ->
+    console.log("driver change")
+    $("#drivername").text($( "#job_driver_id option:selected" ).text();)
+
+  $("#job_to_id").change ->
+    $("#to").text($( "#job_to_id option:selected" ).text();)
+
+  $("#job_from_id").change ->
+    $("#from").text($( "#job_from_id option:selected" ).text();)
+
+  $("#job_cost_center_id").keyup ->
+    $("#cost-center").text($("#job_cost_center_id").val());
+
+  $("#job_car_brand").keyup ->
+    $("#car_brand").text($("#job_car_brand").val());
+
+  $("#job_car_type").keyup ->
+    $("#car_type").text($("#job_car_type").val());
+
+  $("#job_registration_number").keyup ->
+    $("#registration_number").text($("#job_registration_number").val());
+
+  $("#job_scheduled_collection_date").keyup ->
+    $("#scheduled_collection_date").text($("#job_scheduled_collection_date").val());
+
+  $("#job_scheduled_delivery_date").keyup ->
+    $("#scheduled_delivery_date").text($("#job_scheduled_delivery_date").val());
+
+  $("#driver_filter").keyup ->
+    $("#job_driver_id").change()
+
+  $("#to_filter").keyup ->
+    $("#job_to_id").change();
+
+  $("#from_filter").keyup ->
+    $("#job_from_id").change();
+
+# Shuttle verwaltung
+
+  shuttle_to_sidebar = ( name, id ) ->
+    $('#co_jobs').val($('#co_jobs').val() + "," + id )
+    $("#shuttle-co-drivers table tbody").append("<tr><td>" + name + "</td><td>" + id + "</th></tr>")    
+
+  $("#shuttle_jobs").on "click", ".add", ->
+    pos = $('#shuttle_jobs').dataTable().fnGetPosition(this)
+    id = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[0];
+    name = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[3]
+    shuttle_to_sidebar( name, id )
+
+
+  displayshuttle = ->
+    if $('#job_shuttle').prop('checked')
+      $("#shuttle_jobs_wrapper").show();
+      $("#shuttle-co-drivers").show();
+    else
+      $("#shuttle_jobs_wrapper").hide();
+      $("#shuttle-co-drivers").hide();
+
+  $("#job_shuttle").click ->
+    displayshuttle();
+
+  displayshuttle();
+  $("#job_driver_id").change();
+  $("#job_to_id").change();
+  $("#job_from_id").change();
+  $("#job_cost_center_id").keyup();
+  $("#job_car_type").keyup();
+  $("#job_scheduled_delivery_date").keyup();
+  $("#job_scheduled_collection_date").keyup();
+  $("#job_car_type").keyup();
+  $("#job_car_brand").keyup()
+  $("#job_registration_number").keyup();
