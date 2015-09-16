@@ -1,29 +1,28 @@
-<p id="notice"><%= notice %></p>
-
+</p>
 <p>
-  <strong>From:</strong>
-  <%= @route.from_id %>
+  <strong>Von:</strong>
+  <%= @route.from.complete_address %>
 </p>
 
 <p>
-  <strong>To:</strong>
-  <%= @route.to_id %>
+  <strong>Nach:</strong>
+  <%= @route.to.complete_address %>
 </p>
 
 <p>
-  <strong>Calculation basis:</strong>
-  <%= @route.calculation_basis %>
+  <strong>Kalkulationsbasis:</strong>
+  <%= @route.get_calculation_basis %>
 </p>
 
 <p>
-  <strong>distance:</strong>
+  <strong>Distanz:</strong>
   <%= @route.distance %>
 </p>
 
 <p>
   <strong>Status:</strong>
-  <%= @route.status %>
+  <%= @route.get_status %>
 </p>
 
-<%= link_to 'Edit', edit_route_path(@route) %> |
-<%= link_to 'Back', routes_path %>
+<%= link_to 'Editieren', edit_route_path(@route) %> |
+<%= link_to 'Zurück', routes_path %>

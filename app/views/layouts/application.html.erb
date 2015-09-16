@@ -37,7 +37,7 @@
             <li class="has-dropdown">
               <a href="#">Routen</a>
               <ul class="dropdown">
-                <li><a href="#">Neue Routen</a></li>
+                <li><%= link_to 'Neue Routen', new_routes_path %></li>
                 <li><%= link_to 'Alle Routen', routes_path %></li>
               </ul>
             </li>
@@ -47,7 +47,10 @@
                 <li><%= link_to 'Adressen', addresses_path %></li>
                 <li><%= link_to 'Adresse hinzufügen', new_address_path %></li>
               </ul>
-            </li>            
+            </li>
+            <% if Route.count_new > 0 %>
+              <li class="red"><%= link_to "#{Route.count_new} neue Routen!", new_routes_path %></li>
+            <% end %>            
 
 
           </ul>

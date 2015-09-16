@@ -12,24 +12,22 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :from_id %><br>
-    <%= f.number_field :from_id %>
+    <h3>Startpunkte</h3><br>
+      Startpunkte hier filtern <input id="from_filter" type="text">
+      <%= f.select :from_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
   </div>
   <div class="field">
-    <%= f.label :to_id %><br>
-    <%= f.number_field :to_id %>
+    <h3>Endpunkt</h3><br>
+    Endpunkte hier filtern <input id="to_filter" type="text">
+    <%= f.select :to_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
   </div>
   <div class="field">
     <%= f.label :calculation_basis %><br>
-    <%= f.number_field :calculation_basis %>
+    <%= f.select :calculation_basis, @calculation_bases.collect {|a| [ a[1], a[0] ] }%>
   </div>
   <div class="field">
     <%= f.label :distance %><br>
     <%= f.text_field :distance %>
-  </div>
-  <div class="field">
-    <%= f.label :status %><br>
-    <%= f.text_field :status %>
   </div>
   <div class="actions">
     <%= f.submit %>

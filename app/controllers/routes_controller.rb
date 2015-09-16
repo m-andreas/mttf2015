@@ -4,12 +4,16 @@ class RoutesController < ApplicationController
   # GET /routes
   # GET /routes.json
   def index
-    @routes = Route.page params[:page]
+    @routes = Route.all.includes( :from, :to )
   end
 
   # GET /routes/1
   # GET /routes/1.json
   def show
+  end
+
+  def show_new
+    @routes = Route.get_new
   end
 
   # GET /routes/new
@@ -19,6 +23,8 @@ class RoutesController < ApplicationController
 
   # GET /routes/1/edit
   def edit
+    @addresses = Address.get_active
+    @calculation_bases = Route.get_calculation_bases
   end
 
   # POST /routes
@@ -28,7 +34,7 @@ class RoutesController < ApplicationController
 
     respond_to do |format|
       if @route.save
-        format.html { redirect_to @route, notice: 'Route was successfully created.' }
+        format.html { redirect_to @route, notice: 'Die Route wurde erfolgreich erstellt' }
         format.json { render :show, status: :created, location: @route }
       else
         format.html { render :new }
@@ -40,9 +46,10 @@ class RoutesController < ApplicationController
   # PATCH/PUT /routes/1
   # PATCH/PUT /routes/1.json
   def update
+    @route.set_processed
     respond_to do |format|
       if @route.update(route_params)
-        format.html { redirect_to @route, notice: 'Route was successfully updated.' }
+        format.html { redirect_to new_routes_path, notice: 'Die Route wurde aktualisiert und aktiv gesetzt' }
         format.json { render :show, status: :ok, location: @route }
       else
         format.html { render :edit }
@@ -54,9 +61,10 @@ class RoutesController < ApplicationController
   # DELETE /routes/1
   # DELETE /routes/1.json
   def destroy
-    @route.destroy
+    @route.status = Route::DELETED
+    @route.save
     respond_to do |format|
-      format.html { redirect_to routes_url, notice: 'Route was successfully destroyed.' }
+      format.html { redirect_to routes_url, notice: 'Die Route wurde gelöscht' }
       format.json { head :no_content }
     end
   end

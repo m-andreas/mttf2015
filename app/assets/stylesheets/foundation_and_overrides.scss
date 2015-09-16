@@ -1456,6 +1456,10 @@ $include-html-global-classes: $include-html-classes;
   cursor: pointer;
 }
 
+.red a{
+  color: red !important;
+}
+
 @media only screen and (min-width: 64.0625em){
   #job_cost_center_id{
     margin-top:16px;

@@ -3,8 +3,9 @@ Rails.application.routes.draw do
   resources :users
   resources :companies
 
+  get 'routes/show_new', to: 'routes#show_new', as: 'new_routes'
   resources :routes
-
+  
   resources :drivers
 
   resources :addresses

@@ -1,34 +1,5 @@
-<h1>Listing routes</h1>
+<h1>Alle Routen</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>From</th>
-      <th>To</th>
-      <th>Calculation basis</th>
-      <th>distance</th>
-      <th>Status</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @routes.each do |route| %>
-      <tr>
-        <td><%= route.from_id %></td>
-        <td><%= route.to_id %></td>
-        <td><%= route.calculation_basis %></td>
-        <td><%= route.distance %></td>
-        <td><%= route.status %></td>
-        <td><%= link_to 'Show', route %></td>
-        <td><%= link_to 'Edit', edit_route_path(route) %></td>
-        <td><%= link_to 'Destroy', route, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-<%= paginate @routes %>
+<%= render 'table' %>
 
 <br>
-
-<%= link_to 'New Route', new_route_path %>
