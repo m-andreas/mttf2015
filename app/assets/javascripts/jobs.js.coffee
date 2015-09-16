@@ -17,6 +17,15 @@ ready = ->
   $("#end_at_date").change ->
     $('#show_jobs').dataTable().fnFilter();
 
+  $('#show_open').change ->
+    $('#show_jobs').dataTable().fnFilter();
+
+  $('#show_finished').change ->
+    $('#show_jobs').dataTable().fnFilter();
+
+  $('#show_charged').change ->
+    $('#show_jobs').dataTable().fnFilter();
+
   $('#job_from_id').filterByText($('#from_filter'), true);
   $('#job_to_id').filterByText($('#to_filter'), true);
   $('#job_driver_id').filterByText($('#driver_filter'), true);
@@ -42,11 +51,18 @@ ready = ->
   $('#show_jobs').DataTable
     processing: true 
     serverSide: true 
+    hover: true
+    language: {
+        search: "Suche nach Details:"
+    }
     ajax: 
       url: '/jobs_ajax/show_all' 
       data: (d) -> 
         d.start_from_date = $('#start_from_date').val() 
         d.end_at_date = $('#end_at_date').val() 
+        d.show_open = $('#show_open').prop('checked');
+        d.show_finished = $('#show_finished').prop('checked');
+        d.show_charged = $('#show_charged').prop('checked');
         return 
     columns: [ 
       { width: "10%", className: "center", orderable: false }

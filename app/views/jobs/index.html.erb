@@ -1,6 +1,17 @@
 <h1>Alle Aufträge</h1>
 <%= form_tag 'jobs_ajax/show_all', method: 'get' do %>
-  <div class="row">
+  <div class="custom-row">
+    <div class="medium-2 column">
+      <div class="row">
+        <div class="small-9 column">Offene anzeigen</div><div class="small-3 column"><%= check_box_tag "show_open", "show_open", true %></div>
+      </div>
+      <div class="row">      
+        <div class="small-9 column">Geschlossene anzeigen</div><div class="small-3 column"><%= check_box_tag "show_finished", "show_finished", false %></div>
+      </div>
+      <div class="row">
+        <div class="small-9 column">Verrechnete anzeigen</div><div class="small-3 column"><%= check_box_tag "show_charged", "show_charged", false %></div>
+      </div>
+    </div>
     <div class="medium-5 column">
       <%= label_tag "start_from_date", "Von" %><br>
       <%= text_field_tag :start_from_date %>

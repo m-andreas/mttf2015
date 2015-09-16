@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150915103914) do
+ActiveRecord::Schema.define(version: 20150916142757) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -466,6 +466,7 @@ ActiveRecord::Schema.define(version: 20150915103914) do
     t.string   "telepone"
     t.string   "telephone2"
     t.string   "licence_number"
+    t.string   "licence"
     t.string   "issuing_authority"
     t.string   "driving_licence_category"
     t.string   "comment"
@@ -485,7 +486,7 @@ ActiveRecord::Schema.define(version: 20150915103914) do
     t.integer  "customer_job_id"
     t.string   "mvn"
     t.integer  "cost_center_id"
-    t.integer  "finished"
+    t.integer  "status"
     t.integer  "created_by_id"
     t.integer  "route_id"
     t.integer  "from_id"
@@ -571,7 +572,6 @@ ActiveRecord::Schema.define(version: 20150915103914) do
     t.boolean  "deleted",                default: false
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
   add_index "users", ["invitations_count"], name: "index_users_on_invitations_count"
   add_index "users", ["invited_by_id"], name: "index_users_on_invited_by_id"
   add_index "users", ["username"], name: "index_users_on_username", unique: true

@@ -8,6 +8,11 @@ class Job < ActiveRecord::Base
   belongs_to :created_by, class_name: "User"
   paginates_per 10
   validates :driver_id, presence: true
+  validates :status, numericality: { only_integer: true }
+  OPEN = 1
+  FINISHED = 2
+  CHARGED = 3
+  DELETED = 99
 
   def co_drivers
     co_drivers = []
@@ -50,5 +55,24 @@ class Job < ActiveRecord::Base
       co_jobs_string += "," + job.id.to_s
     end
     co_jobs_string
+  end
+
+  def charged?
+    self.status == CHARGED
+  end
+
+  def get_status
+    case self.status
+    when OPEN
+      return "Offen"
+    when FINISHED
+      return "Abgeschlossen"
+    when CHARGED
+      return "Verrechnet"
+    when DELETED
+      return "Gelöscht"
+    else
+      return "Status nicht bekannt"
+    end
   end
 end

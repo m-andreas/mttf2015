@@ -40,8 +40,9 @@ class JobsController < ApplicationController
   # POST /jobs.json
   def create
     @job = Job.new(job_params)
-    job_params[ :actual_collection_date ] = job_params[ :scheduled_collection_date ]
-    job_params[ :actual_delivery_date ] = job_params[ :scheduled_delivery_date ]
+    @job.status = Job::OPEN
+    @job.actual_collection_date = @job.scheduled_collection_date
+    @job.actual_delivery_date = @job.scheduled_delivery_date
     co_jobs = params[:co_jobs]
     driver = Driver.find_by( id: job_params[:driver_id])
     @job.driver = driver
@@ -65,7 +66,7 @@ class JobsController < ApplicationController
   def update
     co_jobs = params[:co_jobs]
     respond_to do |format|
-      if @job.update(job_params) && @job.add_co_jobs( co_jobs )
+      if @job.update(job_params) && @job.add_co_jobs( co_jobs ) && !@job.charged?
         format.html { redirect_to @job, notice: 'Job was successfully updated.' }
         format.json { render :show, status: :ok, location: @job }
       else
@@ -78,10 +79,18 @@ class JobsController < ApplicationController
   # DELETE /jobs/1
   # DELETE /jobs/1.json
   def destroy
-    @job.destroy
-    respond_to do |format|
-      format.html { redirect_to jobs_url, notice: 'Job was successfully destroyed.' }
-      format.json { head :no_content }
+    unless @job.charged?
+      @job.status = Job::DELETED
+      @job.save!
+      respond_to do |format|
+        format.html { redirect_to jobs_url, notice: 'Auftrag gelöscht' }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to @job, notice: 'Verrechnete Aufträge können nicht gelöscht werden' }
+        format.json { head :no_content }      
+      end
     end
   end
 

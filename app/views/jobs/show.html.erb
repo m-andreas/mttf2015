@@ -12,8 +12,8 @@
     </p>
 
     <p>
-      <strong>Finished:</strong>
-      <%= @job.finished %>
+      <strong>Status:</strong>
+      <%= @job.get_status %>
     </p>
 
     <p>
@@ -30,6 +30,22 @@
       <strong>To:</strong>
       <%= @job.to.complete_address %>
     </p>
+    <p>
+      <strong>Geplantes Abholdatum:</strong>
+      <%= @job.scheduled_collection_date %>
+    </p>
+    <p>
+      <strong>Geplantes Lieferdatum:</strong>
+      <%= @job.scheduled_delivery_date %>
+    </p>
+    <p>
+      <strong>Tatsächliches Abholdatum:</strong>
+      <%= @job.actual_collection_date %>
+    </p>
+    <p>
+      <strong>Tatsächliches Lieferdatum:</strong>
+      <%= @job.actual_delivery_date %>
+    </p>    
   </div>
   <div class="large-6 columns">
     <p>
@@ -40,11 +56,6 @@
     <p>
       <strong>Fahrzeugtype:</strong>
       <%= @job.car_type %>
-    </p>
-
-    <p>
-      <strong>Finished:</strong>
-      <%= @job.finished %>
     </p>
 
     <p>
@@ -65,6 +76,18 @@
     <p>
       <strong>Kilometerstand Lieferung:</strong>
       <%= @job.mileage_delivery %>
+    </p>
+    <p>
+      <strong>Notiz:</strong>
+      <%= @job.job_notice %>
+    </p>
+    <p>
+      <strong>Transport Notiz:</strong>
+      <%= @job.transport_notice %>
+    </p>
+    <p>
+      <strong>Transport Notiz Extern:</strong>
+      <%= @job.transport_notice_extern %>
     </p>
   </div>
   <% if @job.is_shuttle? %>
@@ -94,7 +117,13 @@
       </tbody>
     </table>
   <% end %>
-
-  <%= link_to 'Editieren', edit_job_path(@job) %> |
-  <%= link_to 'Zurück', jobs_path %>
+  <div class="small-12 column">
+    <% unless @job.charged? %>
+      <%= link_to 'Editieren', edit_job_path(@job) %> |
+    <% end %> 
+    <%= link_to 'Zurück', jobs_path %> 
+    <% unless @job.charged? %>|
+      <%= link_to 'Löschen', @job, method: :delete, data: { confirm: 'Auftrag löschen?' } %>
+    <% end %>
+  </div>
 </div>

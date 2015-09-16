@@ -75,20 +75,22 @@ private
   
  def sort_order_filter 
     records = Job.order("#{sort_column} #{sort_direction}").includes( :driver )
-    if ( params[:search].present? && params[:search][:value].present? ) || !params[:end_at_date].empty? || !params[:start_from_date].empty?
-      search = params[:search][:value].strip
-      start_from_date = Date.strptime( params[:start_from_date], "%d.%m.%Y" ) unless params[:start_from_date].empty?
-      end_at_date = Date.strptime( params[:end_at_date], "%d.%m.%Y" ) unless params[:end_at_date].empty?
-      if start_from_date.nil? && end_at_date.nil?
-        records = records.where("lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search", search: "%#{search}%") 
-      elsif start_from_date.nil? && !end_at_date.nil?
-        records = records.where(":end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search)", search: "%#{search}%", end_at_date: end_at_date) 
-      elsif start_from_date.nil? && end_at_date.nil?
-        records = records.where(":start_from_date <= actual_collection_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search)", search: "%#{search}%", start_from_date: start_from_date) 
-      else
-        records = records.where(":start_from_date <= actual_collection_date and :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search)", search: "%#{search}%", start_from_date: start_from_date, end_at_date: end_at_date) 
-      end
-    end 
+    search = params[:search][:value].strip
+    start_from_date = Date.strptime( params[:start_from_date], "%d.%m.%Y" ) unless params[:start_from_date].empty?
+    end_at_date = Date.strptime( params[:end_at_date], "%d.%m.%Y" ) unless params[:end_at_date].empty?
+    status = []
+    status << 1 if params[:show_open] == "true"
+    status << 2 if params[:show_finished] == "true"
+    status << 3 if params[:show_charged] == "true"
+    if start_from_date.nil? && end_at_date.nil?
+      records = records.where("status IN (:status) and ( lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search )", search: "%#{search}%", status: status) 
+    elsif start_from_date.nil? && !end_at_date.nil?
+      records = records.where("status IN (:status) and ( :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", end_at_date: end_at_date, status: status) 
+    elsif !start_from_date.nil? && end_at_date.nil?
+      records = records.where("status IN (:status) and ( :start_from_date <= actual_collection_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, status: status) 
+    else
+      records = records.where("status IN (:status) and ( :start_from_date <= actual_collection_date and :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, end_at_date: end_at_date, status: status) 
+    end
     records 
   end 
 
