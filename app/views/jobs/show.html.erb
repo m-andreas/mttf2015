@@ -1,41 +1,100 @@
-<p id="notice"><%= notice %></p>
+<h1>Anzeigen von Auftrag <%= @job.id %></h1>
+<div id="custom-row">
+  <div class="large-6 columns">
+    <p>
+      <strong>Fahrer:</strong>
+      <%= @job.driver.fullname %>
+    </p>
 
-<p>
-  <strong>Fahrer:</strong>
-  <%= @job.driver.fullname %>
-</p>
+    <p>
+      <strong>Kostenstelle:</strong>
+      <%= @job.cost_center_id %>
+    </p>
 
-<p>
-  <strong>Kostenstelle:</strong>
-  <%= @job.cost_center_id %>
-</p>
+    <p>
+      <strong>Finished:</strong>
+      <%= @job.finished %>
+    </p>
 
-<p>
-  <strong>Finished:</strong>
-  <%= @job.finished %>
-</p>
+    <p>
+      <strong>Erstellt von:</strong>
+      <%= @job.created_by.first_name.to_s + " " + @job.created_by.last_name.to_s unless @job.created_by.nil? %>
+    </p>
 
-<p>
-  <strong>Erstellt von:</strong>
-  <%= @job.created_by.first_name + " " + @job.created_by.last_name unless @job.created_by.nil? %>
-</p>
+    <p>
+      <strong>From:</strong>
+      <%= @job.from.complete_address %>
+    </p>
 
-<p>
-  <strong>From:</strong>
-  <%= @job.from.address_short %>
-</p>
+    <p>
+      <strong>To:</strong>
+      <%= @job.to.complete_address %>
+    </p>
+  </div>
+  <div class="large-6 columns">
+    <p>
+      <strong>Farhzeugmarke:</strong>
+      <%= @job.car_brand %>
+    </p>
 
-<p>
-  <strong>To:</strong>
-  <%= @job.to.address_short %>
-</p>
+    <p>
+      <strong>Fahrzeugtype:</strong>
+      <%= @job.car_type %>
+    </p>
 
-<p>
-  <strong>Shuttle:</strong>
-  <%= @job.is_shuttle? ? "Ja" : "Nein" %>
-</p>
+    <p>
+      <strong>Finished:</strong>
+      <%= @job.finished %>
+    </p>
 
+    <p>
+      <strong>Kennzeichen:</strong>
+      <%= @job.registration_number %>
+    </p>
 
+    <p>
+      <strong>Fahrgestellnummer:</strong>
+      <%= @job.chassis_number %>
+    </p>
 
-<%= link_to 'Edit', edit_job_path(@job) %> |
-<%= link_to 'Back', jobs_path %>
+    <p>
+      <strong>Kilometerstand Abholung:</strong>
+      <%= @job.mileage_collection %>
+    </p>
+
+    <p>
+      <strong>Kilometerstand Lieferung:</strong>
+      <%= @job.mileage_delivery %>
+    </p>
+  </div>
+  <% if @job.is_shuttle? %>
+    <h2>Details zum Schuttelauftrag</h2>
+    <table>
+      <thead>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Von</th>
+        <th>Nach</th>
+        <th>Datum Abholung</th>
+        <th></th>
+        <th></th>
+      </thead>
+      <tbody>
+        <% @job.co_jobs.each do |co_job| %>
+          <tr>
+            <td><%= co_job.driver.fullname %></td>
+            <td><%= co_job.id %></td>
+            <td><%= co_job.from.address_short %></td>
+            <td><%= co_job.to.address_short %></td>
+            <td><%= co_job.scheduled_collection_date %></td>
+            <td><%= link_to "zeigen", job_path( co_job ) %></td>
+            <td><%= link_to "editieren", edit_job_path( co_job ) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+  <%= link_to 'Editieren', edit_job_path(@job) %> |
+  <%= link_to 'Zurück', jobs_path %>
+</div>

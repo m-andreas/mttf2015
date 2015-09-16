@@ -1451,6 +1451,11 @@ $include-html-global-classes: $include-html-classes;
 .add {
   cursor: pointer;
 }
+
+.remove {
+  cursor: pointer;
+}
+
 @media only screen and (min-width: 64.0625em){
   #job_cost_center_id{
     margin-top:16px;

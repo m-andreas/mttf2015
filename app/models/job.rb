@@ -7,6 +7,7 @@ class Job < ActiveRecord::Base
   belongs_to :route
   belongs_to :created_by, class_name: "User"
   paginates_per 10
+  validates :driver_id, presence: true
 
   def co_drivers
     co_drivers = []
@@ -17,16 +18,16 @@ class Job < ActiveRecord::Base
   end
 
   def add_co_jobs( co_job_ids )
-    unless co_jobs.nil? || co_job_ids.empty? || !shuttle
-      co_job_ids[0] = ""
+    unless co_job_ids.nil? || co_job_ids.empty? || !shuttle
+      co_job_ids[0] = "" if co_job_ids[0] == ","
       co_job_ids = co_job_ids.split ","
       jobs = []
       co_job_ids.each do |co_job|
-        jobs << Job.find(co_job)
+        jobs << Job.find(co_job) unless co_job.to_i == self.id
       end
-      puts jobs.inspect
       self.co_jobs = jobs
     else
+      self.co_jobs = []
       return true
     end
   end

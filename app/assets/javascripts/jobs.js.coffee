@@ -105,7 +105,7 @@ ready = ->
 
   shuttle_to_sidebar = ( name, id ) ->
     $('#co_jobs').val($('#co_jobs').val() + "," + id )
-    $("#shuttle-co-drivers table tbody").append("<tr><td>" + name + "</td><td>" + id + "</th></tr>")    
+    $("#shuttle-co-drivers table tbody").append("<tr><td>" + name + "</td><td>" + id + "</td><td class='remove'><i class='fa fa-minus'></i> entfernen</td></tr>")    
 
   $("#shuttle_jobs").on "click", ".add", ->
     pos = $('#shuttle_jobs').dataTable().fnGetPosition(this)
@@ -113,6 +113,10 @@ ready = ->
     name = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[3]
     shuttle_to_sidebar( name, id )
 
+  $("#shuttle-summary").on "click", ".remove", ->
+    id = $(this).parent().children()[1].innerText;
+    $('#co_jobs').val($('#co_jobs').val().replace("," + id, ''))
+    console.log($(this).parent().remove());
 
   displayshuttle = ->
     if $('#job_shuttle').prop('checked')

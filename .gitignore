@@ -83,3 +83,5 @@ bower.json
 *.log
 log/development.log
 *.log
+
+coverage

@@ -43,7 +43,7 @@ class JobsController < ApplicationController
     job_params[ :actual_collection_date ] = job_params[ :scheduled_collection_date ]
     job_params[ :actual_delivery_date ] = job_params[ :scheduled_delivery_date ]
     co_jobs = params[:co_jobs]
-    driver = Driver.find(job_params[:driver_id])
+    driver = Driver.find_by( id: job_params[:driver_id])
     @job.driver = driver
     @job.created_by_id = current_user.id
     @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )

@@ -79,20 +79,13 @@ private
       search = params[:search][:value].strip
       start_from_date = Date.strptime( params[:start_from_date], "%d.%m.%Y" ) unless params[:start_from_date].empty?
       end_at_date = Date.strptime( params[:end_at_date], "%d.%m.%Y" ) unless params[:end_at_date].empty?
-      puts "======================================"
-      puts start_from_date
-      puts end_at_date
       if start_from_date.nil? && end_at_date.nil?
-        puts "1"
         records = records.where("lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search", search: "%#{search}%") 
       elsif start_from_date.nil? && !end_at_date.nil?
-        puts "2"
         records = records.where(":end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search)", search: "%#{search}%", end_at_date: end_at_date) 
       elsif start_from_date.nil? && end_at_date.nil?
-        puts "3"
         records = records.where(":start_from_date <= actual_collection_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search)", search: "%#{search}%", start_from_date: start_from_date) 
       else
-        puts "4"
         records = records.where(":start_from_date <= actual_collection_date and :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search)", search: "%#{search}%", start_from_date: start_from_date, end_at_date: end_at_date) 
       end
     end 

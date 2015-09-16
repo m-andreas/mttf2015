@@ -16,8 +16,4 @@ co_driver2:
 no_shuttle:
   job: one
   co_job: two
-
-self:
-  job: one
-  co_job: one
 #  column: value

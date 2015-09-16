@@ -64,3 +64,6 @@ gem 'devise_invitable', '~> 1.5.2'
 
 #thin used because webbrick cannot handle long requests
 gem 'thin'
+
+#to check test coverage
+gem 'simplecov', :require => false, :group => :test

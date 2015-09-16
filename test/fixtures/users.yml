@@ -11,6 +11,16 @@ one:
   company_id: 1
 # column: value
 #
+intern: 
+  username: intern
+  email: intern@test.de
+  company_id: <%= Company::TRANSFAIR %>
+
+extern: 
+  username: extern
+  email: extern@test.de
+  company_id: <%= Company::SIXT %>
+
 two: 
   username: two
   email: test2@test.de
