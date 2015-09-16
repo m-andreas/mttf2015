@@ -54,6 +54,6 @@ class JobTest < ActiveSupport::TestCase
   test "must_have_driver_id" do
     job = Job.new
     assert_not job.valid?
-    assert_equal [:driver_id], job.errors.keys
+    assert_equal [:driver_id, :status], job.errors.keys
   end
 end

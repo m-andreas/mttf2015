@@ -64,13 +64,13 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should update job" do
     sign_in @user
-    patch :update, id: @job, job: { cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, finished: @job.finished, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
+    patch :update, id: @job, job: { cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
     assert_redirected_to job_path(assigns(:job))
   end
 
   test "should destroy job" do
     sign_in @user
-    assert_difference('Job.count', -1) do
+    assert_difference('Job.get_active.count', -1) do
       delete :destroy, id: @job
     end
 

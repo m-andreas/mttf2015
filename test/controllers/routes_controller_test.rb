@@ -42,15 +42,14 @@ class RoutesControllerTest < ActionController::TestCase
   test "should update route" do
     sign_in @user
     patch :update, id: @route, route: { calculation_basis: @route.calculation_basis, from_id: @route.from_id, distance: @route.distance, status: @route.status, to_id: @route.to_id }
-    assert_redirected_to route_path(assigns(:route))
+    assert_redirected_to new_routes_path
   end
 
   test "should destroy route" do
     sign_in @user
-    assert_difference('Route.count', -1) do
-      delete :destroy, id: @route
-    end
-
+    count_old = Route.get_active.count
+    delete :destroy, id: @route
+    assert_equal count_old - 1, Route.get_active.count
     assert_redirected_to routes_path
   end
 end

@@ -10,15 +10,20 @@ class Route < ActiveRecord::Base
   FLAT_RATE = 1
   PAY_PER_KM = 2
 
+  def self.get_active
+    where( "status in (:show)", show: [ NEW, PROCESSED ] ).includes( :from, :to )
+  end
+
   def self.find_or_create( from_id, to_id)
     route = find_by( from_id: from_id, to_id: to_id )
     if route.nil?
       route = Route.create(
         from_id: from_id,
-        to_id: to_id
+        to_id: to_id,
+        status: NEW
       )
-
     end
+    route.set_new if route.is_deleted?
     return route.id
   end
 
@@ -30,9 +35,18 @@ class Route < ActiveRecord::Base
     self.status == NEW
   end
 
+  def set_new
+    self.status = NEW
+    self.save!
+  end
+
   def set_processed
     self.status = PROCESSED
     self.save!
+  end
+
+  def is_deleted?
+    self.status == DELETED
   end
 
   def self.count_new
@@ -61,9 +75,9 @@ class Route < ActiveRecord::Base
     when PROCESSED
       return "Aktuell"
     when DELETED
-      return "gelöscht"
+      return "Gelöscht"
     else
-      return "unbekannt"
+      return "Unbekannt"
     end
   end
 end

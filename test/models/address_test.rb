@@ -6,6 +6,6 @@ class AddressTest < ActiveSupport::TestCase
   end
 
   test "get_full_address" do
-    assert addresses(:one).get_full_address.is_a? String
+    assert addresses(:one).complete_address.is_a? String
   end
 end

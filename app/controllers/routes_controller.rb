@@ -4,7 +4,7 @@ class RoutesController < ApplicationController
   # GET /routes
   # GET /routes.json
   def index
-    @routes = Route.all.includes( :from, :to )
+    @routes = Route.get_active
   end
 
   # GET /routes/1
@@ -19,6 +19,8 @@ class RoutesController < ApplicationController
   # GET /routes/new
   def new
     @route = Route.new
+    @addresses = Address.get_active
+    @calculation_bases = Route.get_calculation_bases
   end
 
   # GET /routes/1/edit

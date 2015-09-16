@@ -14,6 +14,10 @@ class Job < ActiveRecord::Base
   CHARGED = 3
   DELETED = 99
 
+  def self.get_active
+    where( "status in (:show)", show: [ OPEN, FINISHED, CHARGED ] ).includes( :from, :to )
+  end
+
   def co_drivers
     co_drivers = []
     co_jobs.each do |co_job|
