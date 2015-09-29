@@ -35,23 +35,9 @@
                 <li><%= link_to 'Fahrer hinzufügen', new_driver_path %></li>
               </ul>
             </li>
-            <li class="has-dropdown">
-              <a href="#">Routen</a>
-              <ul class="dropdown">
-                <li><%= link_to 'Neue Routen', new_routes_path %></li>
-                <li><%= link_to 'Alle Routen', routes_path %></li>
-              </ul>
-            </li>
-            <li class="has-dropdown">
-              <a href="#">Adressen</a>
-              <ul class="dropdown">
-                <li><%= link_to 'Adressen', addresses_path %></li>
-                <li><%= link_to 'Adresse hinzufügen', new_address_path %></li>
-              </ul>
-            </li>
             <% if Route.count_new > 0 %>
               <li class="red"><%= link_to "#{Route.count_new} neue Routen!", new_routes_path %></li>
-            <% end %>            
+            <% end %>
 
 
           </ul>
@@ -63,8 +49,23 @@
             <li class="has-dropdown">
               <a href="#">Administration</a>
               <ul class="dropdown">
+                <li class="has-dropdown">
+                  <a href="#">Routen</a>
+                  <ul class="dropdown">
+                    <li><%= link_to 'Neue Routen', new_routes_path %></li>
+                    <li><%= link_to 'Alle Routen', routes_path %></li>
+                  </ul>
+                </li>
+                <li class="has-dropdown">
+                  <a href="#">Adressen</a>
+                  <ul class="dropdown">
+                    <li><%= link_to 'Adressen', addresses_path %></li>
+                    <li><%= link_to 'Adresse hinzufügen', new_address_path %></li>
+                  </ul>
+                </li>
                 <li><%= link_to 'Firmen anzeigen', companies_path %></li>
-                <li class="has-dropdown"><a href="#">Benutzer</a>
+                <li class="has-dropdown">
+                  <a href="#">Benutzer</a>
                   <ul class="dropdown">
                     <li><%= link_to 'Benutzer anzeigen', users_path %></li>
                     <li><%= link_to 'Neuer Benutzer', new_user_invitation_path %></li>
@@ -112,7 +113,7 @@
                 );
               }
             });
-            if (selectSingleMatch === true && 
+            if (selectSingleMatch === true &&
                 $(select).children().length === 1) {
               $(select).children().get(0).selected = true;
             }
