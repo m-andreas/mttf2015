@@ -8,9 +8,19 @@ one:
   route_id: 1
   from_id: 1
   to_id: 2
-  shuttle: false 
+  shuttle: false
 
 two:
+  driver_id: 2
+  cost_center_id: 1
+  status: 1
+  created_by_id: 1
+  route_id: 2
+  from_id: 1
+  to_id: 2
+  shuttle: false
+
+not_in_shuttle:
   driver_id: 2
   cost_center_id: 1
   status: 1

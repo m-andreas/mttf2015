@@ -10,16 +10,16 @@ class JobsController < ApplicationController
   end
 
 
-  def show_all 
-    render json: JobsDatatable.new(view_context) 
-  end 
+  def show_all
+    render json: JobsAllDatatable.new(view_context)
+  end
 
   def show_regular_jobs
-    render json: JobsAllDatatable.new(view_context) 
+    render json: JobsDatatable.new(view_context)
   end
 
   def show_shuttles
-    render json: JobsShuttleDatatable.new(view_context) 
+    render json: ShuttleDatatable.new(view_context)
   end
 
   # GET /jobs/1
@@ -96,7 +96,7 @@ class JobsController < ApplicationController
     else
       respond_to do |format|
         format.html { redirect_to @job, notice: 'Verrechnete Aufträge können nicht gelöscht werden' }
-        format.json { head :no_content }      
+        format.json { head :no_content }
       end
     end
   end
@@ -109,7 +109,7 @@ class JobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
-      params.require(:job).permit(:driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number, 
+      params.require(:job).permit(:driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
         :scheduled_collection_date, :scheduled_delivery_date, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
     end
 end

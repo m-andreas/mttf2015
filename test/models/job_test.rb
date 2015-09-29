@@ -43,13 +43,25 @@ class JobTest < ActiveSupport::TestCase
     assert_not jobs(:one).is_shuttle?
   end
 
+  test "has_shuttle" do
+    assert_not jobs(:shuttle).has_shuttle?
+    assert_not jobs(:not_in_shuttle).has_shuttle?
+    assert jobs(:one).has_shuttle?
+  end
+
+  test "get_shuttle_job" do
+    assert jobs(:shuttle).shuttle_job.nil?
+    assert jobs(:not_in_shuttle).shuttle_job.nil?
+    assert_equal jobs(:shuttle), jobs(:two).shuttle_job
+  end
+
   test "get_shuttle_array" do
     assert [ [ jobs(:one).driver.fullname, jobs(:one).id ], [ jobs(:two).driver.fullname, jobs(:two).id ] ], jobs(:shuttle).get_shuttle_array
   end
 
   test "get_co_jobs_string" do
     assert_equal "," + jobs(:one).id.to_s + "," + jobs(:two).id.to_s, jobs(:shuttle).get_co_jobs_string
-  end 
+  end
 
   test "must_have_driver_id" do
     job = Job.new

@@ -10,7 +10,12 @@ class JobsControllerTest < ActionController::TestCase
     sign_in @user
     get :index
     assert_response :success
-    assert_not_nil assigns(:jobs)
+  end
+
+  test "should get shuttles" do
+    sign_in @user
+    get :shuttles
+    assert_response :success
   end
 
   test "should get redirected" do
@@ -25,10 +30,10 @@ class JobsControllerTest < ActionController::TestCase
   test "should create job" do
     sign_in @user
     assert_difference('Job.count') do
-      post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: false, to_id: routes(:one).to_id, 
-        car_brand: "BMW", car_type: "Z4", registration_number: "W123", 
-        scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000", 
-        mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"}, 
+      post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: false, to_id: routes(:one).to_id,
+        car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+        scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
+        mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
         co_jobs: ""
     end
     assert_equal users(:one), assigns(:job).created_by

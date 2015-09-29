@@ -2,7 +2,7 @@ require 'test_helper'
 
 class CarrierTest < ActiveSupport::TestCase
 
-  test "driver with many" do
+  test "driver with co_drivers" do
     assert_equal drivers(:one), jobs(:one).driver
     assert_equal [ drivers(:one), drivers(:entered_today) ], jobs(:shuttle).co_drivers
   end

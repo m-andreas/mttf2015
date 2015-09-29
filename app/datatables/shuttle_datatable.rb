@@ -1,4 +1,4 @@
-class JobsShuttleDatatable
+class ShuttleDatatable
   delegate :params, :h, :link_to, :fa_icon,  to: :@view
   include Rails.application.routes.url_helpers
 

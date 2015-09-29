@@ -31,40 +31,40 @@ ready = ->
   $('#job_driver_id').filterByText($('#driver_filter'), true);
 
   $('#shuttle_jobs').DataTable
-    processing: true 
-    serverSide: true 
-    ajax: 
-      url: '/jobs_ajax/show_all' 
-      data: (d) -> 
-        return 
-    columns: [ 
-      { width: "0%", className: "dont_show", searchable: false, orderable: false } 
+    processing: true
+    serverSide: true
+    ajax:
+      url: '/jobs_ajax/show_all'
+      data: (d) ->
+        return
+    columns: [
+      { width: "0%", className: "dont_show", searchable: false, orderable: false }
       { width: "15%", orderable: false, className: "add" }
       { width: "35%", className: "row_config" }
       { width: "15%", className: "row_config", searchable: false, orderable: false }
       { width: "15%", className: "row_config", searchable: false, orderable: false }
       { width: "5%", className: "center", searchable: false, orderable: false }
       { width: "15%", className: "center", searchable: false, orderable: false }
-    ] 
-    order: [ [1,'desc'] ] 
+    ]
+    order: [ [1,'desc'] ]
 
   $('#show_jobs').DataTable
-    processing: true 
-    serverSide: true 
+    processing: true
+    serverSide: true
     hover: true
     language: {
         search: "Suche nach Details:"
     }
-    ajax: 
-      url: '/jobs_ajax/show_regular_jobs' 
-      data: (d) -> 
-        d.start_from_date = $('#start_from_date').val() 
-        d.end_at_date = $('#end_at_date').val() 
+    ajax:
+      url: '/jobs_ajax/show_regular_jobs'
+      data: (d) ->
+        d.start_from_date = $('#start_from_date').val()
+        d.end_at_date = $('#end_at_date').val()
         d.show_open = $('#show_open').prop('checked');
         d.show_finished = $('#show_finished').prop('checked');
         d.show_charged = $('#show_charged').prop('checked');
-        return 
-    columns: [ 
+        return
+    columns: [
       { width: "10%", className: "center", orderable: false }
       { width: "10%", className: "row_config", searchable: false, orderable: false }
       { width: "10%", className: "row_config", searchable: false, orderable: false }
@@ -75,26 +75,26 @@ ready = ->
       { width: "10%", className: "center", searchable: false, orderable: false }
       { width: "10%", className: "center", searchable: false, orderable: false }
       { width: "10%", className: "center", searchable: false, orderable: false }
-    ] 
+    ]
     order: [ [1,'desc'] ]
 
   $('#show_shuttles').DataTable
-    processing: true 
-    serverSide: true 
+    processing: true
+    serverSide: true
     hover: true
     language: {
         search: "Suche nach Details:"
     }
-    ajax: 
-      url: '/jobs_ajax/show_shuttles' 
-      data: (d) -> 
-        d.start_from_date = $('#start_from_date').val() 
-        d.end_at_date = $('#end_at_date').val() 
+    ajax:
+      url: '/jobs_ajax/show_shuttles'
+      data: (d) ->
+        d.start_from_date = $('#start_from_date').val()
+        d.end_at_date = $('#end_at_date').val()
         d.show_open = $('#show_open').prop('checked');
         d.show_finished = $('#show_finished').prop('checked');
         d.show_charged = $('#show_charged').prop('checked');
-        return 
-    columns: [ 
+        return
+    columns: [
       { width: "10%", className: "center", orderable: false }
       { width: "10%", className: "row_config", searchable: false, orderable: false }
       { width: "10%", className: "row_config", searchable: false, orderable: false }
@@ -105,7 +105,7 @@ ready = ->
       { width: "10%", className: "center", searchable: false, orderable: false }
       { width: "10%", className: "center", searchable: false, orderable: false }
       { width: "10%", className: "center", searchable: false, orderable: false }
-    ] 
+    ]
     order: [ [1,'desc'] ]
 
   $("#job_driver_id").change ->
@@ -149,7 +149,7 @@ ready = ->
 
   shuttle_to_sidebar = ( name, id ) ->
     $('#co_jobs').val($('#co_jobs').val() + "," + id )
-    $("#shuttle-co-drivers table tbody").append("<tr><td>" + name + "</td><td>" + id + "</td><td class='remove'><i class='fa fa-minus'></i> entfernen</td></tr>")    
+    $("#shuttle-co-drivers table tbody").append("<tr><td>" + name + "</td><td>" + id + "</td><td class='remove'><i class='fa fa-minus'></i> entfernen</td></tr>")
 
   $("#shuttle_jobs").on "click", ".add", ->
     pos = $('#shuttle_jobs').dataTable().fnGetPosition(this)
