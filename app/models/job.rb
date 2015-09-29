@@ -4,6 +4,7 @@ class Job < ActiveRecord::Base
   belongs_to :driver
   has_many :carriers
   has_many :co_jobs, through: :carriers
+  has_one :carrier, foreign_key: :co_job_id
   belongs_to :route
   belongs_to :created_by, class_name: "User"
   paginates_per 10
@@ -43,6 +44,18 @@ class Job < ActiveRecord::Base
 
   def is_shuttle?
     return self.shuttle
+  end
+
+  def shuttle_job
+    if self.carrier.present?
+      return self.carrier.job
+    else
+      return nil
+    end
+  end
+
+  def has_shuttle?
+    return self.carrier.present?
   end
 
   def get_shuttle_array

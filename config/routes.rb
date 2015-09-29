@@ -10,9 +10,11 @@ Rails.application.routes.draw do
 
   resources :addresses
 
+  get 'jobs/shuttles', to: 'jobs#shuttles', as: 'shuttles'
   resources :jobs
-  get 'jobs_ajax/datatable_ajax', to: 'jobs#datatable_ajax' 
   get 'jobs_ajax/show_all', to: 'jobs#show_all' 
+  get 'jobs_ajax/show_regular_jobs', to: 'jobs#show_regular_jobs' 
+  get 'jobs_ajax/show_shuttles', to: 'jobs#show_shuttles'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

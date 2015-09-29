@@ -1,4 +1,7 @@
-<h1>Anzeigen von Auftrag <%= @job.id %></h1>
+<div class="small-12 columns"><h1>Auftrag <%= @job.id %></h1></div>
+<% if @job.has_shuttle? %>
+  <div class="small-12 columns"><h3>Gehört zu Schuttelauftrag <%= link_to @job.shuttle_job.id, job_path(@job.shuttle_job) %></h3></div>
+<% end %>
 <div id="custom-row">
   <div class="large-6 columns">
     <p>
@@ -45,7 +48,7 @@
     <p>
       <strong>Tatsächliches Lieferdatum:</strong>
       <%= @job.actual_delivery_date %>
-    </p>    
+    </p>
   </div>
   <div class="large-6 columns">
     <p>
@@ -90,8 +93,9 @@
       <%= @job.transport_notice_extern %>
     </p>
   </div>
+
   <% if @job.is_shuttle? %>
-    <h2>Details zum Schuttelauftrag</h2>
+    <div class="small-12 columns"><h2>Details zum Schuttelauftrag</h2></div>
     <table>
       <thead>
         <th>Name</th>
@@ -120,8 +124,8 @@
   <div class="small-12 column">
     <% unless @job.charged? %>
       <%= link_to 'Editieren', edit_job_path(@job) %> |
-    <% end %> 
-    <%= link_to 'Zurück', jobs_path %> 
+    <% end %>
+    <%= link_to 'Zurück', jobs_path %>
     <% unless @job.charged? %>|
       <%= link_to 'Löschen', @job, method: :delete, data: { confirm: 'Auftrag löschen?' } %>
     <% end %>

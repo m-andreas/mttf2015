@@ -1,4 +1,4 @@
-class JobsAllDatatable
+class JobsShuttleDatatable
   delegate :params, :h, :link_to, :fa_icon,  to: :@view
   include Rails.application.routes.url_helpers
 
@@ -7,7 +7,6 @@ class JobsAllDatatable
   end
 
   def as_json(options = {})
-    puts options
     {
       data: data,
       recordsTotal: my_search.count,
@@ -84,13 +83,13 @@ private
     status << 2 if params[:show_finished] == "true"
     status << 3 if params[:show_charged] == "true"
     if start_from_date.nil? && end_at_date.nil?
-      records = records.where("shuttle = 0 and status IN (:status) and ( lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search )", search: "%#{search}%", status: status)
+      records = records.where("shuttle = 1 and status IN (:status) and ( lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search )", search: "%#{search}%", status: status)
     elsif start_from_date.nil? && !end_at_date.nil?
-      records = records.where("shuttle = 0 and status IN (:status) and ( :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", end_at_date: end_at_date, status: status)
+      records = records.where("shuttle = 1 and status IN (:status) and ( :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", end_at_date: end_at_date, status: status)
     elsif !start_from_date.nil? && end_at_date.nil?
-      records = records.where("shuttle = 0 and status IN (:status) and ( :start_from_date <= actual_collection_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, status: status)
+      records = records.where("shuttle = 1 and status IN (:status) and ( :start_from_date <= actual_collection_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, status: status)
     else
-      records = records.where("shuttle = 0 and status IN (:status) and ( :start_from_date <= actual_collection_date and :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, end_at_date: end_at_date, status: status)
+      records = records.where("shuttle = 1 and status IN (:status) and ( :start_from_date <= actual_collection_date and :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, end_at_date: end_at_date, status: status)
     end
     records
   end

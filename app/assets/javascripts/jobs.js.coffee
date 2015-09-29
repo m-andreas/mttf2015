@@ -34,7 +34,7 @@ ready = ->
     processing: true 
     serverSide: true 
     ajax: 
-      url: '/jobs_ajax/datatable_ajax' 
+      url: '/jobs_ajax/show_all' 
       data: (d) -> 
         return 
     columns: [ 
@@ -56,7 +56,7 @@ ready = ->
         search: "Suche nach Details:"
     }
     ajax: 
-      url: '/jobs_ajax/show_all' 
+      url: '/jobs_ajax/show_regular_jobs' 
       data: (d) -> 
         d.start_from_date = $('#start_from_date').val() 
         d.end_at_date = $('#end_at_date').val() 
@@ -78,7 +78,35 @@ ready = ->
     ] 
     order: [ [1,'desc'] ]
 
-
+  $('#show_shuttles').DataTable
+    processing: true 
+    serverSide: true 
+    hover: true
+    language: {
+        search: "Suche nach Details:"
+    }
+    ajax: 
+      url: '/jobs_ajax/show_shuttles' 
+      data: (d) -> 
+        d.start_from_date = $('#start_from_date').val() 
+        d.end_at_date = $('#end_at_date').val() 
+        d.show_open = $('#show_open').prop('checked');
+        d.show_finished = $('#show_finished').prop('checked');
+        d.show_charged = $('#show_charged').prop('checked');
+        return 
+    columns: [ 
+      { width: "10%", className: "center", orderable: false }
+      { width: "10%", className: "row_config", searchable: false, orderable: false }
+      { width: "10%", className: "row_config", searchable: false, orderable: false }
+      { width: "10%", className: "row_config", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+    ] 
+    order: [ [1,'desc'] ]
 
   $("#job_driver_id").change ->
     console.log("driver change")

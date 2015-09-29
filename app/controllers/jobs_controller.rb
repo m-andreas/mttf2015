@@ -4,15 +4,22 @@ class JobsController < ApplicationController
   # GET /jobs
   # GET /jobs.json
   def index
-    @jobs = Job.page params[:page]
   end
 
-  def datatable_ajax 
+  def shuttles
+  end
+
+
+  def show_all 
     render json: JobsDatatable.new(view_context) 
   end 
 
-  def show_all
+  def show_regular_jobs
     render json: JobsAllDatatable.new(view_context) 
+  end
+
+  def show_shuttles
+    render json: JobsShuttleDatatable.new(view_context) 
   end
 
   # GET /jobs/1
