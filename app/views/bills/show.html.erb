@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Billed at:</strong>
+  <%= @bill.billed_at %>
+</p>
+
+<p>
+  <strong>Print date:</strong>
+  <%= @bill.print_date %>
+</p>
+
+<%= link_to 'Edit', edit_bill_path(@bill) %> |
+<%= link_to 'Back', bills_path %>

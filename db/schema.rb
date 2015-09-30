@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150916142757) do
+ActiveRecord::Schema.define(version: 20150929181251) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -430,6 +430,13 @@ ActiveRecord::Schema.define(version: 20150916142757) do
     t.string   "address_short"
     t.boolean  "inactive"
     t.string   "opening_hours"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "bills", force: true do |t|
+    t.datetime "billed_at"
+    t.string   "print_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

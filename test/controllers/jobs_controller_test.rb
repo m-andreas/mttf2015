@@ -44,6 +44,8 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal "W123", assigns(:job).registration_number
     assert_equal "2015-02-02".to_date, assigns(:job).scheduled_collection_date
     assert_equal "2015-02-02".to_date, assigns(:job).scheduled_delivery_date
+    assert_equal "2015-02-02".to_date, assigns(:job).actual_collection_date
+    assert_equal "2015-02-02".to_date, assigns(:job).actual_delivery_date
     assert_equal "123", assigns(:job).chassis_number
     assert_equal  100000, assigns(:job).mileage_delivery
     assert_equal  200000, assigns(:job).mileage_collection

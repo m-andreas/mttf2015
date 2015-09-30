@@ -1,19 +1,22 @@
 Rails.application.routes.draw do
+  get 'bills/current', to: 'bills#current', as: 'current_bills'
+  get 'bills/old', to: 'bills#old', as: 'old_bills'
+  resources :bills
   devise_for :users
   resources :users
   resources :companies
 
   get 'routes/show_new', to: 'routes#show_new', as: 'new_routes'
   resources :routes
-  
+
   resources :drivers
 
   resources :addresses
 
   get 'jobs/shuttles', to: 'jobs#shuttles', as: 'shuttles'
   resources :jobs
-  get 'jobs_ajax/show_all', to: 'jobs#show_all' 
-  get 'jobs_ajax/show_regular_jobs', to: 'jobs#show_regular_jobs' 
+  get 'jobs_ajax/show_all', to: 'jobs#show_all'
+  get 'jobs_ajax/show_regular_jobs', to: 'jobs#show_regular_jobs'
   get 'jobs_ajax/show_shuttles', to: 'jobs#show_shuttles'
 
   # The priority is based upon order of creation: first created -> highest priority.
