@@ -15,12 +15,13 @@ class BillTest < ActiveSupport::TestCase
 
   test "create_bill_from_current_jobs" do
     jobs = Job.get_open
-    assert_equal 0, jobs_billed = Job.where( status: Job::FINISHED ).length
+    assert_equal 1, jobs_billed = Job.where( status: Job::FINISHED ).length
     bill = Bill.get_current
+    allready_in_bill = bill.jobs.length
     bill.add_jobs( jobs )
-
+    bill.reload
     assert_equal 0, Job.get_open.length
-    assert_equal jobs.length, bill.jobs.length
+    assert_equal jobs.length + allready_in_bill , bill.jobs.length
 
     bill.jobs.each do |job|
       assert job.is_finished?

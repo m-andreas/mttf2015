@@ -45,6 +45,12 @@ class Job < ActiveRecord::Base
     status == OPEN
   end
 
+  def reset_to_current_bill
+    self.bill = Bill.get_current
+    self.status = FINISHED
+    self.save
+  end
+
   def is_finished?
     status == FINISHED
   end

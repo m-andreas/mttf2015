@@ -14,9 +14,9 @@
       <tr>
         <td><%= bill.billed_at %></td>
         <td><%= bill.print_date %></td>
-        <td><%= link_to 'Show', bill %></td>
-        <td><%= link_to 'Edit', edit_bill_path(bill) %></td>
-        <td><%= link_to 'Destroy', bill, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Anzeigen', bill %></td>
+        <td><%= link_to 'Angezeigtes Datum edieren', edit_bill_path(bill) %></td>
+        <td><%= link_to 'Löschen', bill, method: :delete, data: { confirm: 'Aufträge der gelöschten Rechung werden der aktuellen Rechnung hinzugefügt. Fortfahren?' } %></td>
       </tr>
     <% end %>
   </tbody>

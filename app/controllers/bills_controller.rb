@@ -41,6 +41,10 @@ class BillsController < ApplicationController
   end
 
   def destroy
+    @bill.jobs.each do |job|
+      job.reset_to_current_bill
+    end
+
     @bill.destroy
     respond_with(@bill)
   end
@@ -71,6 +75,6 @@ class BillsController < ApplicationController
     end
 
     def bill_params
-      params.require(:bill).permit(:billed_at, :print_date)
+      params.require(:bill).permit(:print_date)
     end
 end

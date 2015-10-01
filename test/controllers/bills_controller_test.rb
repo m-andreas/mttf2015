@@ -44,9 +44,9 @@ class BillsControllerTest < ActionController::TestCase
   test "should create bill" do
     sign_in @user
     assert_difference('Bill.count') do
-      post :create, bill: { billed_at: @bill.billed_at, print_date: @bill.print_date }
+      post :create, bill: { print_date: @bill.print_date }
     end
-
+    assert_nil assigns( :bill ).billed_at
     assert_redirected_to bill_path(assigns(:bill))
   end
 
@@ -64,16 +64,17 @@ class BillsControllerTest < ActionController::TestCase
 
   test "should update bill" do
     sign_in @user
-    patch :update, id: @bill, bill: { billed_at: @bill.billed_at, print_date: @bill.print_date }
+    patch :update, id: @bill, bill: { print_date: @bill.print_date }
     assert_redirected_to bill_path(assigns(:bill))
   end
 
   test "should destroy bill" do
     sign_in @user
     assert_difference('Bill.count', -1) do
-      delete :destroy, id: @bill
+      delete :destroy, id: bills( :old_one )
     end
-
+    assert jobs(:payed).is_finished?
+    assert_equal Bill.get_current, jobs(:payed).bill
     assert_redirected_to bills_path
   end
 
@@ -82,8 +83,8 @@ class BillsControllerTest < ActionController::TestCase
     assert_equal 1, Bill.get_current.jobs.length
     post :delete_current
     assert_redirected_to jobs_path
-    assert_nil jobs(:one).bill
-    assert jobs(:one).is_open?
+    assert_nil jobs(:finished).bill
+    assert jobs(:finished).is_open?
   end
 
   test "should set bill payed" do
