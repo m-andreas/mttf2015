@@ -1,0 +1,28 @@
+<div class= "small-12 column">
+  <table id="jobs_in_bill" class="display">
+    <thead>
+      <tr>
+        <th>Auftragnummer</th>
+        <th>Name</th>
+        <th>Von</th>
+        <th>Nach</th>
+        <th>Datum Abholung</th>
+        <th>Datum Lieferung</th>
+        <th>Shuttleauftrag</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @bill.jobs.each do |job| %>
+        <tr>
+          <td><%= job.id %></td>
+          <td><%= job.driver.fullname %></td>
+          <td><%= job.from.address_short %></td>
+          <td><%= job.to.address_short %></td>
+          <td><%= job.actual_collection_date %></td>
+          <td><%= job.actual_delivery_date %></td>
+          <td><%= job.is_shuttle? ? "Ja" : "Nein" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -7,6 +7,7 @@ class Job < ActiveRecord::Base
   has_one :carrier, foreign_key: :co_job_id
   belongs_to :route
   belongs_to :created_by, class_name: "User"
+  belongs_to :bill
   paginates_per 10
   validates :driver_id, presence: true
   validates :status, numericality: { only_integer: true }
@@ -17,6 +18,39 @@ class Job < ActiveRecord::Base
 
   def self.get_active
     where( "status in (:show)", show: [ OPEN, FINISHED, CHARGED ] ).includes( :from, :to )
+  end
+
+  def self.get_open
+    Job.where( status: OPEN )
+  end
+
+  def set_billed bill
+    self.status = FINISHED
+    self.bill = bill
+    self.save
+  end
+
+  def set_charged
+    self.status = CHARGED
+    self.save
+  end
+
+  def set_open
+    self.status = OPEN
+    self.bill = nil
+    self.save
+  end
+
+  def is_open?
+    status == OPEN
+  end
+
+  def is_finished?
+    status == FINISHED
+  end
+
+  def is_charged?
+    status == CHARGED
   end
 
   def co_drivers

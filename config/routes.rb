@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
-  get 'bills/current', to: 'bills#current', as: 'current_bills'
+  get 'bills/current', to: 'bills#current', as: 'current_bill'
   get 'bills/old', to: 'bills#old', as: 'old_bills'
+  post 'bills/add_jobs_to_bill', to: 'bills#add_jobs_to_bill', as: 'add_jobs_to_bill'
+  post 'bills/delete_current', to: 'bills#delete_current', as: 'delete_current_bill'
+  post 'bills/pay/:id', to: 'bills#pay', as: 'pay_bill'
+
   resources :bills
   devise_for :users
   resources :users

@@ -1,9 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+old_one:
   billed_at: 2015-09-29 20:12:51
   print_date: MyString
 
-two:
+old_two:
   billed_at: 2015-09-29 20:12:51
+  print_date: MyString
+
+current:
+  billed_at:
   print_date: MyString
