@@ -65,7 +65,7 @@ ready = ->
         d.show_charged = $('#show_charged').prop('checked');
         return
     columns: [
-      { width: "10%", className: "center", orderable: false }
+      { width: "15%", className: "center", orderable: false }
       { width: "10%", className: "row_config", searchable: false, orderable: false }
       { width: "10%", className: "row_config", searchable: false, orderable: false }
       { width: "10%", className: "row_config", searchable: false, orderable: false }
@@ -73,8 +73,9 @@ ready = ->
       { width: "10%", className: "center", searchable: false, orderable: false }
       { width: "10%", className: "center", searchable: false, orderable: false }
       { width: "10%", className: "center", searchable: false, orderable: false }
-      { width: "10%", className: "center", searchable: false, orderable: false }
-      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "5%", className: "center", searchable: false, orderable: false }
+      { width: "5%", className: "center", searchable: false, orderable: false }
+      { width: "5%", className: "center", searchable: false, orderable: false }
     ]
     order: [ [1,'desc'] ]
 

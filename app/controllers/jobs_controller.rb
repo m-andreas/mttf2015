@@ -1,5 +1,5 @@
 class JobsController < ApplicationController
-  before_action :set_job, only: [:show, :edit, :update, :destroy]
+  before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill, :add_to_current_bill]
 
   # GET /jobs
   # GET /jobs.json
@@ -9,6 +9,15 @@ class JobsController < ApplicationController
   def shuttles
   end
 
+  def remove_from_current_bill
+    @job.set_open
+    redirect_to jobs_path
+  end
+
+  def add_to_current_bill
+    @job.set_to_current_bill
+    redirect_to current_bill_path
+  end
 
   def show_all
     render json: JobsAllDatatable.new(view_context)
@@ -110,6 +119,6 @@ class JobsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
       params.require(:job).permit(:driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
-        :scheduled_collection_date, :scheduled_delivery_date, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
+        :scheduled_collection_date, :scheduled_delivery_date, :actual_collection_date, :actual_delivery_date, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
     end
 end

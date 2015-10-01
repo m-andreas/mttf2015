@@ -1,5 +1,5 @@
 class BillsController < ApplicationController
-  before_action :set_bill, only: [:show, :edit, :update, :destroy, :pay]
+  before_action :set_bill, only: [:show, :edit, :update, :destroy, :pay, :remove_job]
 
   respond_to :html
 
@@ -37,7 +37,7 @@ class BillsController < ApplicationController
 
   def update
     @bill.update(bill_params)
-    respond_with(@bill)
+    redirect_to @bill
   end
 
   def destroy
@@ -46,10 +46,10 @@ class BillsController < ApplicationController
     end
 
     @bill.destroy
-    respond_with(@bill)
+    redirect_to current_bill_path
   end
 
-  def add_jobs_to_bill
+  def add_jobs
     @current_bill = Bill.get_current
     @current_bill.add_jobs( Job.get_open )
     redirect_to current_bill_path

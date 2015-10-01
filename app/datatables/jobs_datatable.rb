@@ -57,6 +57,8 @@ private
           in_shuttle = "Nein"
         end
 
+        add_to_current = link_to "verrechnen", add_job_to_current_bill_path( job ), method: :post
+
         job = [
           job.id,
           fullname,
@@ -67,7 +69,8 @@ private
           to_address_short,
           in_shuttle,
           edit,
-          show
+          show,
+          add_to_current
         ]
         jobs << job
       end

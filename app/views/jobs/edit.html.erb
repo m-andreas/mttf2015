@@ -1,7 +1,7 @@
 <div class="custom-row">
   <h1>Editieren von Auftrag <%= @job.id %></h1>
   <%= form_for(@job) do |f| %>
-    <div class="selection large-8 small-12 columns"> 
+    <div class="selection large-8 small-12 columns">
       <div class="field row">
       <h3>Startpunkt</h3><br>
         Startpunkte hier filtern <input id="from_filter" type="text">
@@ -39,12 +39,22 @@
       </div>
       <div class="row">
         <div class="field large-6 columns">
-          <h3><%= f.label "Abholdatum" %></h3><br>
+          <h3><%= f.label "Geplantes Abholdatum" %></h3><br>
           <%= f.date_field :scheduled_collection_date %>
         </div>
         <div class="field large-6 columns">
-          <h3><%= f.label "Lieferdatum" %></h3><br>
+          <h3><%= f.label "Geplantes Lieferdatum" %></h3><br>
           <%= f.date_field :scheduled_delivery_date %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field large-6 columns">
+          <h3><%= f.label "Tatsächliches Abholdatum" %></h3><br>
+          <%= f.date_field :actual_collection_date %>
+        </div>
+        <div class="field large-6 columns">
+          <h3><%= f.label "Tatsächliches Lieferdatum" %></h3><br>
+          <%= f.date_field :actual_delivery_date %>
         </div>
       </div>
       <div class="row lightgray">
@@ -60,7 +70,7 @@
           <h3><%= f.label "mileage_collection", "Kilometerstand Lieferung" %></h3><br>
           <%= f.text_field :mileage_collection %>
         </div>
-      </div>  
+      </div>
       <div class="row">
         <div class="field large-4 columns">
           <h3><%= f.label :Auftragsbemerkungen %></h3><br>
@@ -125,7 +135,7 @@
       </div>
       <div class="actions">
         <%= f.submit %>
-      </div>      
+      </div>
       <%= link_to 'Show', @job %> |
       <%= link_to 'Back', jobs_path %>
     </div>

@@ -35,7 +35,7 @@ class BillsControllerTest < ActionController::TestCase
 
   test "should add open jobs to current bill" do
     sign_in @user
-    post "add_jobs_to_bill"
+    post "add_jobs"
     assert_redirected_to current_bill_path
     assert assigns(:current_bill).is_current?
     assert_not_nil assigns(:current_bill).jobs
@@ -65,7 +65,7 @@ class BillsControllerTest < ActionController::TestCase
   test "should update bill" do
     sign_in @user
     patch :update, id: @bill, bill: { print_date: @bill.print_date }
-    assert_redirected_to bill_path(assigns(:bill))
+    assert_redirected_to @bill
   end
 
   test "should destroy bill" do
@@ -75,7 +75,7 @@ class BillsControllerTest < ActionController::TestCase
     end
     assert jobs(:payed).is_finished?
     assert_equal Bill.get_current, jobs(:payed).bill
-    assert_redirected_to bills_path
+    assert_redirected_to current_bill_path
   end
 
   test "should remove current bill" do

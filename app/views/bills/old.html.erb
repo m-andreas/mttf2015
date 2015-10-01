@@ -1,5 +1,6 @@
-<h1>Listing bills</h1>
-
+<div class="small-12 column">
+  <h1>Bereits erstellte Rechnungen</h1>
+</div>
 <table>
   <thead>
     <tr>
@@ -12,10 +13,10 @@
   <tbody>
     <% @bills.each do |bill| %>
       <tr>
-        <td><%= bill.billed_at %></td>
+        <td><%= bill.billed_at.strftime("%d.%m.%Y")  %></td>
         <td><%= bill.print_date %></td>
         <td><%= link_to 'Anzeigen', bill %></td>
-        <td><%= link_to 'Angezeigtes Datum edieren', edit_bill_path(bill) %></td>
+        <td><%= link_to 'Angedrucktes Datum edieren', edit_bill_path(bill) %></td>
         <td><%= link_to 'Löschen', bill, method: :delete, data: { confirm: 'Aufträge der gelöschten Rechung werden der aktuellen Rechnung hinzugefügt. Fortfahren?' } %></td>
       </tr>
     <% end %>

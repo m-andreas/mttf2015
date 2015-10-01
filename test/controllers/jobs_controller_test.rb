@@ -71,8 +71,11 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should update job" do
     sign_in @user
-    patch :update, id: @job, job: { cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
+    date = Date.current
+    patch :update, id: @job, job: { actual_collection_date: date, actual_delivery_date: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
     assert_redirected_to job_path(assigns(:job))
+    assert_equal date, assigns(:job).actual_collection_date
+    assert_equal date, assigns(:job).actual_delivery_date
   end
 
   test "should destroy job" do
@@ -81,6 +84,24 @@ class JobsControllerTest < ActionController::TestCase
       delete :destroy, id: @job
     end
 
+    assert_redirected_to jobs_path
+  end
+
+  test "set_to_current_bill" do
+    sign_in @user
+    post :add_to_current_bill, id: jobs(:one)
+    jobs(:one).reload
+    assert jobs(:one).is_finished?
+    assert_equal Bill.get_current, jobs(:one).bill
+    assert_redirected_to current_bill_path
+  end
+
+  test "remove_from_current_bill" do
+    sign_in @user
+    post :remove_from_current_bill, id: jobs(:finished)
+    jobs(:finished).reload
+    assert jobs(:finished).is_open?
+    assert_nil jobs(:finished).bill
     assert_redirected_to jobs_path
   end
 end

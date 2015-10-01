@@ -30,6 +30,10 @@ class Job < ActiveRecord::Base
     self.save
   end
 
+  def set_to_current_bill
+    self.set_billed Bill.get_current
+  end
+
   def set_charged
     self.status = CHARGED
     self.save

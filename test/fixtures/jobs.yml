@@ -50,6 +50,8 @@ payed:
   from_id: 1
   to_id: 2
   shuttle: false
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
 
 finished:
   bill: current
@@ -61,3 +63,5 @@ finished:
   from_id: 1
   to_id: 2
   shuttle: false
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>

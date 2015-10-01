@@ -2,7 +2,7 @@ class Bill < ActiveRecord::Base
   has_many :jobs
 
   def self.get_old
-    old_bills = Bill.where.not( billed_at: nil )
+    old_bills = Bill.where.not( billed_at: nil ).order(billed_at: :desc)
   end
 
   def self.get_current_with_includes

@@ -9,6 +9,9 @@
         <th>Datum Abholung</th>
         <th>Datum Lieferung</th>
         <th>Shuttleauftrag</th>
+        <% if @bill.is_current? %>
+          <th></th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
@@ -18,9 +21,12 @@
           <td><%= job.driver.fullname %></td>
           <td><%= job.from.address_short %></td>
           <td><%= job.to.address_short %></td>
-          <td><%= job.actual_collection_date %></td>
-          <td><%= job.actual_delivery_date %></td>
+          <td><%= l job.actual_collection_date %></td>
+          <td><%= l job.actual_delivery_date %></td>
           <td><%= job.is_shuttle? ? "Ja" : "Nein" %></td>
+          <% if @bill.is_current? %>
+            <td><%= link_to "Aus Rechnung entfernen" , remove_job_from_current_bill_path(job), method: :post %></td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>

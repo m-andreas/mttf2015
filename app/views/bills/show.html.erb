@@ -1,14 +1,22 @@
 <p id="notice"><%= notice %></p>
+<div class="small-12 column">
+  <div class="medium-6 small-12 column">
+    <p>
+      <strong>Verrechnet am:</strong>
+      <%= @bill.billed_at %>
+    </p>
+  </div>
+  <div class="medium-6 small-12 column">
+    <p>
+      <strong>Angedrucktes Datum:</strong>
+      <%= @bill.print_date %>
+    </p>
+  </div>
+</div>
 
-<p>
-  <strong>Billed at:</strong>
-  <%= @bill.billed_at %>
-</p>
+<div class="small-12 column">
+  <%= render "jobs_in_bill" %>
+</div>
 
-<p>
-  <strong>Print date:</strong>
-  <%= @bill.print_date %>
-</p>
-
-<%= link_to 'Edit', edit_bill_path(@bill) %> |
-<%= link_to 'Back', bills_path %>
+<%= link_to 'Datum auf Rechnung editieren', edit_bill_path(@bill) %> |
+<%= link_to 'Zurück', old_bills_path %>

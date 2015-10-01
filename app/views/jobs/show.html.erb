@@ -113,7 +113,7 @@
             <td><%= co_job.id %></td>
             <td><%= co_job.from.address_short %></td>
             <td><%= co_job.to.address_short %></td>
-            <td><%= co_job.scheduled_collection_date %></td>
+            <td><%= l co_job.scheduled_collection_date %></td>
             <td><%= link_to "zeigen", job_path( co_job ) %></td>
             <td><%= link_to "editieren", edit_job_path( co_job ) %></td>
           </tr>
