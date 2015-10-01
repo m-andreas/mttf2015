@@ -1,7 +1,7 @@
 <div class="custom-row">
 <h1>Neuen Auftrag erfassen</h1>
   <%= form_for(@job) do |f| %>
-    <div class="large-8 small-12 columns"> 
+    <div class="large-8 small-12 columns">
       <% if @job.errors.any? %>
         <div id="error_explanation">
           <h2><%= pluralize(@job.errors.count, "error") %> haben diesen Auftag vom Speichern zurückgehalten:</h2>
@@ -71,7 +71,7 @@
           <h3><%= f.label "mileage_collection", "Kilometerstand Lieferung" %></h3><br>
           <%= f.text_field :mileage_collection %>
         </div>
-      </div>  
+      </div>
       <div class="row">
         <div class="field large-4 columns">
           <h3><%= f.label :Auftragsbemerkungen %></h3><br>

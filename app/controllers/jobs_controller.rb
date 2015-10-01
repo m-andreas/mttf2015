@@ -19,6 +19,13 @@ class JobsController < ApplicationController
     redirect_to current_bill_path
   end
 
+  def driver_search
+  end
+
+  def show_all_driver_search
+    render json: DriverSearchDatatable.new(view_context)
+  end
+
   def show_all
     render json: JobsAllDatatable.new(view_context)
   end

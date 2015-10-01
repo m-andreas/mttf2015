@@ -24,12 +24,22 @@ private
       if job.nil?
         puts job.inspect
       else
-        fullname = job.driver.nil? ? "" : job.driver.fullname
+        fullname = job.driver.nil? ? "" : link_to( job.driver.fullname, driver_path(job.driver.id))
+
         from_address_short = job.from.nil? ? "" : job.from.address_short
         to_address_short = job.to.nil? ? "" : job.to.address_short
         icon = fa_icon "user-plus", text: "hinzufügen"
         shuttle = job.is_shuttle? ? "Ja" : "Nein"
-        edit = link_to 'Editieren', edit_job_path(job)
+        if job.is_open?
+          edit = link_to 'Editieren', edit_job_path(job)
+          add_to_current = link_to "verrechnen", add_job_to_current_bill_path( job ), method: :post
+          delete = link_to 'löschen', job, method: :delete, data: { confirm: 'Auftrag löschen?' }
+        else
+          edit = ""
+          add_to_current = ""
+          delete = ""
+        end
+        puts job.inspect
         show = link_to 'Anzeigen', job_path(job)
         if job.actual_collection_date.nil?
           if job.scheduled_collection_date.nil?
@@ -57,7 +67,11 @@ private
           in_shuttle = "Nein"
         end
 
-        add_to_current = link_to "verrechnen", add_job_to_current_bill_path( job ), method: :post
+        if job.is_shuttle?
+          in_shuttle = "Shuttlefahrt"
+        end
+
+
 
         job = [
           job.id,
@@ -70,6 +84,7 @@ private
           in_shuttle,
           edit,
           show,
+          delete,
           add_to_current
         ]
         jobs << job
@@ -83,7 +98,7 @@ private
   end
 
  def sort_order_filter
-    records = Job.order("#{sort_column} #{sort_direction}").includes( :driver )
+    records = Job.order("#{sort_column} #{sort_direction}").includes(:from, :to, :driver)
     search = params[:search][:value].strip
     start_from_date = Date.strptime( params[:start_from_date], "%d.%m.%Y" ) unless params[:start_from_date].empty?
     end_at_date = Date.strptime( params[:end_at_date], "%d.%m.%Y" ) unless params[:end_at_date].empty?
@@ -91,15 +106,20 @@ private
     status << 1 if params[:show_open] == "true"
     status << 2 if params[:show_finished] == "true"
     status << 3 if params[:show_charged] == "true"
+
+    shuttle = []
+    shuttle << 1 if params[:show_shuttles] == "true"
+    shuttle << 0 if params[:show_regular_jobs] == "true"
     if start_from_date.nil? && end_at_date.nil?
-      records = records.where("shuttle = 0 and status IN (:status) and ( lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search )", search: "%#{search}%", status: status)
+      records = records.where("shuttle IN (:shuttle) and status IN (:status) and ( addresses.address_short like :search or tos_jobs.address_short like :search or jobs.id like :search or lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search )", search: "%#{search}%", status: status, shuttle: shuttle)
     elsif start_from_date.nil? && !end_at_date.nil?
-      records = records.where("shuttle = 0 and status IN (:status) and ( :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", end_at_date: end_at_date, status: status)
+      records = records.where("shuttle IN (:shuttle) and status IN (:status) and ( :end_at_date >= actual_collection_date and (  addresses.address_short like :search or tos_jobs.address_short like :search or jobs.id like :search or lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", end_at_date: end_at_date, status: status, shuttle: shuttle )
     elsif !start_from_date.nil? && end_at_date.nil?
-      records = records.where("shuttle = 0 and status IN (:status) and ( :start_from_date <= actual_collection_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, status: status)
+      records = records.where("shuttle IN (:shuttle) and status IN (:status) and ( :start_from_date <= actual_delivery_date and (  addresses.address_short like :search or tos_jobs.address_short like :search or jobs.id like :search or lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, status: status, shuttle: shuttle )
     else
-      records = records.where("shuttle = 0 and status IN (:status) and ( :start_from_date <= actual_collection_date and :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, end_at_date: end_at_date, status: status)
+      records = records.where("shuttle IN (:shuttle) and status IN (:status) and ( :start_from_date <= actual_delivery_date and :end_at_date >= actual_collection_date and (  addresses.address_short like :search or tos_jobs.address_short like :search or jobs.id like :search or lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, end_at_date: end_at_date, status: status, shuttle: shuttle)
     end
+    puts records.first.inspect
     records
   end
 

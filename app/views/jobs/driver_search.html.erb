@@ -1,0 +1,33 @@
+<div class= "small-12 column">
+  <h1>Lenkerauskunft</h1>
+</div>
+<%= form_tag 'jobs_ajax/show_all', method: 'get' do %>
+  <div class="custom-row">
+    <div class="medium-6 column">
+      <%= label_tag "start_from_date_driver_search", "Von" %><br>
+      <%= text_field_tag :start_from_date_driver_search %>
+    </div>
+    <div class="medium-6 column">
+      <%= label_tag "end_at_date_driver_search", "Bis" %><br>
+      <%= text_field_tag :end_at_date_driver_search %>
+    </div>
+  </div>
+<% end %>
+<table id="show_jobs_driver_search" class="display">
+  <thead>
+    <tr>
+      <th>Auftragnummer</th>
+      <th>Fahrer</th>
+      <th>Kennzeichen</th>
+      <th>Datum Abfahrt</th>
+      <th>Datum Ankunft</th>
+      <th>Von</th>
+      <th>Nach</th>
+      <th>Shuttle</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+  </tbody>
+</table>

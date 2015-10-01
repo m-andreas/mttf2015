@@ -1,4 +1,4 @@
-class ShuttleDatatable
+class DriverSearchDatatable
   delegate :params, :h, :link_to, :fa_icon,  to: :@view
   include Rails.application.routes.url_helpers
 
@@ -29,7 +29,6 @@ private
         to_address_short = job.to.nil? ? "" : job.to.address_short
         icon = fa_icon "user-plus", text: "hinzufügen"
         shuttle = job.is_shuttle? ? "Ja" : "Nein"
-        edit = link_to 'Editieren', edit_job_path(job)
         show = link_to 'Anzeigen', job_path(job)
         if job.actual_collection_date.nil?
           if job.scheduled_collection_date.nil?
@@ -51,6 +50,12 @@ private
           delivery_date = job.actual_delivery_date.strftime("%e.%-m.%Y")
         end
 
+        if job.is_shuttle?
+          in_shuttle = "Ja"
+        else
+          in_shuttle = "Nein"
+        end
+
         job = [
           job.id,
           fullname,
@@ -59,8 +64,7 @@ private
           delivery_date,
           from_address_short,
           to_address_short,
-          shuttle,
-          edit,
+          in_shuttle,
           show
         ]
         jobs << job
@@ -76,12 +80,18 @@ private
  def sort_order_filter
     records = Job.order("#{sort_column} #{sort_direction}").includes( :driver )
     search = params[:search][:value].strip
-    status = []
-    status << 1 if params[:show_open] == "true"
-    status << 2 if params[:show_finished] == "true"
-    status << 3 if params[:show_charged] == "true"
-    records = records.where("shuttle = 1 and status IN (:status) and ( lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search )", search: "%#{search}%", status: status)
-
+    start_from_date = Date.strptime( params[:start_from_date], "%d.%m.%Y" ) unless params[:start_from_date].empty?
+    end_at_date = Date.strptime( params[:end_at_date], "%d.%m.%Y" ) unless params[:end_at_date].empty?
+    if start_from_date.nil? && end_at_date.nil?
+      records = records.where("( lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search )", search: "%#{search}%")
+    elsif start_from_date.nil? && !end_at_date.nil?
+      records = records.where("( :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", end_at_date: end_at_date)
+    elsif !start_from_date.nil? && end_at_date.nil?
+      records = records.where("( :start_from_date <= actual_collection_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date)
+    else
+      records = records.where("( :start_from_date <= actual_collection_date and :end_at_date >= actual_delivery_date and (lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, end_at_date: end_at_date)
+    end
+    records
   end
 
   def display_on_page

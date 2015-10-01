@@ -26,6 +26,12 @@ ready = ->
   $('#show_charged').change ->
     $('#show_jobs').dataTable().fnFilter();
 
+  $('#show_shuttles').change ->
+    $('#show_jobs').dataTable().fnFilter();
+
+  $('#show_regular_jobs').change ->
+    $('#show_jobs').dataTable().fnFilter();
+
   $('#job_from_id').filterByText($('#from_filter'), true);
   $('#job_to_id').filterByText($('#to_filter'), true);
   $('#job_driver_id').filterByText($('#driver_filter'), true);
@@ -48,7 +54,7 @@ ready = ->
     ]
     order: [ [1,'desc'] ]
 
-  $('#show_jobs').DataTable
+  show_jobs_table = $('#show_jobs').DataTable
     processing: true
     serverSide: true
     hover: true
@@ -63,21 +69,25 @@ ready = ->
         d.show_open = $('#show_open').prop('checked');
         d.show_finished = $('#show_finished').prop('checked');
         d.show_charged = $('#show_charged').prop('checked');
+        d.show_shuttles = $('#show_shuttles').prop('checked');
+        d.show_regular_jobs = $('#show_regular_jobs').prop('checked');
         return
     columns: [
-      { width: "15%", className: "center", orderable: false }
+      { width: "6%", className: "center", orderable: false }
       { width: "10%", className: "row_config", searchable: false, orderable: false }
       { width: "10%", className: "row_config", searchable: false, orderable: false }
-      { width: "10%", className: "row_config", searchable: false, orderable: false }
+      { width: "7%", className: "row_config", searchable: false, orderable: false }
+      { width: "7%", className: "center", searchable: false, orderable: false }
       { width: "10%", className: "center", searchable: false, orderable: false }
       { width: "10%", className: "center", searchable: false, orderable: false }
       { width: "10%", className: "center", searchable: false, orderable: false }
-      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "5%", className: "center", searchable: false, orderable: false }
       { width: "5%", className: "center", searchable: false, orderable: false }
       { width: "5%", className: "center", searchable: false, orderable: false }
       { width: "5%", className: "center", searchable: false, orderable: false }
     ]
     order: [ [1,'desc'] ]
+
 
   $('#show_shuttles').DataTable
     processing: true
@@ -89,8 +99,6 @@ ready = ->
     ajax:
       url: '/jobs_ajax/show_shuttles'
       data: (d) ->
-        d.start_from_date = $('#start_from_date').val()
-        d.end_at_date = $('#end_at_date').val()
         d.show_open = $('#show_open').prop('checked');
         d.show_finished = $('#show_finished').prop('checked');
         d.show_charged = $('#show_charged').prop('checked');
@@ -108,6 +116,42 @@ ready = ->
       { width: "10%", className: "center", searchable: false, orderable: false }
     ]
     order: [ [1,'desc'] ]
+
+  $('#show_jobs_driver_search').DataTable
+    processing: true
+    serverSide: true
+    hover: true
+    language: {
+        search: "Suche nach Details:"
+    }
+    ajax:
+      url: '/jobs_ajax/show_all_driver_search'
+      data: (d) ->
+        d.start_from_date = $('#start_from_date_driver_search').val()
+        d.end_at_date = $('#start_from_date_driver_search').val()
+        return
+    columns: [
+      { width: "10%", className: "center", orderable: false }
+      { width: "20%", className: "row_config", searchable: false, orderable: false }
+      { width: "10%", className: "row_config", searchable: false, orderable: false }
+      { width: "10%", className: "row_config", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+      { width: "10%", className: "center", searchable: false, orderable: false }
+    ]
+    order: [ [0,'desc'] ]
+
+  $("#start_from_date_driver_search").datepicker( dateFormat: "dd.mm.yy" );
+  $("#end_at_date_driver_search").datepicker( dateFormat: "dd.mm.yy" );
+
+  $("#start_from_date_driver_search").change ->
+    $('#show_jobs_driver_search').dataTable().fnFilter();
+
+  $("#end_at_date_driver_search").change ->
+    $('#show_jobs_driver_search').dataTable().fnFilter();
+
 
   $("#job_driver_id").change ->
     console.log("driver change")
@@ -159,6 +203,11 @@ ready = ->
     shuttle_to_sidebar( name, id )
 
   $("#shuttle-summary").on "click", ".remove", ->
+    id = $(this).parent().children()[1].innerText;
+    $('#co_jobs').val($('#co_jobs').val().replace("," + id, ''))
+    console.log($(this).parent().remove());
+
+  $("#shuttle-co-drivers").on "click", ".remove", ->
     id = $(this).parent().children()[1].innerText;
     $('#co_jobs').val($('#co_jobs').val().replace("," + id, ''))
     console.log($(this).parent().remove());

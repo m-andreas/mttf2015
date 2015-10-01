@@ -13,6 +13,12 @@
       <div class="row">
         <div class="small-9 column">Verrechnete anzeigen</div><div class="small-3 column"><%= check_box_tag "show_charged", "show_charged", false %></div>
       </div>
+      <div class="row">
+        <div class="small-9 column">Shuttles anzeigen</div><div class="small-3 column"><%= check_box_tag "show_shuttles", "show_shuttles", false %></div>
+      </div>
+      <div class="row">
+        <div class="small-9 column">Auftragsfahrten anzeigen</div><div class="small-3 column"><%= check_box_tag "show_regular_jobs", "show_regular_jobs", true %></div>
+      </div>
     </div>
     <div class="medium-5 column">
       <%= label_tag "start_from_date", "Von" %><br>
@@ -34,7 +40,8 @@
       <th>Datum Ankunft</th>
       <th>Von</th>
       <th>Nach</th>
-      <th>In Shuttle</th>
+      <th>Shuttle</th>
+      <th></th>
       <th></th>
       <th></th>
       <th></th>
