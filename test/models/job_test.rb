@@ -12,6 +12,14 @@ class JobTest < ActiveSupport::TestCase
     assert_equal [jobs(:one) ], jobs(:shuttle).co_jobs
   end
 
+  test "add_co_cobs 2 times" do
+    assert_equal [ jobs(:one), jobs(:two) ], jobs(:shuttle).co_jobs
+    jobs(:shuttle).add_co_jobs( "," + jobs(:one).id.to_s )
+    assert_equal [jobs(:one) ], jobs(:shuttle).co_jobs
+    jobs(:shuttle).add_co_jobs( "," + jobs(:one).id.to_s )
+    assert_equal [jobs(:one) ], jobs(:shuttle).co_jobs
+  end
+
   test "add_co_cobs_no_dash" do
     jobs(:shuttle).add_co_jobs( jobs(:one).id.to_s )
     assert_equal [jobs(:one) ], jobs(:shuttle).co_jobs
@@ -67,5 +75,18 @@ class JobTest < ActiveSupport::TestCase
     job = Job.new
     assert_not job.valid?
     assert_equal [:driver_id, :status], job.errors.keys
+  end
+
+  test "set_breakpoints" do
+    jobs(:shuttle).breakpoints = []
+    jobs(:shuttle).add_breakpoints
+    assert jobs(:shuttle).breakpoints.include? jobs(:one).from.id
+    assert jobs(:shuttle).breakpoints.include? jobs(:two).from.id
+  end
+
+  test "reset_breakpoint_order" do
+    jobs(:shuttle).add_breakpoints
+    jobs(:shuttle).reset_breakpoints_order [ jobs(:two).from.id, jobs(:one).from.id ]
+    assert_equal [ jobs(:two).from.id, jobs(:one).from.id ], jobs(:shuttle).breakpoints
   end
 end

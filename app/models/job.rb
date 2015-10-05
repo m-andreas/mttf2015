@@ -11,6 +11,7 @@ class Job < ActiveRecord::Base
   paginates_per 10
   validates :driver_id, presence: true
   validates :status, numericality: { only_integer: true }
+  serialize :breakpoints
   OPEN = 1
   FINISHED = 2
   CHARGED = 3
@@ -71,19 +72,39 @@ class Job < ActiveRecord::Base
     co_drivers
   end
 
+  def add_breakpoints
+    breakpoints = []
+    self.co_jobs.each do |co_job|
+      breakpoints << co_job.from_id
+    end
+    self.breakpoints = breakpoints.uniq
+    self.save
+  end
+
+  def reset_breakpoints_order( breakpoints )
+    if breakpoints.is_a? Array
+      self.breakpoints = breakpoints
+      self.save
+    else
+      return false
+    end
+  end
+
   def add_co_jobs( co_job_ids )
+    self.co_jobs = []
     unless co_job_ids.nil? || co_job_ids.empty? || !shuttle
       co_job_ids[0] = "" if co_job_ids[0] == ","
       co_job_ids = co_job_ids.split ","
       jobs = []
-      co_job_ids.each do |co_job|
-        jobs << Job.find(co_job) unless co_job.to_i == self.id
+      co_job_ids.each do |co_job_id|
+        unless co_job_id.to_i == self.id
+          co_job = Job.find(co_job_id)
+          jobs <<  co_job
+        end
       end
       self.co_jobs = jobs
-    else
-      self.co_jobs = []
-      return true
     end
+    self.save
   end
 
   def is_shuttle?

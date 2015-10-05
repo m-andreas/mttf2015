@@ -54,9 +54,9 @@ gem 'jquery-datatables-rails'
 
 gem 'jquery-ui-rails'
 #includes will paginate into foundation
-gem 'kaminari'                    # Pagination 
+gem 'kaminari'                    # Pagination
 
-gem 'font-awesome-rails'          # Icons 
+gem 'font-awesome-rails'          # Icons
 
 #devise is used for login
 gem 'devise'
@@ -67,3 +67,6 @@ gem 'thin'
 
 #to check test coverage
 gem 'simplecov', :require => false, :group => :test
+
+#sort the stops of shuttles
+gem 'activerecord-sortable'

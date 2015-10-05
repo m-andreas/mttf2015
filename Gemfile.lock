@@ -21,6 +21,7 @@ GEM
       activemodel (= 4.1.9)
       activesupport (= 4.1.9)
       arel (~> 5.0.0)
+    activerecord-sortable (0.0.5)
     activerecord-sqlserver-adapter (4.1.1)
       activerecord (~> 4.1.0)
       arel
@@ -161,6 +162,7 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
+  activerecord-sortable
   activerecord-sqlserver-adapter (~> 4.1.pre.stable)
   coffee-rails (~> 4.0.0)
   devise

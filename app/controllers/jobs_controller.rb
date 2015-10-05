@@ -58,7 +58,7 @@ class JobsController < ApplicationController
     @job.created_by_id = current_user.id
     @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
     respond_to do |format|
-      if @job.save && @job.add_co_jobs( co_jobs )
+      if @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
         format.html { redirect_to @job, notice: 'Job was successfully created.' }
         format.json { render :show, status: :created, location: @job }
       else

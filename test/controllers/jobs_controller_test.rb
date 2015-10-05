@@ -51,6 +51,20 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal @job.cost_center_id, assigns(:job).cost_center_id
   end
 
+  test "should create job with co job" do
+    sign_in @user
+    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
+      mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
+      co_jobs: ",#{jobs(:one).id}, #{jobs(:two).id}"
+    job = Job.find(assigns(:job).id)
+    assert_equal jobs(:two), job.co_jobs.first
+    assert_equal jobs(:one), job.co_jobs.last
+    assert_equal 2, job.co_jobs.length
+    assert_equal [jobs(:one).from_id, jobs(:two).from_id], job.breakpoints
+  end
+
   test "should show job" do
     sign_in @user
     get :show, id: @job
