@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151001065055) do
+ActiveRecord::Schema.define(version: 20151005065157) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -483,6 +483,8 @@ ActiveRecord::Schema.define(version: 20151001065055) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "deleted",                  default: false
+    t.string   "iban"
+    t.string   "bic"
   end
 
   create_table "dtproperties", id: false, force: true do |t|

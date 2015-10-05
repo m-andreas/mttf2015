@@ -1,99 +1,109 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>First name:</strong>
+  <strong>Vorname:</strong>
   <%= @driver.first_name %>
 </p>
 
 <p>
-  <strong>Last name:</strong>
+  <strong>Nachname:</strong>
   <%= @driver.last_name %>
 </p>
 
 <p>
-  <strong>Entry date:</strong>
+  <strong>Eintrittsdatum:</strong>
   <%= @driver.entry_date %>
 </p>
 
 <p>
-  <strong>Exit date:</strong>
+  <strong>Austrittsdatum:</strong>
   <%= @driver.exit_date %>
 </p>
 
 <p>
-  <strong>Date of birth:</strong>
+  <strong>Geburtsdatum:</strong>
   <%= @driver.date_of_birth %>
 </p>
 
 <p>
-  <strong>Place of birth:</strong>
+  <strong>Geburtsort:</strong>
   <%= @driver.place_of_birth %>
 </p>
 
 <p>
-  <strong>Address:</strong>
+  <strong>Adresse:</strong>
   <%= @driver.address %>
 </p>
 
 <p>
-  <strong>City:</strong>
+  <strong>Ort:</strong>
   <%= @driver.city %>
 </p>
 
 <p>
-  <strong>Zip code:</strong>
+  <strong>Postleitzahl:</strong>
   <%= @driver.zip_code %>
 </p>
 
 <p>
-  <strong>Telepone:</strong>
+  <strong>Telefon:</strong>
   <%= @driver.telepone %>
 </p>
 
 <p>
-  <strong>Telephone2:</strong>
+  <strong>Telefon:</strong>
   <%= @driver.telephone2 %>
 </p>
 
 <p>
-  <strong>Licence number:</strong>
+  <strong>Führerscheinnummer:</strong>
   <%= @driver.licence_number %>
 </p>
 
 <p>
-  <strong>Issuing authority:</strong>
+  <strong>Aussstellende Behörde:</strong>
   <%= @driver.issuing_authority %>
 </p>
 
 <p>
-  <strong>Driving licence category:</strong>
+  <strong>Führerscheinklasse:</strong>
   <%= @driver.driving_licence_category %>
 </p>
 
 <p>
-  <strong>Comment:</strong>
+  <strong>Kommentar:</strong>
   <%= @driver.comment %>
 </p>
 
 <p>
-  <strong>Social security number:</strong>
+  <strong>Sozialversicherungsnummer:</strong>
   <%= @driver.social_security_number %>
 </p>
 
 <p>
-  <strong>Driving licence copy:</strong>
+  <strong>IBAN:</strong>
+  <%= @driver.iban %>
+</p>
+
+<p>
+  <strong>BIC:</strong>
+  <%= @driver.bic %>
+</p>
+
+<p>
+  <strong>Führerscheinkopie:</strong>
   <%= @driver.driving_licence_copy %>
 </p>
 
 <p>
-  <strong>Registration copy:</strong>
+  <strong>Meldezettelkopie:</strong>
   <%= @driver.registration_copy %>
 </p>
 
 <p>
-  <strong>Service contract:</strong>
+  <strong>Werkvertrag:</strong>
   <%= @driver.service_contract %>
 </p>
 
-<%= link_to 'Edit', edit_driver_path(@driver) %> |
-<%= link_to 'Back', drivers_path %>
+<%= link_to 'Editieren', edit_driver_path(@driver) %> |
+<%= link_to 'Zurück', drivers_path %>
