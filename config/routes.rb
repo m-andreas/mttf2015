@@ -18,13 +18,9 @@ Rails.application.routes.draw do
 
   post 'jobs/add_to_current_bill/:id', to: 'jobs#add_to_current_bill', as: 'add_job_to_current_bill'
   post 'jobs/remove_from_current_bill/:id', to: 'jobs#remove_from_current_bill', as: 'remove_job_from_current_bill'
-  get 'jobs/shuttles', to: 'jobs#shuttles', as: 'shuttles'
-  get 'jobs/driver_search', to: 'jobs#driver_search', as: 'driver_search'
   resources :jobs
   get 'jobs_ajax/show_all', to: 'jobs#show_all'
   get 'jobs_ajax/show_regular_jobs', to: 'jobs#show_regular_jobs'
-  get 'jobs_ajax/show_shuttles', to: 'jobs#show_shuttles'
-  get 'jobs_ajax/show_all_driver_search', to: 'jobs#show_all_driver_search'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

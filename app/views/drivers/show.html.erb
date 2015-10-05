@@ -1,109 +1,110 @@
 <p id="notice"><%= notice %></p>
+<div class="small-12 column">
+  <p>
+    <strong>Vorname:</strong>
+    <%= @driver.first_name %>
+  </p>
 
-<p>
-  <strong>Vorname:</strong>
-  <%= @driver.first_name %>
-</p>
+  <p>
+    <strong>Nachname:</strong>
+    <%= @driver.last_name %>
+  </p>
 
-<p>
-  <strong>Nachname:</strong>
-  <%= @driver.last_name %>
-</p>
+  <p>
+    <strong>Eintrittsdatum:</strong>
+    <%= @driver.entry_date %>
+  </p>
 
-<p>
-  <strong>Eintrittsdatum:</strong>
-  <%= @driver.entry_date %>
-</p>
+  <p>
+    <strong>Austrittsdatum:</strong>
+    <%= @driver.exit_date %>
+  </p>
 
-<p>
-  <strong>Austrittsdatum:</strong>
-  <%= @driver.exit_date %>
-</p>
+  <p>
+    <strong>Geburtsdatum:</strong>
+    <%= @driver.date_of_birth %>
+  </p>
 
-<p>
-  <strong>Geburtsdatum:</strong>
-  <%= @driver.date_of_birth %>
-</p>
+  <p>
+    <strong>Geburtsort:</strong>
+    <%= @driver.place_of_birth %>
+  </p>
 
-<p>
-  <strong>Geburtsort:</strong>
-  <%= @driver.place_of_birth %>
-</p>
+  <p>
+    <strong>Adresse:</strong>
+    <%= @driver.address %>
+  </p>
 
-<p>
-  <strong>Adresse:</strong>
-  <%= @driver.address %>
-</p>
+  <p>
+    <strong>Ort:</strong>
+    <%= @driver.city %>
+  </p>
 
-<p>
-  <strong>Ort:</strong>
-  <%= @driver.city %>
-</p>
+  <p>
+    <strong>Postleitzahl:</strong>
+    <%= @driver.zip_code %>
+  </p>
 
-<p>
-  <strong>Postleitzahl:</strong>
-  <%= @driver.zip_code %>
-</p>
+  <p>
+    <strong>Telefon:</strong>
+    <%= @driver.telepone %>
+  </p>
 
-<p>
-  <strong>Telefon:</strong>
-  <%= @driver.telepone %>
-</p>
+  <p>
+    <strong>Telefon:</strong>
+    <%= @driver.telephone2 %>
+  </p>
 
-<p>
-  <strong>Telefon:</strong>
-  <%= @driver.telephone2 %>
-</p>
+  <p>
+    <strong>Führerscheinnummer:</strong>
+    <%= @driver.licence_number %>
+  </p>
 
-<p>
-  <strong>Führerscheinnummer:</strong>
-  <%= @driver.licence_number %>
-</p>
+  <p>
+    <strong>Aussstellende Behörde:</strong>
+    <%= @driver.issuing_authority %>
+  </p>
 
-<p>
-  <strong>Aussstellende Behörde:</strong>
-  <%= @driver.issuing_authority %>
-</p>
+  <p>
+    <strong>Führerscheinklasse:</strong>
+    <%= @driver.driving_licence_category %>
+  </p>
 
-<p>
-  <strong>Führerscheinklasse:</strong>
-  <%= @driver.driving_licence_category %>
-</p>
+  <p>
+    <strong>Kommentar:</strong>
+    <%= @driver.comment %>
+  </p>
 
-<p>
-  <strong>Kommentar:</strong>
-  <%= @driver.comment %>
-</p>
+  <p>
+    <strong>Sozialversicherungsnummer:</strong>
+    <%= @driver.social_security_number %>
+  </p>
 
-<p>
-  <strong>Sozialversicherungsnummer:</strong>
-  <%= @driver.social_security_number %>
-</p>
+  <p>
+    <strong>IBAN:</strong>
+    <%= @driver.iban %>
+  </p>
 
-<p>
-  <strong>IBAN:</strong>
-  <%= @driver.iban %>
-</p>
+  <p>
+    <strong>BIC:</strong>
+    <%= @driver.bic %>
+  </p>
 
-<p>
-  <strong>BIC:</strong>
-  <%= @driver.bic %>
-</p>
+  <p>
+    <strong>Führerscheinkopie:</strong>
+    <%= @driver.driving_licence_copy %>
+  </p>
 
-<p>
-  <strong>Führerscheinkopie:</strong>
-  <%= @driver.driving_licence_copy %>
-</p>
+  <p>
+    <strong>Meldezettelkopie:</strong>
+    <%= @driver.registration_copy %>
+  </p>
 
-<p>
-  <strong>Meldezettelkopie:</strong>
-  <%= @driver.registration_copy %>
-</p>
+  <p>
+    <strong>Werkvertrag:</strong>
+    <%= @driver.service_contract %>
+  </p>
 
-<p>
-  <strong>Werkvertrag:</strong>
-  <%= @driver.service_contract %>
-</p>
-
-<%= link_to 'Editieren', edit_driver_path(@driver) %> |
-<%= link_to 'Zurück', drivers_path %>
+  <%= link_to 'Editieren', edit_driver_path(@driver) %> |
+  <%= link_to 'Zurück', drivers_path %>
+</div>
