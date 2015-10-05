@@ -134,7 +134,8 @@
         </table>
       </div>
       <div class="actions">
-        <%= f.submit %>
+        <%= f.button  "aktualisieren" , name: "subaction",value: "update"%>
+        <%= f.button  "aktualisieren und verrechnen" , name: "subaction",value: "update_and_pay"%>
       </div>
       <%= link_to 'Show', @job %> |
       <%= link_to 'Back', jobs_path %>

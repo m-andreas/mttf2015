@@ -12,12 +12,6 @@ class JobsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should get shuttles" do
-    sign_in @user
-    get :shuttles
-    assert_response :success
-  end
-
   test "should get redirected" do
   end
 
@@ -72,8 +66,19 @@ class JobsControllerTest < ActionController::TestCase
   test "should update job" do
     sign_in @user
     date = Date.current
-    patch :update, id: @job, job: { actual_collection_date: date, actual_delivery_date: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
-    assert_redirected_to job_path(assigns(:job))
+    patch :update, id: @job, subaction: "update", job: { actual_collection_date: date, actual_delivery_date: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
+    assert_redirected_to jobs_path
+    assert_equal date, assigns(:job).actual_collection_date
+    assert_equal date, assigns(:job).actual_delivery_date
+  end
+
+  test "should update job and set to current" do
+    sign_in @user
+    date = Date.current
+    patch :update, id: @job, subaction: "update_and_pay", job: { actual_collection_date: date, actual_delivery_date: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
+    assert_redirected_to jobs_path
+    assert @job.reload
+    assert @job.is_finished?
     assert_equal date, assigns(:job).actual_collection_date
     assert_equal date, assigns(:job).actual_delivery_date
   end

@@ -6,9 +6,6 @@ class JobsController < ApplicationController
   def index
   end
 
-  def shuttles
-  end
-
   def remove_from_current_bill
     @job.set_open
     redirect_to jobs_path
@@ -19,23 +16,12 @@ class JobsController < ApplicationController
     redirect_to current_bill_path
   end
 
-  def driver_search
-  end
-
-  def show_all_driver_search
-    render json: DriverSearchDatatable.new(view_context)
-  end
-
   def show_all
     render json: JobsAllDatatable.new(view_context)
   end
 
   def show_regular_jobs
     render json: JobsDatatable.new(view_context)
-  end
-
-  def show_shuttles
-    render json: ShuttleDatatable.new(view_context)
   end
 
   # GET /jobs/1
@@ -90,8 +76,12 @@ class JobsController < ApplicationController
     co_jobs = params[:co_jobs]
     respond_to do |format|
       if @job.update(job_params) && @job.add_co_jobs( co_jobs ) && !@job.charged?
-        format.html { redirect_to @job, notice: 'Job was successfully updated.' }
-        format.json { render :show, status: :ok, location: @job }
+        if params[:subaction] == "update_and_pay"
+          @job.set_to_current_bill
+          format.html { redirect_to jobs_path, notice: 'Auftrag wurde aktualisiert und der aktuellen Verrechnung hinzugefügt' }
+        else
+          format.html { redirect_to jobs_path, notice: 'Auftrag wurde erfolgreicht aktualisiert.' }
+        end
       else
         format.html { render :edit }
         format.json { render json: @job.errors, status: :unprocessable_entity }
