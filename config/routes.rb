@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :breakpoints
+
   get 'bills/current', to: 'bills#current', as: 'current_bill'
   get 'bills/old', to: 'bills#old', as: 'old_bills'
   post 'bills/add_jobs', to: 'bills#add_jobs', as: 'add_jobs_to_bill'
@@ -18,6 +20,9 @@ Rails.application.routes.draw do
 
   post 'jobs/add_to_current_bill/:id', to: 'jobs#add_to_current_bill', as: 'add_job_to_current_bill'
   post 'jobs/remove_from_current_bill/:id', to: 'jobs#remove_from_current_bill', as: 'remove_job_from_current_bill'
+  get 'jobs/add_co_driver/:id', to: 'jobs#add_co_driver', as: 'job_add_co_driver'
+  get 'jobs/remove_co_driver/:id', to: 'jobs#remove_co_driver', as: 'job_remove_co_driver'
+
   resources :jobs
   get 'jobs_ajax/show_all', to: 'jobs#show_all'
   get 'jobs_ajax/show_regular_jobs', to: 'jobs#show_regular_jobs'

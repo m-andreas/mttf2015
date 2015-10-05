@@ -1,9 +1,32 @@
 class JobsController < ApplicationController
-  before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill, :add_to_current_bill]
+  before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
+    :add_to_current_bill, :add_co_driver, :remove_co_driver ]
 
   # GET /jobs
   # GET /jobs.json
   def index
+  end
+
+  def add_co_driver
+    co_job = Job.find( params[ :co_job_id ].to_i )
+    @job.co_jobs << co_job
+    @job.add_breakpoints
+    @shuttles = @job.get_shuttle_array
+    respond_to do | format |
+      format.html { redirect_to jobs_path }
+      format.js { render 'change_co_drivers.js.erb' }
+    end
+  end
+
+  def remove_co_driver
+    co_job = Job.find( params[ :co_job_id ].to_i )
+    @job.remove_co_job( co_job )
+    @job.add_breakpoints
+    @shuttles = @job.get_shuttle_array
+    respond_to do | format |
+      format.html { redirect_to jobs_path }
+      format.js { render 'change_co_drivers.js.erb' }
+    end
   end
 
   def remove_from_current_bill
@@ -75,7 +98,7 @@ class JobsController < ApplicationController
   def update
     co_jobs = params[:co_jobs]
     respond_to do |format|
-      if @job.update(job_params) && @job.add_co_jobs( co_jobs ) && !@job.charged?
+      if !@job.charged? && @job.update(job_params) && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
         if params[:subaction] == "update_and_pay"
           @job.set_to_current_bill
           format.html { redirect_to jobs_path, notice: 'Auftrag wurde aktualisiert und der aktuellen Verrechnung hinzugefügt' }
@@ -115,7 +138,7 @@ class JobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
-      params.require(:job).permit(:driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
+      params.require(:job).permit( { :breakpoints_attributes => [ :address_id, :id, :position, :distance ]}, :driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
         :scheduled_collection_date, :scheduled_delivery_date, :actual_collection_date, :actual_delivery_date, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
     end
 end

@@ -20,6 +20,7 @@
 //= require dataTables/jquery.dataTables.foundation
 //= require turbolinks
 //= require_tree .
+//= require sortable
 
 $(function(){ $(document).foundation(); });
 

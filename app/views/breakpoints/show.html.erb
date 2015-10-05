@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @breakpoint.position %>
+</p>
+
+<p>
+  <strong>Job:</strong>
+  <%= @breakpoint.job_id %>
+</p>
+
+<p>
+  <strong>Distance:</strong>
+  <%= @breakpoint.distance %>
+</p>
+
+<%= link_to 'Edit', edit_breakpoint_path(@breakpoint) %> |
+<%= link_to 'Back', breakpoints_path %>

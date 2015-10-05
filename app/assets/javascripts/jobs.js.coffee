@@ -58,6 +58,7 @@ ready = ->
     ajax:
       url: '/jobs_ajax/show_all'
       data: (d) ->
+        d.main_job_id = document.getElementById("main_job_id").value;
         return
     columns: [
       { width: "0%", className: "dont_show", searchable: false, orderable: false }
@@ -69,6 +70,10 @@ ready = ->
       { width: "15%", className: "center", searchable: false, orderable: false }
     ]
     order: [ [1,'desc'] ]
+
+
+  $('*[data-role=activerecord_sortable]').activerecord_sortable();
+
 
 # Alle Aufträge Maske
 
@@ -132,17 +137,7 @@ ready = ->
     $('#show_jobs').dataTable().fnFilter();
 
 
-# Shuttle verwaltung
-
-  shuttle_to_sidebar = ( name, id ) ->
-    $('#co_jobs').val($('#co_jobs').val() + "," + id )
-    $("#shuttle-co-drivers table tbody").append("<tr><td>" + name + "</td><td>" + id + "</td><td class='remove'><i class='fa fa-minus'></i> entfernen</td></tr>")
-
-  $("#shuttle_jobs").on "click", ".add", ->
-    pos = $('#shuttle_jobs').dataTable().fnGetPosition(this)
-    id = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[0];
-    name = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[3]
-    shuttle_to_sidebar( name, id )
+# Shuttle verwaltung für edit und create
 
   $("#shuttle-summary").on "click", ".remove", ->
     id = $(this).parent().children()[1].innerText;
@@ -158,9 +153,13 @@ ready = ->
     if $('#job_shuttle').prop('checked')
       $("#shuttle_jobs_wrapper").show();
       $("#shuttle-co-drivers").show();
+      $("#job_details").hide()
+      $("#breakpoints").show()
     else
       $("#shuttle_jobs_wrapper").hide();
       $("#shuttle-co-drivers").hide();
+      $("#job_details").show()
+      $("#breakpoints").hide()
 
   $("#job_shuttle").click ->
     displayshuttle();

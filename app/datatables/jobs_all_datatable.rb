@@ -1,5 +1,6 @@
 class JobsAllDatatable
-  delegate :params, :h, :link_to, :fa_icon,  to: :@view
+  delegate :params, :h, :link_to, :fa_icon, :button_to, to: :@view
+  include Rails.application.routes.url_helpers
 
   def initialize(view)
     @view = view
@@ -26,7 +27,7 @@ private
         fullname = job.driver.nil? ? "" : job.driver.fullname
         from_address_short = job.from.nil? ? "" : job.from.address_short
         to_address_short = job.to.nil? ? "" : job.to.address_short
-        icon = fa_icon "user-plus", text: "hinzufügen"
+        icon = link_to( fa_icon( "user-plus", text: "hinzufügen" ), job_add_co_driver_path( id: params[:main_job_id], co_job_id: job.id ), remote: true )
         job = [
           job.id,
           icon,

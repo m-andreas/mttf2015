@@ -11,7 +11,8 @@ class Job < ActiveRecord::Base
   paginates_per 10
   validates :driver_id, presence: true
   validates :status, numericality: { only_integer: true }
-  serialize :breakpoints
+  has_many :breakpoints, -> { order(:position) }
+  accepts_nested_attributes_for :breakpoints
   OPEN = 1
   FINISHED = 2
   CHARGED = 3
@@ -72,21 +73,23 @@ class Job < ActiveRecord::Base
     co_drivers
   end
 
-  def add_breakpoints
-    breakpoints = []
-    self.co_jobs.each do |co_job|
-      breakpoints << co_job.from_id
-    end
-    self.breakpoints = breakpoints.uniq
-    self.save
+  def remove_co_job co_job
+    carrier = Carrier.where( co_job_id: co_job.id, job_id: self.id ).first
+    logger.info carrier.inspect
+
+    Carrier.delete(carrier.id)
+    carrier.destroy unless carrier.nil?
   end
 
-  def reset_breakpoints_order( breakpoints )
-    if breakpoints.is_a? Array
-      self.breakpoints = breakpoints
-      self.save
-    else
-      return false
+  def add_breakpoints
+    self.breakpoints = []
+
+    self.co_jobs.each_with_index do |co_job, index|
+      logger.info co_job.from.address_short
+      if self.breakpoints.where( address_id: co_job.from.id ).empty? && self.to_id != co_job.from_id
+        bp = self.breakpoints.build( position: index ,job_id: self.id, address_id: co_job.from.id )
+        bp.save
+      end
     end
   end
 
@@ -126,7 +129,8 @@ class Job < ActiveRecord::Base
   def get_shuttle_array
     shuttle = []
     self.co_jobs.each do |job|
-      shuttle << [ job.driver.fullname, job.id ]
+      name = job.driver.nil? ? "" : job.driver.fullname
+      shuttle << [ name, job.id ]
     end
     shuttle
   end

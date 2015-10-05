@@ -1,0 +1,29 @@
+<h1>Listing breakpoints</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Position</th>
+      <th>Job</th>
+      <th>Distance</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @breakpoints.each do |breakpoint| %>
+      <tr>
+        <td><%= breakpoint.position %></td>
+        <td><%= breakpoint.job_id %></td>
+        <td><%= breakpoint.distance %></td>
+        <td><%= link_to 'Show', breakpoint %></td>
+        <td><%= link_to 'Edit', edit_breakpoint_path(breakpoint) %></td>
+        <td><%= link_to 'Destroy', breakpoint, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Breakpoint', new_breakpoint_path %>
