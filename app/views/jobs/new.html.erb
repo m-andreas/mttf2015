@@ -1,5 +1,8 @@
 <div class="custom-row">
 <h1>Neuen Auftrag erfassen</h1>
+<%= hidden_field_tag 'main_job_id',  @job.id %>
+<%= hidden_field_tag 'form_type', "new" %>
+
   <%= form_for(@job) do |f| %>
     <div class="large-8 small-12 columns">
       <% if @job.errors.any? %>

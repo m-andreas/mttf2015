@@ -40,6 +40,16 @@ shuttle:
   to_id: 2
   shuttle: true
 
+empty_shuttle:
+  driver_id: 2
+  cost_center_id: 1
+  status: 1
+  created_by_id: 1
+  route_id: 2
+  from_id: 1
+  to_id: 2
+  shuttle: true
+
 payed:
   bill: old_one
   driver_id: 2

@@ -27,7 +27,12 @@ private
         fullname = job.driver.nil? ? "" : job.driver.fullname
         from_address_short = job.from.nil? ? "" : job.from.address_short
         to_address_short = job.to.nil? ? "" : job.to.address_short
-        icon = link_to( fa_icon( "user-plus", text: "hinzufügen" ), job_add_co_driver_path( id: params[:main_job_id], co_job_id: job.id ), remote: true )
+        if params[ :form_type ] == "edit"
+          icon = link_to( fa_icon( "user-plus", text: "hinzufügen" ), job_add_co_driver_path( id: params[:main_job_id], co_job_id: job.id ), remote: true )
+        else
+          icon = fa_icon( "user-plus", text: "hinzufügen" )
+        end
+
         job = [
           job.id,
           icon,

@@ -62,7 +62,8 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal jobs(:two), job.co_jobs.first
     assert_equal jobs(:one), job.co_jobs.last
     assert_equal 2, job.co_jobs.length
-    assert_equal [jobs(:one).from_id, jobs(:two).from_id], job.breakpoints
+    assert_equal 1, job.breakpoints.length
+    assert_equal jobs(:one).from, job.breakpoints.first.address
   end
 
   test "should show job" do
@@ -122,5 +123,24 @@ class JobsControllerTest < ActionController::TestCase
     assert jobs(:finished).is_open?
     assert_nil jobs(:finished).bill
     assert_redirected_to jobs_path
+  end
+
+  test "add_co_driver" do
+    sign_in @user
+    assert_equal 0, jobs(:empty_shuttle).co_drivers.length
+    post :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :one ).id
+    jobs(:empty_shuttle).reload
+    assert_equal 1, jobs(:empty_shuttle).co_drivers.length
+  end
+
+  test "remove_co_driver" do
+    sign_in @user
+    assert_equal 2, jobs(:shuttle).co_drivers.length
+    post :remove_co_driver, id: jobs(:shuttle), co_job_id: jobs( :two ).id
+    shuttle = Job.find(jobs(:shuttle).id)
+    puts "carrieres in test"
+    puts shuttle.carriers.inspect
+    assert_equal 1, shuttle.co_drivers.length
+    assert_equal [jobs(:one)], shuttle.co_jobs
   end
 end

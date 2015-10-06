@@ -28,22 +28,23 @@
     </tbody>
   </table>
 </div>
+<div id="breakpoints">
+  <%= form_for(@job) do |f| %>
 
-<%= form_for(@job) do |f| %>
+    <% unless @job.breakpoints.empty? %>
+      <h3>Zwischenstopps</h3>
+      <ol data-role="activerecord_sortable">
+        <%= f.fields_for :breakpoints do |ff| %>
+          <!-- both data-* attributes required -->
+          <li class="ui-state-default ui-sortable-handle" data-role="breakpoint<%= ff.object.to_s %>" data-position="<%= ff.object.position %>">
+            <%= ff.object.address.address_short %>
 
-  <% unless @job.breakpoints.empty? %>
-    <h3>Zwischenstopps</h3>
-    <ol data-role="activerecord_sortable">
-      <%= f.fields_for :breakpoints do |ff| %>
-        <!-- both data-* attributes required -->
-        <li class="ui-state-default ui-sortable-handle" data-role="breakpoint<%= ff.object.to_s %>" data-position="<%= ff.object.position %>">
-          <%= ff.object.address.address_short %>
+            <!-- to pass position into controller's code -->
+            <%= ff.hidden_field :position, :data => { :role => 'position' } %>
+          </li>
+        <% end %>
+      </ol>
+    <% end %>
 
-          <!-- to pass position into controller's code -->
-          <%= ff.hidden_field :position, :data => { :role => 'position' } %>
-        </li>
-      <% end %>
-    </ol>
   <% end %>
-
-<% end %>
+</div>

@@ -58,6 +58,7 @@ ready = ->
     ajax:
       url: '/jobs_ajax/show_all'
       data: (d) ->
+        d.form_type = document.getElementById("form_type").value;
         d.main_job_id = document.getElementById("main_job_id").value;
         return
     columns: [
@@ -137,17 +138,30 @@ ready = ->
     $('#show_jobs').dataTable().fnFilter();
 
 
-# Shuttle verwaltung für edit und create
+# Shuttle verwaltung für create
+
+  shuttle_to_sidebar = ( name, id ) ->
+    $('#co_jobs').val($('#co_jobs').val() + "," + id )
+    $("#shuttle-co-drivers table tbody").append("<tr><td>" + name + "</td><td>" + id + "</td><td class='remove'><i class='fa fa-minus'></i> entfernen</td></tr>")
+
+  $("#shuttle_jobs").on "click", ".add", ->
+    if document.getElementById("form_type").value == "new"
+      pos = $('#shuttle_jobs').dataTable().fnGetPosition(this)
+      id = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[0];
+      name = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[3]
+      shuttle_to_sidebar( name, id )
 
   $("#shuttle-summary").on "click", ".remove", ->
-    id = $(this).parent().children()[1].innerText;
-    $('#co_jobs').val($('#co_jobs').val().replace("," + id, ''))
-    console.log($(this).parent().remove());
+    if document.getElementById("form_type").value == "new"
+      id = $(this).parent().children()[1].innerText;
+      $('#co_jobs').val($('#co_jobs').val().replace("," + id, ''))
+      $(this).parent().remove();
 
   $("#shuttle-co-drivers").on "click", ".remove", ->
-    id = $(this).parent().children()[1].innerText;
-    $('#co_jobs').val($('#co_jobs').val().replace("," + id, ''))
-    console.log($(this).parent().remove());
+    if document.getElementById("form_type").value == "new"
+      id = $(this).parent().children()[1].innerText;
+      $('#co_jobs').val($('#co_jobs').val().replace("," + id, ''))
+      $(this).parent().remove();
 
   displayshuttle = ->
     if $('#job_shuttle').prop('checked')

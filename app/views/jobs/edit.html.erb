@@ -1,5 +1,6 @@
 <div class="custom-row">
   <h1>Editieren von Auftrag <%= @job.id %></h1>
+  <%= hidden_field_tag 'form_type', "edit" %>
   <%= form_for(@job) do |f| %>
     <%= hidden_field_tag 'main_job_id',  @job.id %>
     <div class="selection large-8 small-12 columns">

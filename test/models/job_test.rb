@@ -80,13 +80,20 @@ class JobTest < ActiveSupport::TestCase
   test "set_breakpoints" do
     jobs(:shuttle).breakpoints = []
     jobs(:shuttle).add_breakpoints
-    assert jobs(:shuttle).breakpoints.include? jobs(:one).from.id
-    assert jobs(:shuttle).breakpoints.include? jobs(:two).from.id
+    assert_equal 1, jobs(:shuttle).breakpoints.length
+    assert jobs(:shuttle).breakpoints.first.address jobs(:two).from
   end
 
-  test "reset_breakpoint_order" do
-    jobs(:shuttle).add_breakpoints
-    jobs(:shuttle).reset_breakpoints_order [ jobs(:two).from.id, jobs(:one).from.id ]
-    assert_equal [ jobs(:two).from.id, jobs(:one).from.id ], jobs(:shuttle).breakpoints
+  test "remove_shuttles" do
+    assert_equal 2, jobs(:shuttle).carriers.length
+    jobs(:shuttle).remove_shuttles
+    jobs(:shuttle).reload
+    assert jobs(:shuttle).carriers.empty?
+  end
+
+  test "remove_co_job" do
+    assert_equal 2, jobs(:shuttle).carriers.length
+    jobs(:shuttle).remove_co_job( jobs(:shuttle).co_jobs.first )
+    assert_equal 1, jobs(:shuttle).carriers.length
   end
 end

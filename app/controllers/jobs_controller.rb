@@ -9,7 +9,7 @@ class JobsController < ApplicationController
 
   def add_co_driver
     co_job = Job.find( params[ :co_job_id ].to_i )
-    @job.co_jobs << co_job
+    @job.co_jobs << co_job unless co_job.nil?
     @job.add_breakpoints
     @shuttles = @job.get_shuttle_array
     respond_to do | format |
@@ -20,6 +20,8 @@ class JobsController < ApplicationController
 
   def remove_co_driver
     co_job = Job.find( params[ :co_job_id ].to_i )
+    logger.info @job.co_jobs.length
+
     @job.remove_co_job( co_job )
     @job.add_breakpoints
     @shuttles = @job.get_shuttle_array
@@ -96,9 +98,11 @@ class JobsController < ApplicationController
   # PATCH/PUT /jobs/1
   # PATCH/PUT /jobs/1.json
   def update
-    co_jobs = params[:co_jobs]
     respond_to do |format|
-      if !@job.charged? && @job.update(job_params) && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
+      if !@job.charged? && @job.update(job_params)
+        if job_params["shuttle"] == "0"
+          @job.remove_shuttles
+        end
         if params[:subaction] == "update_and_pay"
           @job.set_to_current_bill
           format.html { redirect_to jobs_path, notice: 'Auftrag wurde aktualisiert und der aktuellen Verrechnung hinzugefügt' }

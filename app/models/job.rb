@@ -2,7 +2,7 @@ class Job < ActiveRecord::Base
   belongs_to :from, foreign_key: :from_id, class_name: "Address"
   belongs_to :to, foreign_key: :to_id, class_name: "Address"
   belongs_to :driver
-  has_many :carriers
+  has_many :carriers, foreign_key: :job_id
   has_many :co_jobs, through: :carriers
   has_one :carrier, foreign_key: :co_job_id
   belongs_to :route
@@ -73,12 +73,15 @@ class Job < ActiveRecord::Base
     co_drivers
   end
 
-  def remove_co_job co_job
-    carrier = Carrier.where( co_job_id: co_job.id, job_id: self.id ).first
-    logger.info carrier.inspect
+  def remove_shuttles
+    ActiveRecord::Base.connection.delete("DELETE FROM carriers WHERE job_id=#{self.id};")
+    self.reload
+    breakpoints.delete_all
+  end
 
-    Carrier.delete(carrier.id)
-    carrier.destroy unless carrier.nil?
+  def remove_co_job co_job
+    ActiveRecord::Base.connection.delete("DELETE FROM carriers WHERE co_job_id=#{co_job.id} AND job_id=#{self.id};")
+    self.reload
   end
 
   def add_breakpoints
@@ -96,9 +99,13 @@ class Job < ActiveRecord::Base
   def add_co_jobs( co_job_ids )
     self.co_jobs = []
     unless co_job_ids.nil? || co_job_ids.empty? || !shuttle
-      co_job_ids[0] = "" if co_job_ids[0] == ","
-      co_job_ids = co_job_ids.split ","
       jobs = []
+
+      if co_job_ids.is_a? String
+        co_job_ids[0] = "" if co_job_ids[0] == ","
+        co_job_ids = co_job_ids.split ","
+      end
+
       co_job_ids.each do |co_job_id|
         unless co_job_id.to_i == self.id
           co_job = Job.find(co_job_id)
