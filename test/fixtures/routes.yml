@@ -1,13 +1,15 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  id: 1
   from_id: 1
-  to_id: 2 
+  to_id: 2
   calculation_basis: 1
   distance: 10
   status: 1
 
 two:
+  id: 2
   from: two
   to: one
   calculation_basis: 1

@@ -26,6 +26,22 @@ class Job < ActiveRecord::Base
     Job.where( status: OPEN )
   end
 
+  def set_route
+    self.route_id = Route.find_or_create( self.from_id , self.to_id )
+    self.save
+  end
+
+  def price
+    if self.final_calculation_basis == Route::FLAT_RATE
+      price = self.bill.price_flat_rate
+    elsif self.final_calculation_basis == Route::PAY_PER_KM
+      price = self.final_distance * self.bill.price_per_km
+    else
+      return false
+    end
+    return price
+  end
+
   def set_billed bill
     self.status = FINISHED
     self.bill = bill
@@ -39,6 +55,22 @@ class Job < ActiveRecord::Base
   def set_charged
     self.status = CHARGED
     self.save
+  end
+
+  def check_shuttle_dependencies
+    missing_dependencies = []
+    if self.is_shuttle?
+      self.co_jobs.each do |co_job|
+        unless co_job.bill == self.id
+          missing_dependencies << "Um Shuttle #{self.id} zu verrechnen muss auch Auftrag #{co_job.id} verrechnet werden"
+        end
+      end
+    elsif self.has_shuttle?
+      unless self.carrier.bill == self.bill
+        missing_dependencies << "Um Auftrag #{self.id} zu verrechnen muss auch sein Shuttle #{self.carrier.id} verrechnet werden"
+      end
+    end
+    return missing_dependencies
   end
 
   def set_open
@@ -88,7 +120,6 @@ class Job < ActiveRecord::Base
     self.breakpoints = []
 
     self.co_jobs.each_with_index do |co_job, index|
-      logger.info co_job.from.address_short
       if self.breakpoints.where( address_id: co_job.from.id ).empty? && self.to_id != co_job.from_id
         bp = self.breakpoints.build( position: index ,job_id: self.id, address_id: co_job.from.id )
         bp.save

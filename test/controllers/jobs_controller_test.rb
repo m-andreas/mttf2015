@@ -113,7 +113,7 @@ class JobsControllerTest < ActionController::TestCase
     jobs(:one).reload
     assert jobs(:one).is_finished?
     assert_equal Bill.get_current, jobs(:one).bill
-    assert_redirected_to current_bill_path
+    assert_redirected_to jobs_path
   end
 
   test "remove_from_current_bill" do

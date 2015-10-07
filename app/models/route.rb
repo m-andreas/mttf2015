@@ -31,6 +31,10 @@ class Route < ActiveRecord::Base
     return [ [ FLAT_RATE, "Pauschale" ] , [ PAY_PER_KM, "Per Kilometer" ] ]
   end
 
+  def is_active?
+    self.status == PROCESSED
+  end
+
   def is_new?
     self.status == NEW
   end

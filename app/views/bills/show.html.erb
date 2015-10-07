@@ -1,5 +1,6 @@
 <p id="notice"><%= notice %></p>
 <div class="small-12 column">
+
   <div class="medium-6 small-12 column">
     <p>
       <strong>Verrechnet am:</strong>
@@ -19,4 +20,5 @@
 </div>
 
 <%= link_to 'Datum auf Rechnung editieren', edit_bill_path(@bill) %> |
-<%= link_to 'Zurück', old_bills_path %>
+<%= link_to 'Zurück', old_bills_path %> |
+<%= link_to "Excel für Sixt", bill_path( @bill, format: "xls") %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151005153146) do
+ActiveRecord::Schema.define(version: 20151006205651) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -439,6 +439,10 @@ ActiveRecord::Schema.define(version: 20151005153146) do
     t.string   "print_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "price_per_km",           precision: 15, scale: 2
+    t.decimal  "price_flat_rate",        precision: 15, scale: 2
+    t.decimal  "driver_price_per_km",    precision: 15, scale: 2
+    t.decimal  "driver_price_flat_rate", precision: 15, scale: 2
   end
 
   create_table "breakpoints", force: true do |t|
@@ -463,8 +467,8 @@ ActiveRecord::Schema.define(version: 20151005153146) do
     t.string   "country"
     t.string   "telephone"
     t.string   "email"
-    t.float    "price_per_km",    limit: 24
-    t.float    "price_flat_rate", limit: 24
+    t.decimal  "price_per_km",    precision: 10, scale: 2
+    t.decimal  "price_flat_rate", precision: 10, scale: 2
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -530,6 +534,8 @@ ActiveRecord::Schema.define(version: 20151005153146) do
     t.datetime "updated_at"
     t.integer  "driver_id"
     t.integer  "bill_id"
+    t.integer  "final_distance"
+    t.integer  "final_calculation_basis"
   end
 
   create_table "routes", force: true do |t|

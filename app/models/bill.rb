@@ -1,6 +1,8 @@
 class Bill < ActiveRecord::Base
   has_many :jobs
 
+  require 'csv'
+
   def self.get_old
     old_bills = Bill.where.not( billed_at: nil ).order(billed_at: :desc)
   end
@@ -11,6 +13,17 @@ class Bill < ActiveRecord::Base
       current_bill = create
     end
     return current_bill
+  end
+
+  def to_csv(options = {})
+    CSV.generate(options) do |csv|
+      csv << ["Rechnung fuer #{self.print_date}"]
+      csv << [ "Id", "Preis" ]
+      self.jobs.each do |job|
+        csv << [job.id, job.price]
+      end
+      csv << ["Gesamt",sixt_total]
+    end
   end
 
   def self.get_current
@@ -35,11 +48,36 @@ class Bill < ActiveRecord::Base
     end
   end
 
-  def pay
-    self.billed_at = DateTime.now
+  def sixt_total
+    total = 0
     self.jobs.each do |job|
-      job.set_charged
+      total += job.price
     end
-    self.save
+    return total
+  end
+
+  def pay
+    self.price_flat_rate = Company.sixt.price_flat_rate
+    self.driver_price_flat_rate = Company.transfair.price_flat_rate
+    self.price_per_km = Company.sixt.price_per_km
+    self.driver_price_per_km = Company.transfair.price_per_km
+    missing_dependencys = []
+    self.jobs.each do |job|
+      missing_dependencys << job.check_shuttle_dependencies
+    end
+
+    missing_dependencys.flatten!
+    if missing_dependencys.empty?
+      self.billed_at = DateTime.now
+      self.save
+      self.jobs.each do |job|
+        job.final_distance = job.route.distance
+        job.final_calculation_basis = job.route.calculation_basis
+        job.set_charged
+      end
+      return true
+    else
+      return missing_dependencys
+    end
   end
 end

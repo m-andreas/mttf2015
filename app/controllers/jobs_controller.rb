@@ -37,8 +37,15 @@ class JobsController < ApplicationController
   end
 
   def add_to_current_bill
-    @job.set_to_current_bill
-    redirect_to current_bill_path
+    puts "route here??"
+    puts @job.inspect
+    if @job.route.is_active?
+      flash[:alert] = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet."
+    else
+      @job.set_to_current_bill
+      flash[:notice] = "Auftrag wurde verrechnet"
+    end
+    redirect_to jobs_path
   end
 
   def show_all
@@ -99,7 +106,7 @@ class JobsController < ApplicationController
   # PATCH/PUT /jobs/1.json
   def update
     respond_to do |format|
-      if !@job.charged? && @job.update(job_params)
+      if !@job.charged? && @job.update(job_params) && @job.set_route
         if job_params["shuttle"] == "0"
           @job.remove_shuttles
         end

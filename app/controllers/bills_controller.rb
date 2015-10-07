@@ -18,7 +18,12 @@ class BillsController < ApplicationController
   end
 
   def show
-    respond_with(@bill)
+    @bill
+    respond_to do |format|
+      format.html
+      format.csv { send_data @bill.to_csv( col_sep: "\t") }
+      format.xls { send_data @bill.to_csv(col_sep: "\t") }
+    end
   end
 
   def new
@@ -65,8 +70,12 @@ class BillsController < ApplicationController
   end
 
   def pay
-    @bill.pay
-    redirect_to @bill
+    dependencies = @bill.pay
+    if dependencies == true
+      redirect_to @bill
+    else
+      redirect_to jobs_path, alert: dependencies
+    end
   end
 
   private

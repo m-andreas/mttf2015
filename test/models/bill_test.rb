@@ -48,4 +48,17 @@ class BillTest < ActiveSupport::TestCase
       assert job.is_charged?
     end
   end
+
+  test "set_current_bill_finished_with_missing_dependencys" do
+    jobs(:shuttle).set_to_current_bill
+    bill = Bill.get_current
+    dependencies = bill.pay
+    assert_equal 2, dependencies.length
+    assert dependencies.first.is_a? String
+    assert_not Bill.get_old.include? bill
+    assert bill.is_current?
+    bill.jobs.each do |job|
+      assert job.is_finished?
+    end
+  end
 end
