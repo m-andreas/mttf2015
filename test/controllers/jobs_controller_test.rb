@@ -46,7 +46,7 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal "job_notice", assigns(:job).job_notice
     assert_equal "transport_notice", assigns(:job).transport_notice
     assert_equal "transport_notice_extern", assigns(:job).transport_notice_extern
-    assert_redirected_to jobs_path)
+    assert_redirected_to jobs_path
     assert !assigns(:job).shuttle
     assert_equal @job.cost_center_id, assigns(:job).cost_center_id
   end
@@ -138,8 +138,6 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal 2, jobs(:shuttle).co_drivers.length
     post :remove_co_driver, id: jobs(:shuttle), co_job_id: jobs( :two ).id
     shuttle = Job.find(jobs(:shuttle).id)
-    puts "carrieres in test"
-    puts shuttle.carriers.inspect
     assert_equal 1, shuttle.co_drivers.length
     assert_equal [jobs(:one)], shuttle.co_jobs
   end

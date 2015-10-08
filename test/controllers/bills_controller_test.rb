@@ -89,8 +89,6 @@ class BillsControllerTest < ActionController::TestCase
 
   test "should set bill payed" do
     sign_in @user
-    puts "set bill payed"
-    puts @bill.jobs.inspect
     post :pay, id: @bill
     assert_redirected_to @bill
     assert Bill.get_current.jobs.empty?

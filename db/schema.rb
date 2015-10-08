@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151006205651) do
+ActiveRecord::Schema.define(version: 20151008084530) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -544,7 +544,7 @@ ActiveRecord::Schema.define(version: 20151006205651) do
     t.integer  "calculation_basis"
     t.integer  "distance"
     t.integer  "last_modified_by"
-    t.string   "status"
+    t.integer  "status"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

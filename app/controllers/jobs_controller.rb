@@ -38,11 +38,10 @@ class JobsController < ApplicationController
 
   def add_to_current_bill
     if @job.route.is_active?
-      flash[:alert] = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet."
-
-    else
       @job.set_to_current_bill
       flash[:notice] = "Auftrag wurde verrechnet"
+    else
+      flash[:error] = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet."
     end
     respond_to do |format|
         format.html { redirect_to jobs_path }

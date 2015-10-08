@@ -4,6 +4,7 @@ class JobsAllDatatable
 
   def initialize(view)
     @view = view
+    @job = Job.includes(:driver).find(params[:main_job_id]) unless params[:main_job_id] == ""
   end
 
   def as_json(options = {})
@@ -53,7 +54,12 @@ private
   end
 
  def sort_order_filter
-    records = Job.order("#{sort_column} #{sort_direction}").includes( :driver )
+    if @job
+      records = Job.joins( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( drivers: { id: @job.driver.id }).order("#{sort_column} #{sort_direction}")
+    else
+      records = Job.joins( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).order("#{sort_column} #{sort_direction}")
+    end
+
     if params[:search][:value].present?
       search = params[:search][:value].strip
       puts search.inspect
