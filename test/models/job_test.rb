@@ -41,6 +41,7 @@ class JobTest < ActiveSupport::TestCase
   end
 
   test "delete_co_jobs_if_no_shuttle" do
+    Carrier.create(job_id: jobs(:one).id, co_job_id: jobs(:two).id)
     assert_equal [ jobs(:two) ], jobs(:one).co_jobs
     jobs(:one).add_co_jobs( "," + jobs(:two).id.to_s )
     assert_equal [], jobs(:one).co_jobs
@@ -80,7 +81,7 @@ class JobTest < ActiveSupport::TestCase
   test "set_breakpoints" do
     jobs(:shuttle).breakpoints = []
     jobs(:shuttle).add_breakpoints
-    assert_equal 1, jobs(:shuttle).breakpoints.length
+    assert_equal 2, jobs(:shuttle).breakpoints.length
     assert jobs(:shuttle).breakpoints.first.address jobs(:two).from
   end
 
@@ -95,5 +96,42 @@ class JobTest < ActiveSupport::TestCase
     assert_equal 2, jobs(:shuttle).carriers.length
     jobs(:shuttle).remove_co_job( jobs(:shuttle).co_jobs.first )
     assert_equal 1, jobs(:shuttle).carriers.length
+  end
+
+  test "check_shuttle_dependencies" do
+    jobs(:shuttle).set_to_current_bill
+    jobs(:one).set_to_current_bill
+    jobs(:two).set_to_current_bill
+    missing_dependencys = Bill.get_current.pay
+    jobs(:shuttle).reload
+    jobs(:one).reload
+    jobs(:two).reload
+    assert jobs(:shuttle).is_charged?, missing_dependencys
+    assert jobs(:one).is_charged?
+    assert jobs(:two).is_charged?
+  end
+
+  test "check_shuttle_dependencies_fail" do
+    jobs(:shuttle).set_to_current_bill
+    jobs(:one).set_to_current_bill
+    Bill.get_current.pay
+    jobs(:shuttle).reload
+    jobs(:one).reload
+    jobs(:two).reload
+    assert jobs(:shuttle).is_finished?
+    assert jobs(:one).is_finished?
+    assert jobs(:two).is_open?
+  end
+
+  test "check_shuttle_dependencies_fail2" do
+    jobs(:two).set_to_current_bill
+    jobs(:one).set_to_current_bill
+    Bill.get_current.pay
+    jobs(:shuttle).reload
+    jobs(:one).reload
+    jobs(:two).reload
+    assert jobs(:shuttle).is_open?
+    assert jobs(:one).is_finished?
+    assert jobs(:two).is_finished?
   end
 end

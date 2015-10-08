@@ -1,6 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  transport_notice: "one"
   driver_id: 1
   cost_center_id: 1
   status: 1
@@ -8,9 +9,12 @@ one:
   route_id: 1
   from_id: 1
   to_id: 2
+  mileage_collection: 100
+  mileage_delivery: 200
   shuttle: false
 
 two:
+  transport_notice: "two"
   driver_id: 2
   cost_center_id: 1
   status: 1
@@ -19,8 +23,11 @@ two:
   from_id: 2
   to_id: 1
   shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
 
 not_in_shuttle:
+  transport_notice: "not_in_shuttle"
   driver_id: 2
   cost_center_id: 1
   status: 1
@@ -29,18 +36,24 @@ not_in_shuttle:
   from_id: 1
   to_id: 2
   shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
 
 shuttle:
-  driver_id: 2
+  transport_notice: "shuttle"
+  driver_id: 3
   cost_center_id: 1
   status: 1
   created_by_id: 1
   route_id: 2
-  from_id: 1
-  to_id: 2
+  from_id: 3
+  to_id: 4
   shuttle: true
+  mileage_collection: 100
+  mileage_delivery: 200
 
 empty_shuttle:
+  transport_notice: "empty_shuttle"
   driver_id: 2
   cost_center_id: 1
   status: 1
@@ -49,8 +62,11 @@ empty_shuttle:
   from_id: 1
   to_id: 2
   shuttle: true
+  mileage_collection: 100
+  mileage_delivery: 200
 
 payed:
+  transport_notice: "payed"
   bill: old_one
   driver_id: 2
   cost_center_id: 1
@@ -62,8 +78,11 @@ payed:
   shuttle: false
   actual_delivery_date: <%= Date.current %>
   actual_collection_date:  <%= Date.current %>
+  mileage_collection: 100
+  mileage_delivery: 200
 
 finished:
+  transport_notice: "finished"
   bill: current
   driver_id: 1
   cost_center_id: 1
@@ -75,3 +94,5 @@ finished:
   shuttle: false
   actual_delivery_date: <%= Date.current %>
   actual_collection_date:  <%= Date.current %>
+  mileage_collection: 100
+  mileage_delivery: 200

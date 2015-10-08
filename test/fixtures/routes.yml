@@ -12,7 +12,7 @@ two:
   id: 2
   from: two
   to: one
-  calculation_basis: 1
+  calculation_basis: 2
   distance: 10
   status: 1
 

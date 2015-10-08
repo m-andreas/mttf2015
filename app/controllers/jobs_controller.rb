@@ -138,6 +138,8 @@ class JobsController < ApplicationController
     unless @job.charged?
       @job.status = Job::DELETED
       @job.save!
+      @job.remove_shuttles
+      @job.remove_in_shuttles
       flash[:notice] = 'Auftrag wurde entfernt'
       respond_to do |format|
         format.html { redirect_to jobs_url, notice: 'Auftrag gelöscht' }
@@ -162,7 +164,7 @@ class JobsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
-      params.require(:job).permit( { :breakpoints_attributes => [ :address_id, :id, :position, :distance ]}, :driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
+      params.require(:job).permit( { :breakpoints_attributes => [ :address_id, :id, :position, :mileage ]}, :driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
         :scheduled_collection_date, :scheduled_delivery_date, :actual_collection_date, :actual_delivery_date, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
     end
 end

@@ -8,8 +8,8 @@ one:
     email: office@mt-transfair.at
     city: Vösendorf
     country: Österreich
-    price_per_km: 0
-    price_flat_rate: 0
+    price_per_km: 0.072
+    price_flat_rate: 5
     telephone: 01/6992010
 
 two:

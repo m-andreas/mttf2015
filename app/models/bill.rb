@@ -59,10 +59,47 @@ class Bill < ActiveRecord::Base
     end
   end
 
+  def drivers
+    drivers_in_bill = []
+    self.jobs.each do |job|
+      drivers_in_bill << job.driver
+    end
+    drivers_in_bill.uniq!
+    return drivers_in_bill
+  end
+
+  def get_main_drives_array( driver )
+    self.jobs.where( driver_id: driver.id ).pluck( :id )
+  end
+
+  def get_jobs_array( driver )
+    main_jobs = self.get_main_drives_array( driver )
+    return main_jobs | Carrier.where( co_job_id: main_jobs ).pluck( :job_id )
+  end
+
+  def driver_total( driver )
+    total = 0
+    job_ids = self.get_jobs_array( driver )
+    jobs = Job.find(job_ids)
+    jobs.each do |job|
+      if job.shuttle?
+        if job.driver != driver
+          driver_job = Carrier.find_by( co_job_id: self.get_main_drives_array( driver ), job_id: job.id ).co_job
+        else
+          driver_job = job
+        end
+        total += job.price_driver_shuttle( driver_job )
+      else
+        total += job.price_driver
+      end
+    end
+    return total
+  end
+
   def sixt_total
     total = 0
     self.jobs.each do |job|
-      total += job.price
+      total += job.price_sixt
     end
     return total
   end
@@ -82,7 +119,6 @@ class Bill < ActiveRecord::Base
       self.billed_at = DateTime.now
       self.save
       self.jobs.each do |job|
-        job.final_distance = job.route.distance
         job.final_calculation_basis = job.route.calculation_basis
         job.set_charged
       end

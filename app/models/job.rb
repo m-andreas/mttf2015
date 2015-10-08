@@ -2,9 +2,9 @@ class Job < ActiveRecord::Base
   belongs_to :from, foreign_key: :from_id, class_name: "Address"
   belongs_to :to, foreign_key: :to_id, class_name: "Address"
   belongs_to :driver
-  has_many :carriers, foreign_key: :job_id
+  has_many :carriers, foreign_key: :job_id, :dependent => :destroy
   has_many :co_jobs, through: :carriers
-  has_one :carrier, foreign_key: :co_job_id
+  has_one :carrier, foreign_key: :co_job_id, :dependent => :destroy
   belongs_to :route
   belongs_to :created_by, class_name: "User"
   belongs_to :bill
@@ -31,11 +31,51 @@ class Job < ActiveRecord::Base
     self.save
   end
 
-  def price
+  def distance
+    self.mileage_delivery.to_i - self.mileage_collection.to_i
+  end
+
+  def price_driver
+    if self.final_calculation_basis == Route::FLAT_RATE
+      price = self.bill.driver_price_flat_rate
+    elsif self.final_calculation_basis == Route::PAY_PER_KM
+      price = self.distance * self.bill.driver_price_per_km
+    else
+      return false
+    end
+    return price
+  end
+
+  def price_driver_shuttle( driver_job )
+    drivers_in_car = self.co_jobs.length + 1
+    breakpoints = self.breakpoints.order( :position )
+    if self.final_calculation_basis == Route::FLAT_RATE
+      price = self.bill.driver_price_flat_rate / initial_drivers
+    elsif self.final_calculation_basis == Route::PAY_PER_KM
+      price = 0
+      breakpoints.each do |breakpoint|
+        price += (( self.bill.driver_price_per_km * breakpoint.distance )/ drivers_in_car )
+        if driver_job.from == breakpoint.address
+          return price
+        else
+          drivers_leaving = self.co_jobs.where( from_id: breakpoint.address_id ).length
+          drivers_in_car -= drivers_leaving
+          if breakpoint == breakpoints.last
+            price += self.bill.driver_price_per_km * ( self.mileage_delivery - breakpoint.mileage ) / drivers_in_car
+          end
+        end
+      end
+    else
+      return false
+    end
+    return price
+  end
+
+  def price_sixt
     if self.final_calculation_basis == Route::FLAT_RATE
       price = self.bill.price_flat_rate
     elsif self.final_calculation_basis == Route::PAY_PER_KM
-      price = self.final_distance * self.bill.price_per_km
+      price = self.distance * self.bill.price_per_km
     else
       return false
     end
@@ -66,8 +106,8 @@ class Job < ActiveRecord::Base
       error = "Km Stand nicht gesetz. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error
     end
-    unless self.mileage_collection.to_i > self.mileage_delivery.to_i
-      error = "Kilometerstand Abholung größer als Kilometerstand Lieferung. Auftrag nicht verrechnet. Auftrag #{self.id}"
+    unless self.mileage_collection.to_i < self.mileage_delivery.to_i
+      error = "Kilometerstand Abholung mehr als Kilometerstand Lieferung. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error
     end
     return true
@@ -77,13 +117,13 @@ class Job < ActiveRecord::Base
     missing_dependencies = []
     if self.is_shuttle?
       self.co_jobs.each do |co_job|
-        unless co_job.bill == self.id
+        unless co_job.bill == self.bill
           missing_dependencies << "Um Shuttle #{self.id} zu verrechnen muss auch Auftrag #{co_job.id} verrechnet werden"
         end
       end
     elsif self.has_shuttle?
-      unless self.carrier.bill == self.bill
-        missing_dependencies << "Um Auftrag #{self.id} zu verrechnen muss auch sein Shuttle #{self.carrier.id} verrechnet werden"
+      unless self.carrier.job.bill == self.bill
+        missing_dependencies << "Um Auftrag #{self.id} zu verrechnen muss auch sein Shuttle #{self.carrier.job.id} verrechnet werden"
       end
     end
     return missing_dependencies
@@ -125,6 +165,11 @@ class Job < ActiveRecord::Base
     ActiveRecord::Base.connection.delete("DELETE FROM carriers WHERE job_id=#{self.id};")
     self.reload
     breakpoints.delete_all
+  end
+
+  def remove_in_shuttles
+    ActiveRecord::Base.connection.delete("DELETE FROM carriers WHERE co_job_id=#{self.id};")
+    self.reload
   end
 
   def remove_co_job co_job

@@ -10,6 +10,7 @@
         <th>Datum Lieferung</th>
         <th>Km in Route</th>
         <th>Tatsächliche Km</th>
+        <th>Abweichung</th>
         <th>Shuttleauftrag</th>
         <% if @bill.is_current? %>
           <th></th>
@@ -26,7 +27,8 @@
           <td><%= l job.actual_collection_date unless job.actual_collection_date.nil? %></td>
           <td><%= l job.actual_delivery_date unless job.actual_collection_date.nil? %></td>
           <td><%= job.route.is_flat_rate? ? "Pauschale" : job.route.distance %></td>
-          <td><%= job.mileage_collection.to_i - job.mileage_delivery.to_i %></td>
+          <td><%= job.distance %></td>
+          <td><%= ( job.distance - job.route.distance ).abs %></td>
           <td><%= job.is_shuttle? ? "Ja" : "Nein" %></td>
           <% if @bill.is_current? %>
             <td><%= link_to "Aus Rechnung entfernen" , remove_job_from_current_bill_path(job), method: :post %></td>

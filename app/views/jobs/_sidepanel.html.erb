@@ -38,7 +38,7 @@
           <!-- both data-* attributes required -->
           <li class="ui-state-default ui-sortable-handle" data-role="breakpoint<%= ff.object.to_s %>" data-position="<%= ff.object.position %>">
             <%= ff.object.address.address_short %>
-
+            <%= ff.text_field :mileage %>
             <!-- to pass position into controller's code -->
             <%= ff.hidden_field :position, :data => { :role => 'position' } %>
           </li>

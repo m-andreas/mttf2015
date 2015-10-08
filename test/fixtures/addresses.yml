@@ -21,6 +21,17 @@ two:
   inactive: false
 
 three:
+  id: 3
+  created_by: 1
+  country: Österreich
+  city: Graz
+  zip_code: 1340
+  address: Hauptplatz 2
+  address_short: Hauptplatz Graz
+  inactive: false
+
+four:
+  id: 4
   created_by: 1
   country: Österreich
   city: Graz
@@ -30,7 +41,7 @@ three:
   inactive: false
 
 inactive:
-  id: 3
+  id: 5
   created_by: 1
   country: Österreich
   city: Wien
