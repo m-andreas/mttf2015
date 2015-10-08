@@ -1487,6 +1487,8 @@ $include-html-global-classes: $include-html-classes;
   background: #d1d3d6;
 }
 
-
+.padded-column {
+  padding: 10px;
+}
 
 @import 'foundation';

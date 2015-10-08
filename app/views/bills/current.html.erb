@@ -1,6 +1,18 @@
 <div class= "small-12 column">
   <h1>Aktuelle Rechnung</h1>
 </div>
+<div class="small-12 column padded-column">
+  <div class="medium-4 column">
+    Aufträge Gesamtanzahl: <%= @bill.jobs.length %>
+  </div>
+  <div class="medium-4 column">
+    davon Hauptaufträge: <%= @bill.jobs.where(shuttle:false).length %>
+  </div>
+  <div class="medium-4 column">
+    davon Shuttles: <%= @bill.jobs.where(shuttle:true).length %>
+  </div>
+</div>
+
 <%= render "jobs_in_bill" %>
 <div class= "small-12 column">
   <div class= "small-12 medium-3 column">

@@ -14,6 +14,10 @@ class Route < ActiveRecord::Base
     where( "status in (:show)", show: [ NEW, PROCESSED ] ).includes( :from, :to )
   end
 
+  def is_flat_rate?
+    self.calculation_basis == FLAT_RATE
+  end
+
   def self.find_or_create( from_id, to_id)
     route = find_by( from_id: from_id, to_id: to_id )
     if route.nil?

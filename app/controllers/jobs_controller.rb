@@ -37,11 +37,12 @@ class JobsController < ApplicationController
   end
 
   def add_to_current_bill
-    if @job.route.is_active?
+    msg = @job.check_for_billing
+    if msg == true
       @job.set_to_current_bill
       flash[:notice] = "Auftrag wurde verrechnet"
     else
-      flash[:error] = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet."
+      flash[:error] = msg
     end
     respond_to do |format|
         format.html { redirect_to jobs_path }
@@ -113,8 +114,14 @@ class JobsController < ApplicationController
           @job.remove_shuttles
         end
         if params[:subaction] == "update_and_pay"
-          @job.set_to_current_bill
-          format.html { redirect_to jobs_path, notice: 'Auftrag wurde aktualisiert und der aktuellen Verrechnung hinzugefügt' }
+          msg = @job.check_for_billing
+          if msg == true
+            @job.set_to_current_bill
+            flash[:notice] = 'Auftrag wurde aktualisiert und der aktuellen Verrechnung hinzugefügt'
+          else
+            flash[:error] = msg
+          end
+          format.html { redirect_to jobs_path }
         else
           format.html { redirect_to jobs_path, notice: 'Auftrag wurde erfolgreicht aktualisiert.' }
         end

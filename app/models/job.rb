@@ -57,6 +57,22 @@ class Job < ActiveRecord::Base
     self.save
   end
 
+  def check_for_billing
+    unless self.route.is_active?
+      error = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet."
+      return error
+    end
+    unless self.mileage_collection.to_i > 0 && self.mileage_delivery.to_i > 0
+      error = "Km Stand nicht gesetz. Auftrag nicht verrechnet"
+      return error
+    end
+    unless self.mileage_collection.to_i > self.mileage_delivery.to_i
+      error = "Kilometerstand Abholung größer als Kilometerstand Lieferung. Auftrag nicht verrechnet."
+      return error
+    end
+    return true
+  end
+
   def check_shuttle_dependencies
     missing_dependencies = []
     if self.is_shuttle?
