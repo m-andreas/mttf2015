@@ -43,8 +43,19 @@ class Bill < ActiveRecord::Base
   end
 
   def add_jobs jobs
+    messages = []
     jobs.each do |job|
-      job.set_billed( self )
+      msg = job.check_for_billing
+      if msg == true
+        job.set_billed( self )
+      else
+        messages << msg
+      end
+    end
+    if messages.empty?
+      return true
+    else
+      return messages
     end
   end
 

@@ -59,15 +59,15 @@ class Job < ActiveRecord::Base
 
   def check_for_billing
     unless self.route.is_active?
-      error = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet."
+      error = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error
     end
     unless self.mileage_collection.to_i > 0 && self.mileage_delivery.to_i > 0
-      error = "Km Stand nicht gesetz. Auftrag nicht verrechnet"
+      error = "Km Stand nicht gesetz. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error
     end
     unless self.mileage_collection.to_i > self.mileage_delivery.to_i
-      error = "Kilometerstand Abholung größer als Kilometerstand Lieferung. Auftrag nicht verrechnet."
+      error = "Kilometerstand Abholung größer als Kilometerstand Lieferung. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error
     end
     return true

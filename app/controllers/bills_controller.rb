@@ -56,7 +56,12 @@ class BillsController < ApplicationController
 
   def add_jobs
     @current_bill = Bill.get_current
-    @current_bill.add_jobs( Job.get_open )
+    msg = @current_bill.add_jobs( Job.get_open )
+    if msg == true
+      flash[:notice] = "Aufträge wurde verrechnet"
+    else
+      flash[:error] = msg
+    end
     redirect_to current_bill_path
   end
 
