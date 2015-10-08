@@ -32,8 +32,8 @@ private
         shuttle = job.is_shuttle? ? "Ja" : "Nein"
         if job.is_open?
           edit = link_to 'Editieren', edit_job_path(job)
-          add_to_current = link_to "verrechnen", add_job_to_current_bill_path( job ), method: :post
-          delete = link_to 'löschen', job, method: :delete, data: { confirm: 'Auftrag löschen?' }
+          add_to_current = link_to "verrechnen", add_job_to_current_bill_path( job ), method: :post, remote: true
+          delete = link_to 'löschen', job, method: :delete, data: { confirm: 'Auftrag löschen?' }, remote: true, :class => 'delete_job'
         else
           edit = ""
           add_to_current = ""

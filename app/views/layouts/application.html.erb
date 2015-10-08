@@ -87,20 +87,22 @@
       </nav>
     </div>
     <% end %>
+    <div id="flash-message">
     <% flash.each do |name, msg| %>
-      <% if msg.is_a?(String) %>
-        <div data-alert class="alert-box round <%= name.to_s == 'notice' ? 'success' : 'alert' %>">
-          <%= content_tag :div, msg %>
-          <a href="#" class="close">&times;</a>
-        </div>
+        <% if msg.is_a?(String) %>
+          <div data-alert class="alert-box round <%= name.to_s == 'notice' ? 'success' : 'alert' %>">
+            <%= content_tag :div, msg %>
+            <a href="#" class="close">&times;</a>
+          </div>
+        <% end %>
+        <% if msg.is_a?(Array) %>
+          <div data-alert class="alert-box round <%= name.to_s == 'notice' ? 'success' : 'alert' %>">
+            <%= content_tag :div, safe_join(msg, "<br>".html_safe) %>
+            <a href="#" class="close">&times;</a>
+          </div>
+        <% end %>
       <% end %>
-      <% if msg.is_a?(Array) %>
-        <div data-alert class="alert-box round <%= name.to_s == 'notice' ? 'success' : 'alert' %>">
-          <%= content_tag :div, safe_join(msg, "<br>".html_safe) %>
-          <a href="#" class="close">&times;</a>
-        </div>
-      <% end %>
-    <% end %>
+    </div>
     <%= yield %>
     <%= javascript_tag do %>
       jQuery.fn.filterByText = function(textbox, selectSingleMatch) {

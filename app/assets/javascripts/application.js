@@ -27,9 +27,36 @@ $(function(){ $(document).foundation(); });
 
 $(document).ready(function(){
   setTimeout(function(){
-    $('.alert-box').remove();
+    $('.alert-box').fadeOut("slow");
   }, 5000);
   $(function() {
     $('.datepicker').datepicker();
   });
  })
+
+var fade_flash = function() {
+  setTimeout(function(){
+    $('.alert-box').fadeOut("slow");
+  }, 5000);
+};
+fade_flash();
+
+var show_ajax_message = function(msg, type) {
+  console.log(msg)
+  console.log(type)
+  if( type == "notice" ){
+    type = 'success'
+  }
+  else{
+    type = 'alert'
+  }
+  $("#flash-message").html('<div class="alert-box round ' + type + '">' +msg+'</div>');
+  fade_flash();
+};
+
+$(document).ajaxComplete(function(event, request) {
+    var msg = request.getResponseHeader('X-Message');
+    var type = request.getResponseHeader('X-Message-Type');
+    if(msg !== null)
+      show_ajax_message(msg, type); //use whatever popup, notification or whatever plugin you want
+});

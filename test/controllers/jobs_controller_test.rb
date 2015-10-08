@@ -46,7 +46,7 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal "job_notice", assigns(:job).job_notice
     assert_equal "transport_notice", assigns(:job).transport_notice
     assert_equal "transport_notice_extern", assigns(:job).transport_notice_extern
-    assert_redirected_to job_path(assigns(:job))
+    assert_redirected_to jobs_path)
     assert !assigns(:job).shuttle
     assert_equal @job.cost_center_id, assigns(:job).cost_center_id
   end

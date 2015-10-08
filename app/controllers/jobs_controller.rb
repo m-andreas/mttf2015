@@ -37,15 +37,18 @@ class JobsController < ApplicationController
   end
 
   def add_to_current_bill
-    puts "route here??"
-    puts @job.inspect
     if @job.route.is_active?
       flash[:alert] = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet."
+
     else
       @job.set_to_current_bill
       flash[:notice] = "Auftrag wurde verrechnet"
     end
-    redirect_to jobs_path
+    respond_to do |format|
+        format.html { redirect_to jobs_path }
+        format.js   { render :layout => false }
+        format.json { head :no_content }
+    end
   end
 
   def show_all
@@ -91,7 +94,7 @@ class JobsController < ApplicationController
     @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
     respond_to do |format|
       if @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
-        format.html { redirect_to @job, notice: 'Job was successfully created.' }
+        format.html { redirect_to jobs_path, notice: 'Job was successfully created.' }
         format.json { render :show, status: :created, location: @job }
       else
         @drivers = Driver.get_active
@@ -129,13 +132,17 @@ class JobsController < ApplicationController
     unless @job.charged?
       @job.status = Job::DELETED
       @job.save!
+      flash[:notice] = 'Auftrag wurde entfernt'
       respond_to do |format|
         format.html { redirect_to jobs_url, notice: 'Auftrag gelöscht' }
+        format.js   { render :layout => false }
         format.json { head :no_content }
       end
     else
+      flash[:notice] = 'Auftrag konnte nicht entfernt werden'
       respond_to do |format|
         format.html { redirect_to @job, notice: 'Verrechnete Aufträge können nicht gelöscht werden' }
+        format.js   { render :layout => false }
         format.json { head :no_content }
       end
     end
