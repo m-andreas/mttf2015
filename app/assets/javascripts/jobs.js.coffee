@@ -70,8 +70,10 @@ ready = ->
       { width: "5%", className: "center", searchable: false, orderable: false }
       { width: "15%", className: "center", searchable: false, orderable: false }
     ]
-    order: [ [1,'desc'] ]
-
+    order: [ [1,'desc'] ],
+    oLanguage:{
+      sUrl: "/datatable_i18n"
+    }
 
   $('*[data-role=activerecord_sortable]').activerecord_sortable();
 
@@ -82,9 +84,6 @@ ready = ->
     processing: true
     serverSide: true
     hover: true
-    language: {
-        search: "Suche nach Details:"
-    }
     ajax:
       url: '/jobs_ajax/show_regular_jobs'
       data: (d) ->
@@ -110,7 +109,10 @@ ready = ->
       { width: "5%", className: "center", searchable: false, orderable: false }
       { width: "5%", className: "center", searchable: false, orderable: false }
     ]
-    order: [ [1,'desc'] ]
+    order: [ [1,'desc'] ],
+    oLanguage:{
+      sUrl: "datatable_i18n"
+    }
 
   $("#start_from_date").datepicker( dateFormat: "dd.mm.yy" );
 

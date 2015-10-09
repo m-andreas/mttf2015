@@ -12,6 +12,7 @@
         <th>Tatsächliche Km</th>
         <th>Abweichung</th>
         <th>Shuttleauftrag</th>
+        <th></th>
         <% if @bill.is_current? %>
           <th></th>
         <% end %>
@@ -30,6 +31,7 @@
           <td><%= job.distance %></td>
           <td><%= ( job.distance - job.route.distance ).abs %></td>
           <td><%= job.is_shuttle? ? "Ja" : "Nein" %></td>
+          <td><%= link_to "anzeigen", job%>
           <% if @bill.is_current? %>
             <td><%= link_to "Aus Rechnung entfernen" , remove_job_from_current_bill_path(job), method: :post %></td>
           <% end %>

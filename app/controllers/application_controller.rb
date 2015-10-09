@@ -5,8 +5,13 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   after_filter :flash_to_headers
+  prepend_before_action :set_locale
 
   private
+    def set_locale
+      params[:locale] ||= :de
+    end
+
     def flash_to_headers
       return if !request.xhr? || request.env["REQUEST_PATH"] == "/jobs_ajax/show_regular_jobs" || request.env["REQUEST_PATH"] == "/jobs_ajax/show_all"
       response.headers['X-Message'] = flash_message

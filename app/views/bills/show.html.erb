@@ -18,7 +18,13 @@
 <div class="small-12 column">
   <%= render "jobs_in_bill" %>
 </div>
-
-<%= link_to 'Datum auf Rechnung editieren', edit_bill_path(@bill) %> |
-<%= link_to 'Zurück', old_bills_path %> |
-<%= link_to "Excel für Sixt", bill_path( @bill, format: "xls") %>
+<div class="small-12 column">
+  <%= link_to 'Datum auf Rechnung editieren', edit_bill_path(@bill) %> |
+  <%= link_to 'Zurück', old_bills_path %><br>
+  <%= link_to "CSV für Sixt", sixt_bill_path( @bill, format: "csv") %>|
+  <%= link_to "Excel für Sixt", sixt_bill_path(format: "xls") %><br>
+  <%= link_to "CSV für Fahrer", drivers_bill_path( @bill, format: "csv") %>|
+  <%= link_to "Excel für Fahrer", drivers_bill_path(format: "xls") %><br>
+  <%= link_to "CSV komplett", bill_path( @bill, format: "csv") %>|
+  <%= link_to "Excel komplett", bill_path(format: "xls") %>
+</div>

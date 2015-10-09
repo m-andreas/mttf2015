@@ -36,7 +36,7 @@
       <ol data-role="activerecord_sortable">
         <%= f.fields_for :breakpoints do |ff| %>
           <!-- both data-* attributes required -->
-          <li class="ui-state-default ui-sortable-handle" data-role="breakpoint<%= ff.object.to_s %>" data-position="<%= ff.object.position %>">
+          <li class="ui-state-default ui-sortable-handle" data-role="breakpoint<%= ff.object.id.to_s %>" data-position="<%= ff.object.position %>">
             <%= ff.object.address.address_short %>
             <%= ff.text_field :mileage %>
             <!-- to pass position into controller's code -->

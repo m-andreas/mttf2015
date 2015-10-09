@@ -5,12 +5,17 @@ class Breakpoint < ActiveRecord::Base
     config[:relation] = ->(instance) {instance.job.breakpoints}
   end
 
+  def previous
+    breakpoints_list = self.job.breakpoints.order(:position)
+    index = breakpoints_list.index(self)
+    return breakpoints_list[ index - 1 ]
+  end
+
   def distance
     if self.position == 0
       return self.mileage.to_i - self.job.mileage_collection.to_i
     else
-      position_before = self.position - 1
-      breakpoint_before = Breakpoint.find_by( job_id: self.job.id, position: position_before )
+      breakpoint_before = self.previous
       return self.mileage.to_i - breakpoint_before.mileage.to_i
     end
   end

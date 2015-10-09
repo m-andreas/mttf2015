@@ -78,6 +78,20 @@ class JobsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should reorder positions" do
+    sign_in @user
+    date = Date.current
+    breakpoints_beginn = jobs( :shuttle ).breakpoints.order(:position)
+    patch :update, id: jobs( :shuttle ), subaction: "update", job: { "breakpoints_attributes" => { "0" => { id: breakpoints_beginn.last.id, position: 0, mileage: 10 }, "1" => { id: breakpoints_beginn.first.id, position: 1, mileage: 100 } } }
+    assert_redirected_to jobs_path
+    jobs( :shuttle ).reload
+    breakpoints_end = jobs(:shuttle).breakpoints.order(:position)
+    assert_equal breakpoints_end.first.id, breakpoints_beginn.last.id
+    assert_equal breakpoints_end.last.id, breakpoints_beginn.first.id
+    assert_equal 10, breakpoints_end.first.mileage
+    assert_equal 100, breakpoints_end.last.mileage
+  end
+
   test "should update job" do
     sign_in @user
     date = Date.current

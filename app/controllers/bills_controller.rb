@@ -1,5 +1,5 @@
 class BillsController < ApplicationController
-  before_action :set_bill, only: [:show, :edit, :update, :destroy, :pay, :remove_job]
+  before_action :set_bill, only: [:show, :edit, :update, :destroy, :pay, :remove_job, :sixt_bill, :drivers_bill]
 
   respond_to :html
 
@@ -21,8 +21,26 @@ class BillsController < ApplicationController
     @bill
     respond_to do |format|
       format.html
-      format.csv { send_data @bill.to_csv( col_sep: "\t") }
-      format.xls { send_data @bill.to_csv(col_sep: "\t") }
+      format.csv { send_data @bill.to_csv( col_sep: ";").encode('ISO-8859-1', 'UTF-8') }
+      format.xls { }
+    end
+  end
+
+  def sixt_bill
+    @bill
+    respond_to do |format|
+      format.html
+      format.csv { send_data @bill.to_csv( col_sep: ";").encode('ISO-8859-1', 'UTF-8') }
+      format.xls { }
+    end
+  end
+
+  def drivers_bill
+    @bill
+    respond_to do |format|
+      format.html
+      format.csv { send_data @bill.to_csv( col_sep: ";").encode('ISO-8859-1', 'UTF-8') }
+      format.xls { }
     end
   end
 

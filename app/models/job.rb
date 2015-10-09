@@ -39,6 +39,8 @@ class Job < ActiveRecord::Base
     if self.final_calculation_basis == Route::FLAT_RATE
       price = self.bill.driver_price_flat_rate
     elsif self.final_calculation_basis == Route::PAY_PER_KM
+      logger.info self.distance
+      logger.info self.bill.driver_price_per_km
       price = self.distance * self.bill.driver_price_per_km
     else
       return false
@@ -46,29 +48,67 @@ class Job < ActiveRecord::Base
     return price
   end
 
-  def price_driver_shuttle( driver_job )
+  def get_shuttle_string
+    shuttle_string = ""
+    if self.is_shuttle?
+      shuttle_string = "Shuttle für die Jobs:"
+      self.co_jobs.each do |co_job|
+        if co_job == self.co_jobs.last
+          shuttle_string += " #{co_job.id}"
+        else
+          shuttle_string += " #{co_job.id},"
+        end
+      end
+    end
+    return shuttle_string
+  end
+
+  def price_driver_shuttle( driver_job, get_array = false )
     drivers_in_car = self.co_jobs.length + 1
     breakpoints = self.breakpoints.order( :position )
-    if self.final_calculation_basis == Route::FLAT_RATE
-      price = self.bill.driver_price_flat_rate / initial_drivers
-    elsif self.final_calculation_basis == Route::PAY_PER_KM
-      price = 0
-      breakpoints.each do |breakpoint|
-        price += (( self.bill.driver_price_per_km * breakpoint.distance )/ drivers_in_car )
-        if driver_job.from == breakpoint.address
-          return price
+    breakpoints_array = []
+    price = 0
+    breakpoints.each_with_index do |breakpoint, i|
+      part_price = (( self.bill.driver_price_per_km * breakpoint.distance )/ drivers_in_car )
+      price += part_price
+      if get_array
+        if breakpoint.position == 0
+          breakpoints_array << [ self.from.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
         else
-          drivers_leaving = self.co_jobs.where( from_id: breakpoint.address_id ).length
-          drivers_in_car -= drivers_leaving
-          if breakpoint == breakpoints.last
-            price += self.bill.driver_price_per_km * ( self.mileage_delivery - breakpoint.mileage ) / drivers_in_car
+          breakpoints_array << [ breakpoints[ i -1 ].address.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
+        end
+      end
+      if driver_job.from == breakpoint.address
+        break
+      else
+        drivers_leaving = self.co_jobs.where( from_id: breakpoint.address_id ).length
+        drivers_in_car -= drivers_leaving
+        if breakpoint == breakpoints.last
+          part_price = self.bill.driver_price_per_km * ( breakpoint.distance ) / drivers_in_car
+          price += part_price
+          if get_array
+            if breakpoint.position == 0
+              breakpoints_array << [ self.from.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
+            else
+              breakpoints_array << [ breakpoints[ i -1 ].address.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
+            end
           end
         end
       end
-    else
-      return false
     end
-    return price
+    logger.info breakpoints_array.inspect
+    if breakpoints.empty?
+      price = self.bill.driver_price_per_km * (job.distance ) / drivers_in_car
+      if get_array
+        breakpoints_array << [ self.from.address_short, self.from.address_short, job.distance, drivers_in_car, price ]
+      end
+    end
+
+    if get_array
+      return breakpoints_array
+    else
+      return price
+    end
   end
 
   def price_sixt

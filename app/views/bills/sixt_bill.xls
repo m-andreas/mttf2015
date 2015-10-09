@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Sixt Abrechnung">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">ID</Data></Cell>
+        <Cell><Data ss:Type="String">ABHOLUNG</Data></Cell>
+        <Cell><Data ss:Type="String">LIEFERUNG Date</Data></Cell>
+        <Cell><Data ss:Type="String">NACH</Data></Cell>
+        <Cell><Data ss:Type="String">VON</Data></Cell>
+        <Cell><Data ss:Type="String">KZ</Data></Cell>
+        <Cell><Data ss:Type="String"></Data></Cell>
+        <Cell><Data ss:Type="String"></Data></Cell>
+        <Cell><Data ss:Type="String"></Data></Cell>
+        <Cell><Data ss:Type="String"></Data></Cell>
+        <Cell><Data ss:Type="String"></Data></Cell>
+        <Cell><Data ss:Type="String">EUR</Data></Cell>
+        <Cell><Data ss:Type="String">KSt</Data></Cell>
+      </Row>
+    <% @bill.jobs.each do |job| %>
+      <Row>
+        <Cell><Data ss:Type="Number"><%= job.id %></Data></Cell>
+        <Cell><Data ss:Type="String"><%=l job.actual_collection_date unless job.actual_collection_date.nil? %></Data></Cell>
+        <Cell><Data ss:Type="String"><%=l job.actual_delivery_date unless job.actual_delivery_date.nil? %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= job.from.complete_address %></Data></Cell>
+        <Cell><Data ss:Type="String"><%= job.registration_number %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= job.route.distance %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= job.distance %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= job.route.get_calculation_basis %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%=  %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= job.price_sixt.to_s %></Data></Cell>
+        <Cell><Data ss:Type="Number"><%= job.cost_center_id %></Data></Cell>
+      </Row>
+    <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>

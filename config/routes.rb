@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
+    get 'datatable_i18n', to: 'datatables#datatable_i18n'
+  end
   resources :breakpoints
 
   get 'bills/current', to: 'bills#current', as: 'current_bill'
@@ -6,6 +9,8 @@ Rails.application.routes.draw do
   post 'bills/add_jobs', to: 'bills#add_jobs', as: 'add_jobs_to_bill'
   post 'bills/delete_current', to: 'bills#delete_current', as: 'delete_current_bill'
   post 'bills/pay/:id', to: 'bills#pay', as: 'pay_bill'
+  get 'bills/sixt_bill/:id', to: 'bills#sixt_bill', as: 'sixt_bill'
+  get 'bills/drivers_bill/:id', to: 'bills#drivers_bill', as: 'drivers_bill'
   resources :bills
   devise_for :users
   resources :users
@@ -32,7 +37,6 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'jobs#index'
-
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
