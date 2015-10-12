@@ -84,7 +84,7 @@ class Job < ActiveRecord::Base
         drivers_leaving = self.co_jobs.where( from_id: breakpoint.address_id ).length
         drivers_in_car -= drivers_leaving
         if breakpoint == breakpoints.last
-          part_price = self.bill.driver_price_per_km * ( breakpoint.distance ) / drivers_in_car
+          part_price = self.bill.driver_price_per_km * ( self.mileage_delivery - breakpoint.mileage ) / drivers_in_car
           price += part_price
           if get_array
             if breakpoint.position == 0
@@ -96,7 +96,6 @@ class Job < ActiveRecord::Base
         end
       end
     end
-    logger.info breakpoints_array.inspect
     if breakpoints.empty?
       price = self.bill.driver_price_per_km * (job.distance ) / drivers_in_car
       if get_array
