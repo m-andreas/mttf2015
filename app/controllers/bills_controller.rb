@@ -22,6 +22,7 @@ class BillsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv { send_data @bill.to_csv( col_sep: ";").encode('ISO-8859-1', 'UTF-8') }
+      headers["Content-Disposition"] = "attachment; filename=\"#{@bill.print_date}.xls\""
       format.xls { }
     end
   end
@@ -30,6 +31,7 @@ class BillsController < ApplicationController
     @bill
     respond_to do |format|
       format.html
+      headers["Content-Disposition"] = "attachment; filename=\"#{@bill.print_date}_Sixt.xls\""
       format.csv { send_data @bill.to_csv( col_sep: ";").encode('ISO-8859-1', 'UTF-8') }
       format.xls { }
     end
@@ -39,6 +41,7 @@ class BillsController < ApplicationController
     @bill
     respond_to do |format|
       format.html
+      headers["Content-Disposition"] = "attachment; filename=\"#{@bill.print_date}_Fahrer.xls\""
       format.csv { send_data @bill.to_csv( col_sep: ";").encode('ISO-8859-1', 'UTF-8') }
       format.xls { }
     end

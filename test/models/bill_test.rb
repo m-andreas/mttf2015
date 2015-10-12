@@ -18,6 +18,7 @@ class BillTest < ActiveSupport::TestCase
     assert_equal 1, jobs_billed = Job.where( status: Job::FINISHED ).length
     bill = Bill.get_current
     allready_in_bill = bill.jobs.length
+    jobs.delete(jobs(:one_no_date))
     messages = bill.add_jobs( jobs )
     bill.reload
     assert_equal 0, Job.get_open.length, messages.inspect

@@ -8,29 +8,32 @@ class JobsController < ApplicationController
   end
 
   def add_co_driver
-    @job.shuttle = true
-    @job.save
-    co_job = Job.find( params[ :co_job_id ].to_i )
-    co_job_error = @job.check_co_jobs( [co_job] )
-    if co_job_error == true
-      @job.co_jobs << co_job unless co_job.nil?
-      @job.add_breakpoints
-    else
-      flash[:error] = co_job_error
+    if @job.is_open?
+      @job.shuttle = true
+      @job.save
+      co_job = Job.find( params[ :co_job_id ].to_i )
+      co_job_error = @job.check_co_jobs( [co_job] )
+      if co_job_error == true
+        @job.co_jobs << co_job unless co_job.nil?
+        @job.add_breakpoints
+      else
+        flash[:error] = co_job_error
+      end
     end
     @shuttles = @job.get_shuttle_array
-
     respond_to do | format | format.html { redirect_to jobs_path }
       format.js { render 'change_co_drivers.js.erb' }
     end
   end
 
   def remove_co_driver
-    co_job = Job.find( params[ :co_job_id ].to_i )
-    logger.info @job.co_jobs.length
+    if @job.is_open?
+      co_job = Job.find( params[ :co_job_id ].to_i )
+      logger.info @job.co_jobs.length
 
-    @job.remove_co_job( co_job )
-    @job.add_breakpoints
+      @job.remove_co_job( co_job )
+      @job.add_breakpoints
+    end
     @shuttles = @job.get_shuttle_array
     respond_to do | format |
       format.html { redirect_to jobs_path }
@@ -118,7 +121,7 @@ class JobsController < ApplicationController
   # PATCH/PUT /jobs/1.json
   def update
     respond_to do |format|
-      if !@job.charged? && @job.update(job_params) && @job.set_route
+      if @job.is_open? && @job.update(job_params) && @job.set_route
         if job_params["shuttle"] == "0"
           @job.remove_shuttles
         end
@@ -127,16 +130,21 @@ class JobsController < ApplicationController
           if msg == true
             @job.set_to_current_bill
             flash[:notice] = 'Auftrag wurde aktualisiert und der aktuellen Verrechnung hinzugefügt'
+            format.html { redirect_to jobs_path }
           else
             flash[:error] = msg
+            @drivers = Driver.get_active
+            @addresses = Address.get_active
+            @shuttles = @job.get_shuttle_array
+            @co_jobs = @job.get_co_jobs_string
+            format.html { redirect_to :back }
           end
-          format.html { redirect_to jobs_path }
         else
           format.html { redirect_to jobs_path, notice: 'Auftrag wurde erfolgreicht aktualisiert.' }
         end
       else
-        format.html { render :edit }
-        format.json { render json: @job.errors, status: :unprocessable_entity }
+        flash[:error] = "Editieren fehlgeschlagen"
+        format.html { redirect_to jobs_path }
       end
     end
   end

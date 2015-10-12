@@ -122,11 +122,11 @@
     </table>
   <% end %>
   <div class="small-12 column">
-    <% unless @job.charged? %>
+    <% if @job.is_open? %>
       <%= link_to 'Editieren', edit_job_path(@job) %> |
     <% end %>
     <%= link_to 'Zurück', jobs_path %>
-    <% unless @job.charged? %>|
+    <% unless @job.is_open? %>|
       <%= link_to 'Löschen', @job, method: :delete, data: { confirm: 'Auftrag löschen?' } %>
     <% end %>
   </div>

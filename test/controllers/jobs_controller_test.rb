@@ -160,6 +160,50 @@ class JobsControllerTest < ActionController::TestCase
     assert_redirected_to jobs_path
   end
 
+  test "should_not_set_to_current_bill_without_dates" do
+    sign_in @user
+    post :add_to_current_bill, id: jobs(:one_no_date)
+    jobs(:one_no_date).reload
+    assert_not jobs(:one_no_date).is_finished?
+    assert_redirected_to jobs_path
+  end
+
+  test "should_not_set_to_current_bill_with_wrong_dates" do
+    sign_in @user
+    jobs(:one).actual_delivery_date = Date.yesterday
+    jobs(:one).save
+    post :add_to_current_bill, id: jobs(:one)
+    jobs(:one_no_date).reload
+    assert_not jobs(:one_no_date).is_finished?
+    assert_redirected_to jobs_path
+  end
+
+  test "should_not_set_to_current_bill_if_breakpoints_not_correct" do
+    sign_in @user
+    bp = jobs(:shuttle).breakpoints.first
+    bp.mileage = nil
+    bp.save
+    post :add_to_current_bill, id: jobs(:shuttle)
+    jobs(:shuttle).reload
+    assert_not jobs(:shuttle).is_finished?
+    assert_redirected_to jobs_path
+
+    bp.mileage = 1000
+    bp.save
+    post :add_to_current_bill, id: jobs(:shuttle)
+    jobs(:shuttle).reload
+    assert_not jobs(:shuttle).is_finished?
+    assert_redirected_to jobs_path
+
+    bp.mileage = 150
+    bp.save
+    post :add_to_current_bill, id: jobs(:shuttle)
+    jobs(:shuttle).reload
+    assert jobs(:shuttle).is_finished?
+    assert_equal Bill.get_current, jobs(:shuttle).bill
+    assert_redirected_to jobs_path
+  end
+
   test "remove_from_current_bill" do
     sign_in @user
     post :remove_from_current_bill, id: jobs(:finished)

@@ -9,6 +9,21 @@ one:
   route_id: 1
   from_id: 1
   to_id: 2
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
+  mileage_collection: 100
+  mileage_delivery: 200
+  shuttle: false
+
+one_no_date:
+  transport_notice: "one"
+  driver_id: 1
+  cost_center_id: 1
+  status: 1
+  created_by_id: 1
+  route_id: 1
+  from_id: 1
+  to_id: 2
   mileage_collection: 100
   mileage_delivery: 200
   shuttle: false
@@ -25,6 +40,8 @@ two:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
 
 three:
   transport_notice: "three"
@@ -38,6 +55,8 @@ three:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
 
 same_driver_as_three:
   transport_notice: "same_driver_as_three"
@@ -51,6 +70,8 @@ same_driver_as_three:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
 
 one_not_shuttle:
   transport_notice: "one_not_shuttle"
@@ -64,7 +85,8 @@ one_not_shuttle:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
-
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
 
 not_in_shuttle:
   transport_notice: "not_in_shuttle"
@@ -78,6 +100,8 @@ not_in_shuttle:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
 
 shuttle:
   transport_notice: "shuttle"
@@ -91,6 +115,8 @@ shuttle:
   shuttle: true
   mileage_collection: 100
   mileage_delivery: 200
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
 
 empty_shuttle:
   transport_notice: "empty_shuttle"
@@ -104,6 +130,8 @@ empty_shuttle:
   shuttle: true
   mileage_collection: 100
   mileage_delivery: 200
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
 
 payed:
   transport_notice: "payed"

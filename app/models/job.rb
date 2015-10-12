@@ -1,4 +1,5 @@
 class Job < ActiveRecord::Base
+  include ERB::Util
   belongs_to :from, foreign_key: :from_id, class_name: "Address"
   belongs_to :to, foreign_key: :to_id, class_name: "Address"
   belongs_to :driver
@@ -146,9 +147,37 @@ class Job < ActiveRecord::Base
       return error
     end
     unless self.mileage_collection.to_i < self.mileage_delivery.to_i
-      error = "Kilometerstand Abholung mehr als Kilometerstand Lieferung. Auftrag nicht verrechnet. Auftrag #{self.id}"
+      error = html_escape "Kilometerstand Abholung höher als Kilometerstand Lieferung. Auftrag nicht verrechnet. Auftrag #{self.id}".encode("ISO-8859-1")
       return error
     end
+    if self.is_shuttle?
+      unless self.breakpoints.empty?
+        current_mileage = self.mileage_collection
+        self.breakpoints.order( :position ).each do |breakpoint|
+          if breakpoint.mileage.nil?
+            error = "Kein Wert für Km Stand in Zwischenstop eingetragen. Auftrag nicht verrechnet. Auftrag #{self.id}"
+            return error
+          end
+          if breakpoint.mileage <= current_mileage
+            error = html_escape "Die Werte für einen Zwischenstopp sind niedriger oder gleich wie beim Stop davor. Auftrag nicht verrechnet. Auftrag #{self.id}".encode("ISO-8859-1")
+            return error
+          end
+          current_mileage = breakpoint.mileage
+        end
+      end
+    end
+
+
+    unless self.actual_collection_date.is_a?( Date ) && self.actual_delivery_date.is_a?( Date )
+      error = html_escape "Die Werte für Abhol oder Lieferdatum sind nicht gesetz. Auftrag nicht verrechnet. Auftrag #{self.id}".encode("ISO-8859-1")
+      return error
+    end
+
+    if self.actual_collection_date > self.actual_delivery_date
+      error = "Lieferdatum liegt vor Abholdatum. Auftrag nicht verrechnet. Auftrag #{self.id}"
+      return error
+    end
+
     return true
   end
 
