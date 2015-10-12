@@ -26,6 +26,46 @@ two:
   mileage_collection: 100
   mileage_delivery: 200
 
+three:
+  transport_notice: "three"
+  driver_id: 3
+  cost_center_id: 1
+  status: 1
+  created_by_id: 1
+  route_id: 2
+  from_id: 2
+  to_id: 1
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+
+same_driver_as_three:
+  transport_notice: "same_driver_as_three"
+  driver_id: 3
+  cost_center_id: 1
+  status: 1
+  created_by_id: 1
+  route_id: 2
+  from_id: 2
+  to_id: 1
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+
+one_not_shuttle:
+  transport_notice: "one_not_shuttle"
+  driver_id: 1
+  cost_center_id: 1
+  status: 1
+  created_by_id: 1
+  route_id: 2
+  from_id: 2
+  to_id: 1
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+
+
 not_in_shuttle:
   transport_notice: "not_in_shuttle"
   driver_id: 2

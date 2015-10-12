@@ -57,13 +57,43 @@ class JobsControllerTest < ActionController::TestCase
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
       scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
-      co_jobs: ",#{jobs(:one).id}, #{jobs(:two).id}"
+      co_jobs: ",#{jobs(:three).id}, #{jobs(:not_in_shuttle).id}"
     job = Job.find(assigns(:job).id)
-    assert_equal jobs(:two), job.co_jobs.first
-    assert_equal jobs(:one), job.co_jobs.last
+    assert_equal jobs(:three), job.co_jobs.first
+    assert_equal jobs(:not_in_shuttle), job.co_jobs.last
     assert_equal 2, job.co_jobs.length
     assert_equal 1, job.breakpoints.length
-    assert_equal jobs(:one).from, job.breakpoints.first.address
+    assert_equal jobs(:not_in_shuttle).from, job.breakpoints.first.address
+  end
+
+  test "should create job with co job allready in shuttle" do
+    sign_in @user
+    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
+      mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
+      co_jobs: ",#{jobs(:three).id}, #{jobs(:two).id}"
+    assert_redirected_to new_job_path
+  end
+
+  test "should not create job with himself in co job" do
+    sign_in @user
+    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
+      mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
+      co_jobs: ",#{jobs(:one).id}, #{jobs(:two).id}"
+      assert_redirected_to new_job_path
+  end
+
+  test "should not create job with co jobs with same driver" do
+    sign_in @user
+    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
+      mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
+      co_jobs: ",#{jobs(:one).id}, #{jobs(:two).id}"
+      assert_redirected_to new_job_path
   end
 
   test "should show job" do
@@ -142,7 +172,25 @@ class JobsControllerTest < ActionController::TestCase
   test "add_co_driver" do
     sign_in @user
     assert_equal 0, jobs(:empty_shuttle).co_drivers.length
+    post :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :three ).id
+    jobs(:empty_shuttle).reload
+    assert_equal 1, jobs(:empty_shuttle).co_drivers.length
+  end
+
+  test "should_not_add_co_driver_whos_in_shuttle" do
+    sign_in @user
+    assert_equal 0, jobs(:empty_shuttle).co_drivers.length
     post :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :one ).id
+    jobs(:empty_shuttle).reload
+    assert_equal 0, jobs(:empty_shuttle).co_drivers.length
+  end
+
+  test "should_not_add_co_driver_twice" do
+    sign_in @user
+    assert_equal 0, jobs(:empty_shuttle).co_drivers.length
+    post :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :three ).id
+    post :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :same_driver_as_three ).id
+
     jobs(:empty_shuttle).reload
     assert_equal 1, jobs(:empty_shuttle).co_drivers.length
   end

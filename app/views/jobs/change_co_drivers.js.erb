@@ -1,3 +1,4 @@
 $('#sidepanel-inner').html("<%= escape_javascript render('sidepanel') %>");
 $("#job_details").hide()
 $('*[data-role=activerecord_sortable]').activerecord_sortable();
+$('#shuttle_jobs').dataTable().fnFilter();

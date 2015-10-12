@@ -228,24 +228,43 @@ class Job < ActiveRecord::Base
     end
   end
 
-  def add_co_jobs( co_job_ids )
-    self.co_jobs = []
-    unless co_job_ids.nil? || co_job_ids.empty? || !shuttle
-      jobs = []
+  def check_co_job_ids( co_job_ids )
+    co_jobs = self.co_job_ids_to_co_jobs( co_job_ids )
+    return check_co_jobs(co_jobs)
+  end
 
+  def check_co_jobs( co_jobs )
+    driver_ids = self.co_jobs.pluck( :driver_id )
+    co_jobs.each do |co_job|
+      return "Fahrer kann nicht in eigenem Shuttel sitzen" if self.driver_id == co_job.driver_id
+      return "Fahrer kann nicht 2 Mal in Shuttle sitzen" if driver_ids.include? co_job.driver_id
+      return "Eine der Fahrten ist bereits in einem anderen Shuttle" if co_job.has_shuttle?
+      driver_ids << co_job.driver_id
+    end
+    return true
+  end
+
+  def co_job_ids_to_co_jobs( co_job_ids )
+    jobs = []
+    unless co_job_ids.nil? || co_job_ids.empty? || !shuttle
       if co_job_ids.is_a? String
         co_job_ids[0] = "" if co_job_ids[0] == ","
         co_job_ids = co_job_ids.split ","
       end
-
       co_job_ids.each do |co_job_id|
         unless co_job_id.to_i == self.id
           co_job = Job.find(co_job_id)
           jobs <<  co_job
         end
       end
-      self.co_jobs = jobs
     end
+    return jobs
+  end
+
+  def add_co_jobs( co_job_ids )
+    self.co_jobs = []
+    jobs = co_job_ids_to_co_jobs( co_job_ids )
+    self.co_jobs = jobs
     self.save
   end
 

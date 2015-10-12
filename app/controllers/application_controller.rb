@@ -13,9 +13,15 @@ class ApplicationController < ActionController::Base
     end
 
     def flash_to_headers
-      return if !request.xhr? || request.env["REQUEST_PATH"] == "/jobs_ajax/show_regular_jobs" || request.env["REQUEST_PATH"] == "/jobs_ajax/show_all"
+      return if !request.xhr? || request.env["REQUEST_PATH"] == "/jobs_ajax/show_regular_jobs" ||
+        request.env["REQUEST_PATH"] == "/jobs_ajax/show_all" ||  request.env["REQUEST_PATH"] == "/datatable_i18n"
       response.headers['X-Message'] = flash_message
       response.headers["X-Message-Type"] = flash_type.to_s
+      logger.info "===================================="
+      logger.info request.env["REQUEST_PATH"]
+      logger.info flash.inspect
+      logger.info response.headers['X-Message']
+      logger.info "===================================="
       flash.discard # don't want the flash to appear when you reload page
     end
 

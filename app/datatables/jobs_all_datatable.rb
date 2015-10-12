@@ -55,9 +55,9 @@ private
 
  def sort_order_filter
     if @job
-      records = Job.joins( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( drivers: { id: @job.driver.id }).order("#{sort_column} #{sort_direction}")
+      records = Job.includes( :driver, :carrier  ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false, carriers: { id: nil } ).where.not( drivers: { id: @job.driver.id }).order("#{sort_column} #{sort_direction}")
     else
-      records = Job.joins( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).order("#{sort_column} #{sort_direction}")
+      records = Job.includes( :driver, :carrier ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false, carriers: { id: nil } ).order("#{sort_column} #{sort_direction}")
     end
 
     if params[:search][:value].present?

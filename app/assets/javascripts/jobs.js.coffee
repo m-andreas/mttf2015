@@ -166,13 +166,15 @@ ready = ->
       $(this).parent().remove();
 
   displayshuttle = ->
+    console.log("doit")
     if $('#job_shuttle').prop('checked')
-      $("#shuttle_jobs_wrapper").show();
+      $("#shuttle_jobs_outer_wrapper").show();
       $("#shuttle-co-drivers").show();
       $("#job_details").hide()
       $("#breakpoints").show()
     else
-      $("#shuttle_jobs_wrapper").hide();
+      console.log("hideit")
+      $("#shuttle_jobs_outer_wrapper").hide();
       $("#shuttle-co-drivers").hide();
       $("#job_details").show()
       $("#breakpoints").hide()

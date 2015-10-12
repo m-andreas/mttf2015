@@ -8,12 +8,19 @@ class JobsController < ApplicationController
   end
 
   def add_co_driver
+    @job.shuttle = true
+    @job.save
     co_job = Job.find( params[ :co_job_id ].to_i )
-    @job.co_jobs << co_job unless co_job.nil?
-    @job.add_breakpoints
+    co_job_error = @job.check_co_jobs( [co_job] )
+    if co_job_error == true
+      @job.co_jobs << co_job unless co_job.nil?
+      @job.add_breakpoints
+    else
+      flash[:error] = co_job_error
+    end
     @shuttles = @job.get_shuttle_array
-    respond_to do | format |
-      format.html { redirect_to jobs_path }
+
+    respond_to do | format | format.html { redirect_to jobs_path }
       format.js { render 'change_co_drivers.js.erb' }
     end
   end
@@ -92,14 +99,16 @@ class JobsController < ApplicationController
     @job.driver = driver
     @job.created_by_id = current_user.id
     @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
+    co_job_error = @job.check_co_job_ids( co_jobs )
     respond_to do |format|
-      if @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
+      if co_job_error == true && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
         format.html { redirect_to jobs_path, notice: 'Job was successfully created.' }
         format.json { render :show, status: :created, location: @job }
       else
         @drivers = Driver.get_active
         @addresses = Address.get_active
-        format.html { render :new, error: "Fehler beim speichern" }
+        flash[:error] = co_job_error
+        format.html { redirect_to new_job_path }
         format.json { render json: @job.errors, status: :unprocessable_entity }
       end
     end

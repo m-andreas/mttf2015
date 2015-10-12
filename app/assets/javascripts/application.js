@@ -50,6 +50,7 @@ var show_ajax_message = function(msg, type) {
   else{
     type = 'alert'
   }
+  $('html, body').animate({ scrollTop: 0 }, 'fast');
   $("#flash-message").html('<div class="alert-box round ' + type + '">' +msg+'</div>');
   fade_flash();
 };

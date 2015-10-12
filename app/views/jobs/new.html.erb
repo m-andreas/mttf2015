@@ -93,21 +93,23 @@
         <h3><%= f.label :shuttle %></h3><br>
         <%= f.check_box :shuttle %>
       </div>
-      <table id="shuttle_jobs" class="display" data-source="<%= jobs_url(format: "json") %>">
-        <thead>
-          <tr>
-            <th class="dont_show">id</th>
-            <th>Auftrag hinzufügen</th>
-            <th>Auftragnummer</th>
-            <th>Name</th>
-            <th>Von</th>
-            <th>Nach</th>
-            <th>Erstellungsdatum</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+      <div id="shuttle_jobs_outer_wrapper">
+        <table id="shuttle_jobs" class="display" data-source="<%= jobs_url(format: "json") %>">
+          <thead>
+            <tr>
+              <th class="dont_show">id</th>
+              <th>Auftrag hizufügen</th>
+              <th>Auftragnummer</th>
+              <th>Name</th>
+              <th>Von</th>
+              <th>Nach</th>
+              <th>Erstellungsdatum</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div class="large-4 small-12 columns sidebar">
       <%= hidden_field_tag 'co_jobs',  '' %>

@@ -1,14 +1,5 @@
 class DatatablesController < ApplicationController
   def datatable_i18n
-    logger.info "====================================================="
-    logger.info "====================================================="
-    logger.info "====================================================="
-    logger.info "====================================================="
-    logger.info "====================================================="
-    logger.info "====================================================="
-    logger.info "====================================================="
-    logger.info I18n.default_locale
-    logger.info ( I18n.default_locale == :de ).to_s
     if I18n.default_locale == :de
       locale = {
           'sEmptyTable'=>     'Keine Daten verfügbar für diese Tabelle',
