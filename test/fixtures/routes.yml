@@ -31,6 +31,14 @@ three:
   distance: 10
   status: 1
 
+four:
+  id: 4
+  from_id: 4
+  to_id: 3
+  calculation_basis: 2
+  distance: 10
+  status: 1
+
 not_confirmed:
   from_id: 3
   to_id: 1

@@ -21,7 +21,6 @@ private
     jobs = []
 
     display_on_page.map do |job|
-      puts job.inspect
       if job.nil?
         puts job.inspect
       else
@@ -55,9 +54,10 @@ private
 
  def sort_order_filter
     if @job
-      records = Job.includes( :driver, :carrier  ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false, carriers: { id: nil } ).where.not( drivers: { id: @job.driver.id }).order("#{sort_column} #{sort_direction}")
+      # Alle die offen oder in aktueller Abrechnung sind, kein shuttle sind, noch nicht zu einem Shuttle gehören und nicht der Fahrer des Shuttels sind
+      records = Job.includes( :driver  ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( id: Carrier.all.pluck(:co_job_id), drivers: { id: @job.driver.id } ).order("#{sort_column} #{sort_direction}")
     else
-      records = Job.includes( :driver, :carrier ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false, carriers: { id: nil } ).order("#{sort_column} #{sort_direction}")
+      records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( id: Carrier.all.pluck(:co_job_id)).order("#{sort_column} #{sort_direction}")
     end
 
     if params[:search][:value].present?

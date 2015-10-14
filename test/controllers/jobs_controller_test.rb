@@ -62,8 +62,8 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal jobs(:three), job.co_jobs.first
     assert_equal jobs(:not_in_shuttle), job.co_jobs.last
     assert_equal 2, job.co_jobs.length
-    assert_equal 1, job.breakpoints.length
-    assert_equal jobs(:not_in_shuttle).from, job.breakpoints.first.address
+    assert_equal 2, job.breakpoints.length
+    assert_equal jobs(:three).from, job.breakpoints.first.address
   end
 
   test "should create job with co job allready in shuttle" do
@@ -221,6 +221,76 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal 1, jobs(:empty_shuttle).co_drivers.length
   end
 
+  test "add_co_driver_ajax" do
+    sign_in @user
+    assert_equal 0, jobs(:empty_shuttle).co_drivers.length
+    xhr :post, :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :three ).id
+    assert_response :success
+    assert_select_jquery :html, '#sidepanel-inner' do
+      assert_select '#shuttle-summary tbody > tr', 1
+      assert_select '#breakpoints ol', 1
+    end
+    jobs(:empty_shuttle).reload
+    assert_equal 1, jobs(:empty_shuttle).co_drivers.length
+  end
+
+  test "show_all_edit_ajax" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "1"=>{"data"=>"1", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "2"=>{"data"=>"2", "name"=>"", "searchable"=>"true", "orderable"=>"true",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0", "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "form_type"=>"edit",
+                "main_job_id"=>jobs(:empty_shuttle).id.to_s}
+    sign_in @user
+    xhr :get, :show_all, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 5, body["recordsFiltered"]
+  end
+
+  test "show_all_create_ajax" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "1"=>{"data"=>"1", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "2"=>{"data"=>"2", "name"=>"", "searchable"=>"true", "orderable"=>"true",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0", "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "form_type"=>"create",
+                "main_job_id"=>""}
+    sign_in @user
+    xhr :get, :show_all, params
+    body = JSON.parse(response.body)
+    puts body
+    assert_equal 6, body["recordsFiltered"]
+    assert_response :success
+  end
+
   test "should_not_add_co_driver_whos_in_shuttle" do
     sign_in @user
     assert_equal 0, jobs(:empty_shuttle).co_drivers.length
@@ -243,6 +313,21 @@ class JobsControllerTest < ActionController::TestCase
     sign_in @user
     assert_equal 2, jobs(:shuttle).co_drivers.length
     post :remove_co_driver, id: jobs(:shuttle), co_job_id: jobs( :two ).id
+    shuttle = Job.find(jobs(:shuttle).id)
+    assert_equal 1, shuttle.co_drivers.length
+    assert_equal [jobs(:one)], shuttle.co_jobs
+  end
+
+  test "remove_co_driver_ajax" do
+    sign_in @user
+    assert_equal 2, jobs(:shuttle).co_drivers.length
+    xhr :post, :remove_co_driver, id: jobs(:shuttle), co_job_id: jobs( :two ).id
+    assert_response :success
+    assert_select_jquery :html, '#sidepanel-inner' do
+      assert_select '#shuttle-summary tbody > tr', 1
+      assert_select '#breakpoints ol > li', 1
+    end
+
     shuttle = Job.find(jobs(:shuttle).id)
     assert_equal 1, shuttle.co_drivers.length
     assert_equal [jobs(:one)], shuttle.co_jobs
