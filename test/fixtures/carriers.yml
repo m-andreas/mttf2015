@@ -13,4 +13,11 @@ co_driver2:
   job: shuttle
   co_job: two
 
+payed_co_driver1:
+  job: payed_shuttle
+  co_job: payed_in_shuttle1
+
+payed_co_driver1:
+  job: payed_shuttle
+  co_job: payed_in_shuttle2
 #  column: value

@@ -102,7 +102,9 @@ class Bill < ActiveRecord::Base
     job_ids = self.get_jobs_array( driver )
     jobs = Job.find(job_ids)
     jobs.each do |job|
-      total += job_price( job, driver )
+      job_price = job_price( job, driver )
+      return false unless job_price
+      total += job_price
     end
     return total
   end
@@ -110,7 +112,9 @@ class Bill < ActiveRecord::Base
   def sixt_total
     total = 0
     self.jobs.each do |job|
-      total += job.price_sixt
+      job_price = job.price_sixt
+      return false unless job_price
+      total += job_price
     end
     return total
   end

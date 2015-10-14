@@ -19,4 +19,26 @@ class RouteTest < ActiveSupport::TestCase
       assert route_id.is_a? Integer
     end
   end
+
+  test "set_route_stati" do
+    route = routes(:not_confirmed)
+    assert route.is_new?
+    route.set_processed
+    route.reload
+    assert route.is_active?
+    route.delete
+    route.reload
+    assert route.is_deleted?
+    route.set_new
+    assert route.is_new?
+  end
+
+  test "ask_for_deleted_route" do
+    assert routes(:deleted).is_deleted?
+    assert_no_difference('Route.count') do
+      route_id = Route.find_or_create( addresses( :four ).id, addresses(:one).id)
+      assert_equal routes(:deleted).id, route_id
+      assert Route.find(route_id).is_new?
+    end
+  end
 end

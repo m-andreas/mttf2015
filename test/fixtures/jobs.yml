@@ -2,7 +2,7 @@
 
 one:
   transport_notice: "one"
-  driver_id: 1
+  driver: one
   cost_center_id: 1
   status: 1
   created_by_id: 1
@@ -17,7 +17,7 @@ one:
 
 one_no_date:
   transport_notice: "one"
-  driver_id: 1
+  driver: one
   cost_center_id: 1
   status: 1
   created_by_id: 1
@@ -30,7 +30,7 @@ one_no_date:
 
 two:
   transport_notice: "two"
-  driver_id: 2
+  driver: entered_today
   cost_center_id: 1
   status: 1
   created_by_id: 1
@@ -45,7 +45,7 @@ two:
 
 three:
   transport_notice: "three"
-  driver_id: 3
+  driver: three
   cost_center_id: 1
   status: 1
   created_by_id: 1
@@ -60,7 +60,7 @@ three:
 
 same_driver_as_three:
   transport_notice: "same_driver_as_three"
-  driver_id: 3
+  driver: three
   cost_center_id: 1
   status: 1
   created_by_id: 1
@@ -75,7 +75,7 @@ same_driver_as_three:
 
 one_not_shuttle:
   transport_notice: "one_not_shuttle"
-  driver_id: 1
+  driver: one
   cost_center_id: 1
   status: 1
   created_by_id: 1
@@ -90,7 +90,7 @@ one_not_shuttle:
 
 not_in_shuttle:
   transport_notice: "not_in_shuttle"
-  driver_id: 2
+  driver: entered_today
   cost_center_id: 1
   status: 1
   created_by_id: 1
@@ -105,7 +105,7 @@ not_in_shuttle:
 
 shuttle:
   transport_notice: "shuttle"
-  driver_id: 3
+  driver: three
   cost_center_id: 1
   status: 1
   created_by_id: 1
@@ -120,7 +120,7 @@ shuttle:
 
 empty_shuttle:
   transport_notice: "empty_shuttle"
-  driver_id: 2
+  driver: entered_today
   cost_center_id: 1
   status: 1
   created_by_id: 1
@@ -136,7 +136,7 @@ empty_shuttle:
 payed:
   transport_notice: "payed"
   bill: old_one
-  driver_id: 2
+  driver: entered_today
   cost_center_id: 1
   status: 3
   created_by_id: 1
@@ -149,10 +149,61 @@ payed:
   mileage_collection: 100
   mileage_delivery: 200
 
+payed_shuttle:
+  final_calculation_basis: 2
+  transport_notice: "payed_shuttle"
+  bill: old_one
+  driver: one
+  cost_center_id: 1
+  status: 3
+  created_by_id: 1
+  route_id: 3
+  from_id: 1
+  to_id: 2
+  shuttle: true
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
+  mileage_collection: 100
+  mileage_delivery: 800
+
+payed_in_shuttle1:
+  final_calculation_basis: 2
+  transport_notice: "payed_in_shuttle"
+  bill: old_one
+  driver: two
+  cost_center_id: 1
+  status: 3
+  created_by_id: 1
+  route_id: 2
+  from_id: 1
+  to_id: 2
+  shuttle: false
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
+  mileage_collection: 100
+  mileage_delivery: 200
+
+payed_in_shuttle2:
+  final_calculation_basis: 1
+  transport_notice: "payed_in_shuttle"
+  bill: old_one
+  driver: three
+  cost_center_id: 1
+  status: 3
+  created_by_id: 1
+  route: two_flat
+  from_id: 1
+  to_id: 2
+  shuttle: false
+  actual_delivery_date: <%= Date.current %>
+  actual_collection_date:  <%= Date.current %>
+  mileage_collection: 100
+  mileage_delivery: 200
+
 finished:
   transport_notice: "finished"
   bill: current
-  driver_id: 1
+  driver: one
   cost_center_id: 1
   status: 2
   created_by_id: 1

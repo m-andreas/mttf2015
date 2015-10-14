@@ -63,8 +63,7 @@ class RoutesController < ApplicationController
   # DELETE /routes/1
   # DELETE /routes/1.json
   def destroy
-    @route.status = Route::DELETED
-    @route.save
+    @route.delete
     respond_to do |format|
       format.html { redirect_to routes_url, notice: 'Die Route wurde gelöscht' }
       format.json { head :no_content }

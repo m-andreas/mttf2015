@@ -40,8 +40,6 @@ class Job < ActiveRecord::Base
     if self.final_calculation_basis == Route::FLAT_RATE
       price = self.bill.driver_price_flat_rate
     elsif self.final_calculation_basis == Route::PAY_PER_KM
-      logger.info self.distance
-      logger.info self.bill.driver_price_per_km
       price = self.distance * self.bill.driver_price_per_km
     else
       return false

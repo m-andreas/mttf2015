@@ -11,3 +11,9 @@ two:
   job: shuttle
   mileage: 170
   address_id: 2
+
+three:
+  position: 0
+  job: payed_shuttle
+  mileage: 200
+  address_id: 2

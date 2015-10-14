@@ -43,7 +43,6 @@ not_yet_entered:
   service_contract: false
 
 entered_today:
-  id: 2
   first_name: entered_today
   last_name: MyString
   entry_date: <%= 1.minute.from_now.to_s(:db) %>
@@ -85,7 +84,6 @@ exit_nil:
   service_contract: false
 
 one:
-  id: 1
   first_name: one
   last_name: Tester
   entry_date: <%= 2.years.ago.to_s(:db) %>
@@ -107,9 +105,30 @@ one:
   service_contract: false
   deleted: false
 
+two:
+  first_name: two
+  last_name: Tester
+  entry_date: <%= 2.years.ago.to_s(:db) %>
+  exit_date: <%= 5.day.from_now.to_s(:db) %>
+  date_of_birth: <%= 10.years.ago.to_s(:db) %>
+  place_of_birth: Wien
+  address: Teststrasse 2
+  city: Wien
+  zip_code: '1220'
+  telepone: '123456'
+  telephone2:
+  licence_number: ABC123
+  issuing_authority: Polizei Wien 1010
+  driving_licence_category: A/B/C
+  comment: SUper Fahrer
+  social_security_number: '1234234567'
+  driving_licence_copy: true
+  registration_copy: false
+  service_contract: false
+  deleted: false
+
 three:
-  id: 3
-  first_name: one
+  first_name: three
   last_name: Tester
   entry_date: <%= 2.years.ago.to_s(:db) %>
   exit_date: <%= 5.day.from_now.to_s(:db) %>

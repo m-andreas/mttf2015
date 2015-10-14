@@ -3,6 +3,10 @@
 old_one:
   billed_at: 2015-09-29 20:12:51
   print_date: MyString
+  driver_price_per_km: 0.072
+  driver_price_flat_rate: 5
+  price_per_km: 0.24
+  price_flat_rate: 19
 
 old_two:
   billed_at: 2015-09-29 20:12:51

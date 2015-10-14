@@ -10,15 +10,37 @@ one:
 
 two:
   id: 2
-  from: two
-  to: one
+  from_id: 2
+  to_id: 1
+  calculation_basis: 2
+  distance: 10
+  status: 1
+
+two_flat:
+  from_id: 2
+  to_id: 1
+  calculation_basis: 1
+  distance: 10
+  status: 1
+
+three:
+  id: 3
+  from_id: 1
+  to_id: 3
   calculation_basis: 2
   distance: 10
   status: 1
 
 not_confirmed:
-  from: three
-  to: one
+  from_id: 3
+  to_id: 1
   calculation_basis: 1
   distance: 10
   status: 0
+
+deleted:
+  from_id: 4
+  to_id: 1
+  calculation_basis: 1
+  distance: 10
+  status: 2

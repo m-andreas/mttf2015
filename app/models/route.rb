@@ -53,6 +53,11 @@ class Route < ActiveRecord::Base
     self.save!
   end
 
+  def delete
+    self.status = Route::DELETED
+    self.save!
+  end
+
   def is_deleted?
     self.status == DELETED
   end

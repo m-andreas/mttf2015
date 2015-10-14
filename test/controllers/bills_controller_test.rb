@@ -4,6 +4,7 @@ class BillsControllerTest < ActionController::TestCase
   setup do
     @bill = bills(:current)
     @user = users(:one)
+    @old_bill = bills(:old_one)
   end
 
   test "should get index" do
@@ -39,6 +40,21 @@ class BillsControllerTest < ActionController::TestCase
     assert_redirected_to current_bill_path
     assert assigns(:current_bill).is_current?
     assert_not_nil assigns(:current_bill).jobs
+  end
+
+  test "get_sixt_xls" do
+    sign_in @user
+    get "sixt_bill", { id: @old_bill, format: :xls }
+  end
+
+  test "get_driver_xls" do
+    sign_in @user
+    get "drivers_bill", { id: @old_bill, format: :xls }
+  end
+
+  test "get_complete_xls" do
+    sign_in @user
+    get "show", { id: @old_bill, format: :xls }
   end
 
   test "should create bill" do
