@@ -26,7 +26,7 @@ class JobsControllerTest < ActionController::TestCase
     assert_difference('Job.count') do
       post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: false, to_id: routes(:one).to_id,
         car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-        scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
+        scheduled_collection_time: "2015-02-02", scheduled_delivery_time: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
         mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
         co_jobs: ""
     end
@@ -36,10 +36,10 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal "BMW", assigns(:job).car_brand
     assert_equal "Z4", assigns(:job).car_type
     assert_equal "W123", assigns(:job).registration_number
-    assert_equal "2015-02-02".to_date, assigns(:job).scheduled_collection_date
-    assert_equal "2015-02-02".to_date, assigns(:job).scheduled_delivery_date
-    assert_equal "2015-02-02".to_date, assigns(:job).actual_collection_date
-    assert_equal "2015-02-02".to_date, assigns(:job).actual_delivery_date
+    assert_equal "2015-02-02".to_date, assigns(:job).scheduled_collection_time.to_date
+    assert_equal "2015-02-02".to_date, assigns(:job).scheduled_delivery_time.to_date
+    assert_equal "2015-02-02".to_date, assigns(:job).actual_collection_time.to_date
+    assert_equal "2015-02-02".to_date, assigns(:job).actual_delivery_time.to_date
     assert_equal "123", assigns(:job).chassis_number
     assert_equal  100000, assigns(:job).mileage_delivery
     assert_equal  200000, assigns(:job).mileage_collection
@@ -55,7 +55,7 @@ class JobsControllerTest < ActionController::TestCase
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-      scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
+      scheduled_collection_time: "2015-02-02", scheduled_delivery_time: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ",#{jobs(:three).id}, #{jobs(:not_in_shuttle).id}"
     job = Job.find(assigns(:job).id)
@@ -70,7 +70,7 @@ class JobsControllerTest < ActionController::TestCase
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-      scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
+      scheduled_collection_time: "2015-02-02", scheduled_delivery_time: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ",#{jobs(:three).id}, #{jobs(:two).id}"
     assert_redirected_to new_job_path
@@ -80,7 +80,7 @@ class JobsControllerTest < ActionController::TestCase
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-      scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
+      scheduled_collection_time: "2015-02-02", scheduled_delivery_time: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ",#{jobs(:one).id}, #{jobs(:two).id}"
       assert_redirected_to new_job_path
@@ -90,7 +90,7 @@ class JobsControllerTest < ActionController::TestCase
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-      scheduled_collection_date: "2015-02-02", scheduled_delivery_date: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
+      scheduled_collection_time: "2015-02-02", scheduled_delivery_time: "2015-02-02", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ",#{jobs(:one).id}, #{jobs(:two).id}"
       assert_redirected_to new_job_path
@@ -102,9 +102,21 @@ class JobsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should show shuttlejob" do
+    sign_in @user
+    get :show, id: jobs(:shuttle)
+    assert_response :success
+  end
+
   test "should get edit" do
     sign_in @user
     get :edit, id: @job
+    assert_response :success
+  end
+
+  test "should get editshuttle" do
+    sign_in @user
+    get :edit, id: jobs(:shuttle)
     assert_response :success
   end
 
@@ -125,10 +137,10 @@ class JobsControllerTest < ActionController::TestCase
   test "should update job" do
     sign_in @user
     date = Date.current
-    patch :update, id: @job, subaction: "update", job: { actual_collection_date: date, actual_delivery_date: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
+    patch :update, id: @job, subaction: "update", job: { actual_collection_time: date, actual_delivery_time: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
     assert_redirected_to jobs_path
-    assert_equal date, assigns(:job).actual_collection_date
-    assert_equal date, assigns(:job).actual_delivery_date
+    assert_equal date, assigns(:job).actual_collection_time.to_date
+    assert_equal date, assigns(:job).actual_delivery_time.to_date
   end
 
   test "should remove co_jobs on update" do
@@ -143,24 +155,24 @@ class JobsControllerTest < ActionController::TestCase
   test "should update job and set to current" do
     sign_in @user
     date = Date.current
-    patch :update, id: @job, subaction: "update_and_pay", job: { actual_collection_date: date, actual_delivery_date: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
+    patch :update, id: @job, subaction: "update_and_pay", job: { actual_collection_time: date, actual_delivery_time: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
     assert_redirected_to jobs_path
     assert @job.reload
     assert @job.is_finished?
-    assert_equal date, assigns(:job).actual_collection_date
-    assert_equal date, assigns(:job).actual_delivery_date
+    assert_equal date, assigns(:job).actual_collection_time.to_date
+    assert_equal date, assigns(:job).actual_delivery_time.to_date
   end
 
   test "should update job and not set to current" do
     sign_in @user
     date = Date.current
     @request.env['HTTP_REFERER'] = 'http://localhost:3000/jobs/edit'
-    patch :update, id: @job, subaction: "update_and_pay", job: { actual_collection_date: date, actual_delivery_date: nil, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
+    patch :update, id: @job, subaction: "update_and_pay", job: { actual_collection_time: date, actual_delivery_time: nil, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
     assert_redirected_to 'http://localhost:3000/jobs/edit'
     assert @job.reload
     assert @job.is_open?
-    assert_equal date, assigns(:job).actual_collection_date
-    assert_equal nil, assigns(:job).actual_delivery_date
+    assert_equal date, assigns(:job).actual_collection_time
+    assert_equal nil, assigns(:job).actual_delivery_time
   end
 
   test "should destroy job" do
@@ -200,7 +212,7 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should_not_set_to_current_bill_with_wrong_dates" do
     sign_in @user
-    jobs(:one).actual_delivery_date = Date.yesterday
+    jobs(:one).actual_delivery_time = 1.day.ago.to_time
     jobs(:one).save
     post :add_to_current_bill, id: jobs(:one)
     jobs(:one_no_date).reload

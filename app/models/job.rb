@@ -166,13 +166,13 @@ class Job < ActiveRecord::Base
     end
 
 
-    unless self.actual_collection_date.is_a?( Date ) && self.actual_delivery_date.is_a?( Date )
-      error = html_escape "Die Werte für Abhol oder Lieferdatum sind nicht gesetz. Auftrag nicht verrechnet. Auftrag #{self.id}".encode("ISO-8859-1")
+    unless self.actual_collection_time.is_a?( Time ) && self.actual_delivery_time.is_a?( Time )
+      error = html_escape "Die Werte für Abhol oder Lieferzeitpunkt sind nicht gesetz. Auftrag nicht verrechnet. Auftrag #{self.id}".encode("ISO-8859-1")
       return error
     end
 
-    if self.actual_collection_date > self.actual_delivery_date
-      error = "Lieferdatum liegt vor Abholdatum. Auftrag nicht verrechnet. Auftrag #{self.id}"
+    if self.actual_collection_time > self.actual_delivery_time
+      error = "Lieferzeit liegt vor Abholzeit. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error
     end
 

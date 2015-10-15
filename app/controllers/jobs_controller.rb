@@ -95,8 +95,8 @@ class JobsController < ApplicationController
   def create
     @job = Job.new(job_params)
     @job.status = Job::OPEN
-    @job.actual_collection_date = @job.scheduled_collection_date
-    @job.actual_delivery_date = @job.scheduled_delivery_date
+    @job.actual_collection_time = @job.scheduled_collection_time
+    @job.actual_delivery_time = @job.scheduled_delivery_time
     co_jobs = params[:co_jobs]
     driver = Driver.find_by( id: job_params[:driver_id])
     @job.driver = driver
@@ -182,6 +182,6 @@ class JobsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def job_params
       params.require(:job).permit( { :breakpoints_attributes => [ :address_id, :id, :position, :mileage ]}, :driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
-        :scheduled_collection_date, :scheduled_delivery_date, :actual_collection_date, :actual_delivery_date, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
+        :scheduled_collection_time, :scheduled_delivery_time, :actual_collection_time, :actual_delivery_time, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
     end
 end

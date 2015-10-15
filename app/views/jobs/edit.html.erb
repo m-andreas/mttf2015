@@ -42,21 +42,21 @@
       <div class="row">
         <div class="field large-6 columns">
           <h3><%= f.label "Geplantes Abholdatum" %></h3><br>
-          <%= f.date_field :scheduled_collection_date %>
+          <%= f.datetime_local_field :scheduled_collection_time %>
         </div>
         <div class="field large-6 columns">
           <h3><%= f.label "Geplantes Lieferdatum" %></h3><br>
-          <%= f.date_field :scheduled_delivery_date %>
+          <%= f.datetime_local_field :scheduled_delivery_time %>
         </div>
       </div>
       <div class="row">
         <div class="field large-6 columns">
           <h3><%= f.label "Tatsächliches Abholdatum" %></h3><br>
-          <%= f.date_field :actual_collection_date %>
+          <%= f.datetime_local_field :actual_collection_time %>
         </div>
         <div class="field large-6 columns">
           <h3><%= f.label "Tatsächliches Lieferdatum" %></h3><br>
-          <%= f.date_field :actual_delivery_date %>
+          <%= f.datetime_local_field :actual_delivery_time %>
         </div>
       </div>
       <div class="row lightgray">

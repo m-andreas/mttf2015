@@ -53,12 +53,12 @@
       </div>
       <div class="row">
         <div class="field large-6 columns">
-          <h3><%= f.label "Abholdatum" %></h3><br>
-          <%= f.date_field :scheduled_collection_date %>
+          <h3><%= f.label "Abholung" %></h3><br>
+          <%= f.datetime_local_field :scheduled_collection_time %>
         </div>
         <div class="field large-6 columns">
-          <h3><%= f.label "Lieferdatum" %></h3><br>
-          <%= f.date_field :scheduled_delivery_date %>
+          <h3><%= f.label "Lieferung" %></h3><br>
+          <%= f.datetime_local_field :scheduled_delivery_time %>
         </div>
       </div>
       <div class="row lightgray">

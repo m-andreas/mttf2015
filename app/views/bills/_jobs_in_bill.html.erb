@@ -25,8 +25,8 @@
           <td><%= job.driver.fullname %></td>
           <td><%= job.from.address_short %></td>
           <td><%= job.to.address_short %></td>
-          <td><%= l job.actual_collection_date unless job.actual_collection_date.nil? %></td>
-          <td><%= l job.actual_delivery_date unless job.actual_collection_date.nil? %></td>
+          <td><%= l job.actual_collection_time.to_date unless job.actual_collection_time.nil? %></td>
+          <td><%= l job.actual_delivery_time.to_date unless job.actual_collection_time.nil? %></td>
           <td><%= job.route.is_flat_rate? ? "Pauschale" : job.route.distance %></td>
           <td><%= job.distance %></td>
           <td><%= ( job.distance - job.route.distance ).abs %></td>

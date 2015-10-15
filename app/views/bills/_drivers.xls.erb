@@ -30,8 +30,8 @@
       <% @bill.get_main_drives( driver ).each do |job| %>
         <Row ss:Height="47">
           <Cell ss:StyleID="<%= job.has_shuttle? ? "borderlinksoben" : "borderlinksobenunten"%>"><Data ss:Type="Number"><%= job.id %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%=l job.actual_collection_date unless job.actual_collection_date.nil? %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%=l job.actual_delivery_date unless job.actual_delivery_date.nil? %></Data></Cell>
+          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%=l job.actual_collection_time unless job.actual_collection_time.nil? %></Data></Cell>
+          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%=l job.actual_delivery_time unless job.actual_delivery_time.nil? %></Data></Cell>
           <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
           <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%=raw job.from.complete_address %></Data></Cell>
           <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%= job.registration_number %></Data></Cell>

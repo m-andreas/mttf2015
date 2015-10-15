@@ -34,20 +34,20 @@
       <%= @job.to.complete_address %>
     </p>
     <p>
-      <strong>Geplantes Abholdatum:</strong>
-      <%= @job.scheduled_collection_date %>
+      <strong>Geplanter Abholtermin:</strong>
+      <%=l @job.scheduled_collection_time unless @job.scheduled_collection_time.nil?%>
     </p>
     <p>
-      <strong>Geplantes Lieferdatum:</strong>
-      <%= @job.scheduled_delivery_date %>
+      <strong>Geplanter Liefertermin:</strong>
+      <%=l @job.scheduled_delivery_time unless @job.scheduled_delivery_time.nil? %>
     </p>
     <p>
-      <strong>Tatsächliches Abholdatum:</strong>
-      <%= @job.actual_collection_date %>
+      <strong>Tatsächlicher Abholtermin:</strong>
+      <%=l @job.actual_collection_time unless @job.actual_collection_time.nil? %>
     </p>
     <p>
-      <strong>Tatsächliches Lieferdatum:</strong>
-      <%= @job.actual_delivery_date %>
+      <strong>Tatsächlicher Liefertermin:</strong>
+      <%=l @job.actual_delivery_time unless @job.actual_delivery_time.nil? %>
     </p>
   </div>
   <div class="large-6 columns">
@@ -113,7 +113,7 @@
             <td><%= co_job.id %></td>
             <td><%= co_job.from.address_short %></td>
             <td><%= co_job.to.address_short %></td>
-            <td><%= l co_job.scheduled_collection_date unless co_job.scheduled_collection_date.nil? %></td>
+            <td><%= l co_job.scheduled_collection_time.to_date unless co_job.scheduled_collection_time.nil? %></td>
             <td><%= link_to "zeigen", job_path( co_job ) %></td>
             <td><%= link_to "editieren", edit_job_path( co_job ) %></td>
           </tr>

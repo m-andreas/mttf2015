@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151008145249) do
+ActiveRecord::Schema.define(version: 20151015081151) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -520,10 +520,6 @@ ActiveRecord::Schema.define(version: 20151008145249) do
     t.string   "job_notice"
     t.string   "transport_notice"
     t.string   "transport_notice_extern"
-    t.date     "scheduled_collection_date"
-    t.date     "scheduled_delivery_date"
-    t.date     "actual_collection_date"
-    t.date     "actual_delivery_date"
     t.integer  "mileage_delivery"
     t.integer  "mileage_collection"
     t.integer  "working_hours"
@@ -536,6 +532,10 @@ ActiveRecord::Schema.define(version: 20151008145249) do
     t.integer  "bill_id"
     t.integer  "final_distance"
     t.integer  "final_calculation_basis"
+    t.datetime "scheduled_collection_time"
+    t.datetime "scheduled_delivery_time"
+    t.datetime "actual_collection_time"
+    t.datetime "actual_delivery_time"
   end
 
   create_table "routes", force: true do |t|

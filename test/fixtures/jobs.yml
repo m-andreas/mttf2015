@@ -9,8 +9,8 @@ one:
   route_id: 1
   from_id: 1
   to_id: 2
-  actual_delivery_date: <%= Date.yesterday %>
-  actual_collection_date:  <%= Date.yesterday %>
+  actual_delivery_time: <%= 1.day.ago.to_time %>
+  actual_collection_time:  <%= 1.day.ago.to_time %>
   mileage_collection: 100
   mileage_delivery: 200
   shuttle: false
@@ -41,8 +41,8 @@ two:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
   registration_number: "w123"
 
 three:
@@ -57,8 +57,8 @@ three:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
-  actual_delivery_date: <%= Date.tomorrow %>
-  actual_collection_date:  <%= Date.tomorrow %>
+  actual_delivery_time: <%= 1.day.from_now.to_time %>
+  actual_collection_time:  <%= 1.day.from_now.to_time %>
   registration_number: "wu123"
   car_brand: "BMW"
 
@@ -74,8 +74,8 @@ same_driver_as_three:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
   registration_number: "wu123"
   car_brand: "Audi"
 
@@ -91,8 +91,8 @@ one_not_shuttle:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
 
 not_in_shuttle:
   transport_notice: "not_in_shuttle"
@@ -106,8 +106,8 @@ not_in_shuttle:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
 
 shuttle:
   transport_notice: "shuttle"
@@ -121,8 +121,8 @@ shuttle:
   shuttle: true
   mileage_collection: 100
   mileage_delivery: 200
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
 
 empty_shuttle:
   transport_notice: "empty_shuttle"
@@ -136,8 +136,8 @@ empty_shuttle:
   shuttle: true
   mileage_collection: 100
   mileage_delivery: 200
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
 
 payed:
   transport_notice: "payed"
@@ -150,8 +150,8 @@ payed:
   from_id: 1
   to_id: 2
   shuttle: false
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
   mileage_collection: 100
   mileage_delivery: 200
 
@@ -167,8 +167,8 @@ payed_shuttle:
   from_id: 1
   to_id: 2
   shuttle: true
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
   mileage_collection: 100
   mileage_delivery: 800
 
@@ -184,8 +184,8 @@ payed_in_shuttle1:
   from_id: 1
   to_id: 2
   shuttle: false
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
   mileage_collection: 100
   mileage_delivery: 200
 
@@ -201,8 +201,8 @@ payed_in_shuttle2:
   from_id: 1
   to_id: 2
   shuttle: false
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
   mileage_collection: 100
   mileage_delivery: 200
 
@@ -217,7 +217,7 @@ finished:
   from_id: 1
   to_id: 2
   shuttle: false
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
   mileage_collection: 100
   mileage_delivery: 200
