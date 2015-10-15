@@ -1,41 +1,40 @@
-<h1>Listing companies</h1>
+<div class="small-12 columns">
+  <h1>Alle Firmen</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Address</th>
-      <th>City</th>
-      <th>Zip code</th>
-      <th>Country</th>
-      <th>Telephone</th>
-      <th>Email</th>
-      <th>Price per km</th>
-      <th>Price flat rate</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @companies.each do |company| %>
+  <table>
+    <thead>
       <tr>
-        <td><%= company.name %></td>
-        <td><%= company.address %></td>
-        <td><%= company.city %></td>
-        <td><%= company.zip_code %></td>
-        <td><%= company.country %></td>
-        <td><%= company.telephone %></td>
-        <td><%= company.email %></td>
-        <td><%= company.price_per_km %></td>
-        <td><%= company.price_flat_rate %></td>
-        <td><%= link_to 'Show', company %></td>
-        <td><%= link_to 'Edit', edit_company_path(company) %></td>
-        <td><%= link_to 'Destroy', company, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <th>Name</th>
+        <th>Adresse</th>
+        <th>Stadt</th>
+        <th>PLZ</th>
+        <th>Land</th>
+        <th>Telefon</th>
+        <th>Email</th>
+        <th>Preis pro km</th>
+        <th>Preis Pauschale</th>
+        <th colspan="2"></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<br>
+    <tbody>
+      <% @companies.each do |company| %>
+        <tr>
+          <td><%= company.name %></td>
+          <td><%= company.address %></td>
+          <td><%= company.city %></td>
+          <td><%= company.zip_code %></td>
+          <td><%= company.country %></td>
+          <td><%= company.telephone %></td>
+          <td><%= company.email %></td>
+          <td><%= company.price_per_km %></td>
+          <td><%= company.price_flat_rate %></td>
+          <td><%= link_to 'Anzeigen', company %></td>
+          <td><%= link_to 'Editieren', edit_company_path(company) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-<%= link_to 'New Company', new_company_path %>
+  <br>
+</div>

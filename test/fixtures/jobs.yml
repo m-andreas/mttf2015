@@ -9,11 +9,12 @@ one:
   route_id: 1
   from_id: 1
   to_id: 2
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_date: <%= Date.yesterday %>
+  actual_collection_date:  <%= Date.yesterday %>
   mileage_collection: 100
   mileage_delivery: 200
   shuttle: false
+  registration_number: "w123"
 
 one_no_date:
   transport_notice: "one"
@@ -42,6 +43,7 @@ two:
   mileage_delivery: 200
   actual_delivery_date: <%= Date.current %>
   actual_collection_date:  <%= Date.current %>
+  registration_number: "w123"
 
 three:
   transport_notice: "three"
@@ -55,8 +57,10 @@ three:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
-  actual_delivery_date: <%= Date.current %>
-  actual_collection_date:  <%= Date.current %>
+  actual_delivery_date: <%= Date.tomorrow %>
+  actual_collection_date:  <%= Date.tomorrow %>
+  registration_number: "wu123"
+  car_brand: "BMW"
 
 same_driver_as_three:
   transport_notice: "same_driver_as_three"
@@ -72,6 +76,8 @@ same_driver_as_three:
   mileage_delivery: 200
   actual_delivery_date: <%= Date.current %>
   actual_collection_date:  <%= Date.current %>
+  registration_number: "wu123"
+  car_brand: "Audi"
 
 one_not_shuttle:
   transport_notice: "one_not_shuttle"

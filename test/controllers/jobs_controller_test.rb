@@ -131,6 +131,15 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal date, assigns(:job).actual_delivery_date
   end
 
+  test "should remove co_jobs on update" do
+    sign_in @user
+    assert_not jobs(:shuttle).co_drivers.empty?
+    patch :update, id: jobs(:shuttle), subaction: "update", job: { shuttle: "0" }
+    assert_redirected_to jobs_path
+    jobs(:shuttle).reload
+    assert jobs(:shuttle).co_drivers.empty?
+  end
+
   test "should update job and set to current" do
     sign_in @user
     date = Date.current
@@ -142,6 +151,18 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal date, assigns(:job).actual_delivery_date
   end
 
+  test "should update job and not set to current" do
+    sign_in @user
+    date = Date.current
+    @request.env['HTTP_REFERER'] = 'http://localhost:3000/jobs/edit'
+    patch :update, id: @job, subaction: "update_and_pay", job: { actual_collection_date: date, actual_delivery_date: nil, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
+    assert_redirected_to 'http://localhost:3000/jobs/edit'
+    assert @job.reload
+    assert @job.is_open?
+    assert_equal date, assigns(:job).actual_collection_date
+    assert_equal nil, assigns(:job).actual_delivery_date
+  end
+
   test "should destroy job" do
     sign_in @user
     assert_difference('Job.get_active.count', -1) do
@@ -149,6 +170,15 @@ class JobsControllerTest < ActionController::TestCase
     end
 
     assert_redirected_to jobs_path
+  end
+
+  test "should not destroy job" do
+    sign_in @user
+    assert_difference('Job.get_active.count', 0) do
+      delete :destroy, id: jobs(:payed)
+    end
+
+    assert_redirected_to jobs(:payed)
   end
 
   test "set_to_current_bill" do
@@ -285,10 +315,418 @@ class JobsControllerTest < ActionController::TestCase
                 "main_job_id"=>""}
     sign_in @user
     xhr :get, :show_all, params
-    body = JSON.parse(response.body)
-    puts body
-    assert_equal 6, body["recordsFiltered"]
     assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 6, body["recordsFiltered"]
+  end
+
+  test "show_all_create_ajax_search1" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "1"=>{"data"=>"1", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "2"=>{"data"=>"2", "name"=>"", "searchable"=>"true", "orderable"=>"true",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0", "length"=>"10",
+                "search"=>{"value"=>"tester", "regex"=>"false"},
+                "form_type"=>"create",
+                "main_job_id"=>""}
+    sign_in @user
+    xhr :get, :show_all, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 5, body["recordsFiltered"]
+  end
+
+  test "show_all_create_ajax_search2" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "1"=>{"data"=>"1", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "2"=>{"data"=>"2", "name"=>"", "searchable"=>"true", "orderable"=>"true",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0", "length"=>"10",
+                "search"=>{"value"=>"one tester", "regex"=>"false"},
+                "form_type"=>"create",
+                "main_job_id"=>""}
+    sign_in @user
+    xhr :get, :show_all, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 3, body["recordsFiltered"]
+  end
+
+  test "show_regular_jobs_ajax" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                "search"=>{"value"=>"", "regex"=>"false"}},
+                "1"=>{"data"=>"1", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "2"=>{"data"=>"2", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "7"=>{"data"=>"7", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "8"=>{"data"=>"8", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "9"=>{"data"=>"9", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "10"=>{"data"=>"10", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "11"=>{"data"=>"11", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0",
+                "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "start_from_date"=>"",
+                "end_at_date"=>"",
+                "show_open"=>"true",
+                "show_finished"=>"false",
+                "show_charged"=>"false",
+                "show_shuttles"=>"false",
+                "show_regular_jobs"=>"true"}
+    sign_in @user
+    xhr :get, :show_regular_jobs, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 7, body["recordsFiltered"]
+  end
+
+  test "show_regular_jobs_ajax_in_date" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                "search"=>{"value"=>"", "regex"=>"false"}},
+                "1"=>{"data"=>"1", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "2"=>{"data"=>"2", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "7"=>{"data"=>"7", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "8"=>{"data"=>"8", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "9"=>{"data"=>"9", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "10"=>{"data"=>"10", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "11"=>{"data"=>"11", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0",
+                "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "start_from_date"=> I18n.l( Date.today ),
+                "end_at_date"=> I18n.l( Date.today ),
+                "show_open"=>"true",
+                "show_finished"=>"false",
+                "show_charged"=>"false",
+                "show_shuttles"=>"false",
+                "show_regular_jobs"=>"true"}
+    sign_in @user
+    xhr :get, :show_regular_jobs, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 4, body["recordsFiltered"]
+  end
+
+  test "show_regular_jobs_ajax_from_date" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                "search"=>{"value"=>"", "regex"=>"false"}},
+                "1"=>{"data"=>"1", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "2"=>{"data"=>"2", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "7"=>{"data"=>"7", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "8"=>{"data"=>"8", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "9"=>{"data"=>"9", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "10"=>{"data"=>"10", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "11"=>{"data"=>"11", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0",
+                "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "start_from_date"=> I18n.l( Date.today ),
+                "end_at_date"=> nil,
+                "show_open"=>"true",
+                "show_finished"=>"false",
+                "show_charged"=>"false",
+                "show_shuttles"=>"false",
+                "show_regular_jobs"=>"true"}
+    sign_in @user
+    xhr :get, :show_regular_jobs, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 5, body["recordsFiltered"]
+  end
+
+  test "show_regular_jobs_ajax_end_date" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                "search"=>{"value"=>"", "regex"=>"false"}},
+                "1"=>{"data"=>"1", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "2"=>{"data"=>"2", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "7"=>{"data"=>"7", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "8"=>{"data"=>"8", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "9"=>{"data"=>"9", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "10"=>{"data"=>"10", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "11"=>{"data"=>"11", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0",
+                "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "start_from_date"=> nil,
+                "end_at_date"=> I18n.l( Date.today ),
+                "show_open"=>"true",
+                "show_finished"=>"false",
+                "show_charged"=>"false",
+                "show_shuttles"=>"false",
+                "show_regular_jobs"=>"true"}
+    sign_in @user
+    xhr :get, :show_regular_jobs, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 5, body["recordsFiltered"]
+  end
+
+
+  test "show_regular_jobs_ajax_with_shuttles" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                "search"=>{"value"=>"", "regex"=>"false"}},
+                "1"=>{"data"=>"1", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "2"=>{"data"=>"2", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "7"=>{"data"=>"7", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "8"=>{"data"=>"8", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "9"=>{"data"=>"9", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "10"=>{"data"=>"10", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "11"=>{"data"=>"11", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0",
+                "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "start_from_date"=> "",
+                "end_at_date"=> "",
+                "show_open"=>"true",
+                "show_finished"=>"false",
+                "show_charged"=>"false",
+                "show_shuttles"=>"true",
+                "show_regular_jobs"=>"true"}
+    sign_in @user
+    xhr :get, :show_regular_jobs, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 9, body["recordsFiltered"]
+  end
+
+  test "show_regular_jobs_ajax_just_finished" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                "search"=>{"value"=>"", "regex"=>"false"}},
+                "1"=>{"data"=>"1", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "2"=>{"data"=>"2", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "7"=>{"data"=>"7", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "8"=>{"data"=>"8", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "9"=>{"data"=>"9", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "10"=>{"data"=>"10", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "11"=>{"data"=>"11", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0",
+                "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "start_from_date"=> "",
+                "end_at_date"=> "",
+                "show_open"=>"false",
+                "show_finished"=>"true",
+                "show_charged"=>"false",
+                "show_shuttles"=>"false",
+                "show_regular_jobs"=>"true"}
+    sign_in @user
+    xhr :get, :show_regular_jobs, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 1, body["recordsFiltered"]
+  end
+
+  test "show_regular_jobs_ajax_just_old" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                "search"=>{"value"=>"", "regex"=>"false"}},
+                "1"=>{"data"=>"1", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "2"=>{"data"=>"2", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "7"=>{"data"=>"7", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "8"=>{"data"=>"8", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "9"=>{"data"=>"9", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "10"=>{"data"=>"10", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "11"=>{"data"=>"11", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0",
+                "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "start_from_date"=> "",
+                "end_at_date"=> "",
+                "show_open"=>"false",
+                "show_finished"=>"false",
+                "show_charged"=>"true",
+                "show_shuttles"=>"false",
+                "show_regular_jobs"=>"true"}
+    sign_in @user
+    xhr :get, :show_regular_jobs, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 3, body["recordsFiltered"]
+  end
+
+  test "show_regular_jobs_ajax_all_in_date_with_licence" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                "search"=>{"value"=>"", "regex"=>"false"}},
+                "1"=>{"data"=>"1", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "2"=>{"data"=>"2", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "7"=>{"data"=>"7", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "8"=>{"data"=>"8", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "9"=>{"data"=>"9", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "10"=>{"data"=>"10", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "11"=>{"data"=>"11", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0",
+                "length"=>"10",
+                "search"=>{"value"=>"w123", "regex"=>"false"},
+                "start_from_date"=> I18n.l( Date.today ),
+                "end_at_date"=> I18n.l( Date.today ),
+                "show_open"=>"true",
+                "show_finished"=>"true",
+                "show_charged"=>"true",
+                "show_shuttles"=>"true",
+                "show_regular_jobs"=>"true"}
+    sign_in @user
+    xhr :get, :show_regular_jobs, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 1, body["recordsFiltered"]
   end
 
   test "should_not_add_co_driver_whos_in_shuttle" do

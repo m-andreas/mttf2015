@@ -21,9 +21,7 @@ private
     jobs = []
 
     display_on_page.map do |job|
-      if job.nil?
-        puts job.inspect
-      else
+      unless job.nil?
         fullname = job.driver.nil? ? "" : job.driver.fullname
         from_address_short = job.from.nil? ? "" : job.from.address_short
         to_address_short = job.to.nil? ? "" : job.to.address_short
@@ -62,10 +60,6 @@ private
 
     if params[:search][:value].present?
       search = params[:search][:value].strip
-      puts search.inspect
-      puts search.split( " " ).length
-      puts search.split( " " ).length <= 2
-      puts search.include?( " " )
       if search.include?( " " ) && search.split( " " ).length <= 2
         search_spitted = search.split( " " )
 

@@ -1444,6 +1444,49 @@ $include-html-global-classes: $include-html-classes;
 // $include-legacy-visibility-classes: true;
 // $include-accessibility-classes: true;
 
+
+@import 'foundation';
+
+body > div.sticky > nav > section > ul > li.red > a{
+  color: #FF4E19 !important;
+}
+
+body > div.sticky > nav > section > ul > li.name > h1 > a{
+  font-weight: bold;
+}
+
+body > div.sticky > nav > section > ul > li.has-dropdown.not-click > ul > li > a{
+  font-weight: bold;
+}
+
+body > div.sticky > nav > section > ul > li.has-dropdown.not-click > ul > li > ul > li > a{
+  font-weight: bold;
+}
+
+.title-area .name h1{
+  color: #5DB209;
+  margin-left: 10px !important;
+  font-weight: bold !important;
+}
+
+.top-bar-section ul li > a{
+  color: #5DB209 !important;
+  background: #042DCD !important;
+  font-weight:bold;
+}
+
+.top-bar-section ul li h1 a{
+  color: #5DB209 !important;
+  background: #042DCD !important;
+  font-weight:bold;
+}
+
+.top-bar {
+  color: #32CD32 !important;
+  background: #042DCD !important;
+  font-weight:bold;
+}
+
 #custom-row {
   margin: 4em;
 }
@@ -1454,10 +1497,6 @@ $include-html-global-classes: $include-html-classes;
 
 .remove {
   cursor: pointer;
-}
-
-.red a{
-  color: red !important;
 }
 
 @media only screen and (min-width: 64.0625em){
@@ -1490,5 +1529,3 @@ $include-html-global-classes: $include-html-classes;
 .padded-column {
   padding: 10px;
 }
-
-@import 'foundation';

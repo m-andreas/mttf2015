@@ -2,6 +2,10 @@
 
 de:
   devise:
+    invitations:
+      new:
+        header: "Einen neuen Benutzer anlegen"
+        submit_button: "Email versenden"
     confirmations:
       confirmed: "Vielen Dank für Ihre Registrierung. Bitte melden Sie sich jetzt an."
       confirmed_and_signed_in: "Vielen Dank für Ihre Registrierung. Sie sind jetzt angemeldet."

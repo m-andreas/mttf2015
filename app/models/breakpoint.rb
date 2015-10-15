@@ -11,8 +11,14 @@ class Breakpoint < ActiveRecord::Base
     return breakpoints_list[ index - 1 ]
   end
 
+  def first_position?
+    breakpoints_list = self.job.breakpoints.order(:position)
+    index = breakpoints_list.index(self)
+    return index == 0
+  end
+
   def distance
-    if self.position == 0
+    if self.first_position?
       return self.mileage.to_i - self.job.mileage_collection.to_i
     else
       breakpoint_before = self.previous

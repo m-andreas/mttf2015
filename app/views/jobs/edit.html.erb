@@ -18,7 +18,7 @@
         <div class="field large-8 columns">
           <h3>Fahrer</h3><br>
           Fahrer hier filtern <input id="driver_filter" type="text">
-          <%= f.select :driver_id, @drivers.collect {|d| [ "#{d.fullname}", d.id ] }%>
+          <%= f.select :driver_id, @drivers.collect {|d| [ "#{d.fullname_id}", d.id ] }%>
         </div>
         <div class="field large-4 columns">
           <h3>Kostenstelle</h3><br>

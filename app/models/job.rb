@@ -71,7 +71,7 @@ class Job < ActiveRecord::Base
       part_price = (( self.bill.driver_price_per_km * breakpoint.distance )/ drivers_in_car )
       price += part_price
       if get_array
-        if breakpoint.position == 0
+        if breakpoint.first_position?
           breakpoints_array << [ self.from.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
         else
           breakpoints_array << [ breakpoints[ i -1 ].address.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
@@ -86,7 +86,7 @@ class Job < ActiveRecord::Base
           part_price = self.bill.driver_price_per_km * ( self.mileage_delivery - breakpoint.mileage ) / drivers_in_car
           price += part_price
           if get_array
-            if breakpoint.position == 0
+            if breakpoint.first_position?
               breakpoints_array << [ self.from.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
             else
               breakpoints_array << [ breakpoints[ i -1 ].address.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]

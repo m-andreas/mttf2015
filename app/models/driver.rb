@@ -11,6 +11,10 @@ class Driver < ActiveRecord::Base
     firstname + " " + lastname
   end
 
+  def fullname_id
+    fullname + " (" + self.id.to_s + ")"
+  end
+
   def firstname
     first_name
   end

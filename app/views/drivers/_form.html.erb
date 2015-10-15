@@ -46,7 +46,7 @@
     <%= f.text_field :city %>
   </div>
   <div class="field">
-    <%= f.label :PLZ %><br>
+    <%= f.label :zip_code, "PLZ" %><br>
     <%= f.text_field :zip_code %>
   </div>
   <div class="field">
@@ -62,11 +62,11 @@
     <%= f.text_field :licence_number %>
   </div>
   <div class="field">
-    <%= f.label "Ausstellende Behörde" %><br>
+    <%= f.label :issuing_authority, "Ausstellende Behörde" %><br>
     <%= f.text_field :issuing_authority %>
   </div>
   <div class="field">
-    <%= f.label "Führerscheinkatgorien" %><br>
+    <%= f.label "Führerscheinkategorien" %><br>
     <%= f.text_field :driving_licence_category %>
   </div>
   <div class="field">
@@ -78,23 +78,25 @@
     <%= f.text_field :social_security_number %>
   </div>
   <div class="field">
-    <%= f.label :IBAN %><br>
+    <%= f.label :iban, "IBAN" %><br>
     <%= f.text_field :iban %>
   </div>
   <div class="field">
-    <%= f.label :BIC %><br>
+    <%= f.label :bic, "BIC" %><br>
     <%= f.text_field :bic %>
   </div>
-  <div class=".large-12.columns row   ">
-    <div class="field large-3.columns">
+      <div class="large-8 small-12 columns">
+
+  <div class="large-12 columns">
+    <div class="large-4 small-12 columns">
       <%= f.label :Führerscheinkopie %><br>
       <%= f.check_box :driving_licence_copy %>
     </div>
-    <div class="field large-3.columns">
+    <div class="large-4 small-12 columns">
       <%= f.label :Meldezettel %><br>
       <%= f.check_box :registration_copy %>
     </div>
-    <div class="field large-3.columns">
+    <div class="large-4 small-12 columns">
       <%= f.label :Werkvertrag %><br>
       <%= f.check_box :service_contract %>
     </div>

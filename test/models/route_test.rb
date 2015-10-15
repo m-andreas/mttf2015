@@ -41,4 +41,9 @@ class RouteTest < ActiveSupport::TestCase
       assert Route.find(route_id).is_new?
     end
   end
+
+  test "get new routes" do
+    new_routes = Route.get_new
+    assert_equal [routes(:not_confirmed)], new_routes
+  end
 end

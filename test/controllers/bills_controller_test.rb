@@ -36,25 +36,41 @@ class BillsControllerTest < ActionController::TestCase
 
   test "should add open jobs to current bill" do
     sign_in @user
+    open_jobs_count = Job.where( status: Job::OPEN ).length + 1
+    jobs(:one_no_date).actual_delivery_date = Date.yesterday
+    jobs(:one_no_date).actual_collection_date = Date.yesterday
+    jobs(:one_no_date).save
     post "add_jobs"
     assert_redirected_to current_bill_path
     assert assigns(:current_bill).is_current?
-    assert_not_nil assigns(:current_bill).jobs
+    assert_equal open_jobs_count, assigns(:current_bill).jobs.length
+  end
+
+  test "should not add open jobs to current bill" do
+    sign_in @user
+    post "add_jobs"
+    open_jobs_count = Job.where( status: Job::OPEN ).length + 1
+    assert_redirected_to current_bill_path
+    assert flash[:error].present?
+    assert_equal ["Die Werte für Abhol oder Lieferdatum sind nicht gesetz. Auftrag nicht verrechnet. Auftrag #{jobs(:one_no_date).id}".encode("ISO-8859-1")], flash[:error]
   end
 
   test "get_sixt_xls" do
     sign_in @user
     get "sixt_bill", { id: @old_bill, format: :xls }
+    assert_response :success, flash[:error]
   end
 
   test "get_driver_xls" do
     sign_in @user
     get "drivers_bill", { id: @old_bill, format: :xls }
+    assert_response :success, flash[:error]
   end
 
   test "get_complete_xls" do
     sign_in @user
     get "show", { id: @old_bill, format: :xls }
+    assert_response :success, flash[:error]
   end
 
   test "should create bill" do
@@ -112,5 +128,33 @@ class BillsControllerTest < ActionController::TestCase
     assigns( :bill ).jobs.each do |job|
       assert job.is_charged?
     end
+  end
+
+  test "should_not_set_bill_payed" do
+    sign_in @user
+    jobs( :payed_in_shuttle1 ).set_to_current_bill
+    post :pay, id: @bill
+    assert_redirected_to jobs_path
+    @bill.reload
+    assert_not Bill.get_current.jobs.empty?
+    assert assigns( :bill ).billed_at.nil?
+    assigns( :bill ).jobs.each do |job|
+      assert job.is_finished?
+    end
+    assert flash[:alert].present?
+  end
+
+  test "should_not_set_bill_payed2" do
+    sign_in @user
+    jobs( :payed_shuttle ).set_to_current_bill
+    post :pay, id: @bill
+    assert_redirected_to jobs_path
+    @bill.reload
+    assert_not Bill.get_current.jobs.empty?
+    assert assigns( :bill ).billed_at.nil?
+    assigns( :bill ).jobs.each do |job|
+      assert job.is_finished?
+    end
+    assert flash[:alert].present?
   end
 end

@@ -20,10 +20,7 @@ private
     jobs = []
 
     display_on_page.map do |job|
-      puts job.inspect
-      if job.nil?
-        puts job.inspect
-      else
+      unless job.nil?
         fullname = job.driver.nil? ? "" : link_to( job.driver.fullname, driver_path(job.driver.id))
 
         from_address_short = job.from.nil? ? "" : job.from.address_short
@@ -39,7 +36,6 @@ private
           add_to_current = ""
           delete = ""
         end
-        puts job.inspect
         show = link_to 'Anzeigen', job_path(job)
         if job.actual_collection_date.nil?
           if job.scheduled_collection_date.nil?
@@ -100,8 +96,8 @@ private
  def sort_order_filter
     records = Job.order("#{sort_column} #{sort_direction}").includes(:from, :to, :driver)
     search = params[:search][:value].strip
-    start_from_date = Date.strptime( params[:start_from_date], "%d.%m.%Y" ) unless params[:start_from_date].empty?
-    end_at_date = Date.strptime( params[:end_at_date], "%d.%m.%Y" ) unless params[:end_at_date].empty?
+    start_from_date = Date.strptime( params[:start_from_date], "%d.%m.%Y" ) unless params[:start_from_date].nil? || params[:start_from_date].empty?
+    end_at_date = Date.strptime( params[:end_at_date], "%d.%m.%Y" ) unless params[:end_at_date].nil? || params[:end_at_date].empty?
     status = []
     status << 1 if params[:show_open] == "true"
     status << 2 if params[:show_finished] == "true"
@@ -119,7 +115,6 @@ private
     else
       records = records.where("shuttle IN (:shuttle) and status IN (:status) and ( :start_from_date <= actual_delivery_date and :end_at_date >= actual_collection_date and (  addresses.address_short like :search or tos_jobs.address_short like :search or jobs.id like :search or lower(car_brand) like :search or lower(car_type) like :search or lower(registration_number) like :search or lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search))", search: "%#{search}%", start_from_date: start_from_date, end_at_date: end_at_date, status: status, shuttle: shuttle)
     end
-    puts records.first.inspect
     records
   end
 
