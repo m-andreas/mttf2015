@@ -28,24 +28,42 @@
         <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">EUR</Data></Cell>
         <Cell ss:StyleID="borderrechtsobenuntendick"><Data ss:Type="String">KSt</Data></Cell>
       </Row>
-    <% @bill.jobs.each do |job| %>
-      <Row ss:Height="47">
-        <Cell><Data ss:Type="Number"><%= job.id %></Data></Cell>
-        <Cell ss:StyleID="wrap"><Data ss:Type="String"><%=l job.actual_collection_time unless job.actual_collection_time.nil? %></Data></Cell>
-        <Cell ss:StyleID="wrap"><Data ss:Type="String"><%=l job.actual_delivery_time unless job.actual_delivery_time.nil? %></Data></Cell>
-        <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
-        <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.from.complete_address %></Data></Cell>
-        <Cell><Data ss:Type="String"><%= job.registration_number %></Data></Cell>
-        <Cell><Data ss:Type="Number"><%= job.route.distance %></Data></Cell>
-        <Cell><Data ss:Type="Number"><%= job.distance %></Data></Cell>
-        <Cell><Data ss:Type="Number"><%= %></Data></Cell>
-        <Cell><Data ss:Type="String"><%= job.route.get_calculation_basis %></Data></Cell>
-        <Cell><Data ss:Type="String"></Data></Cell>
-        <Cell ss:StyleID="price"><Data ss:Type="Number"><%= job.price_sixt.to_s %></Data></Cell>
-        <Cell><Data ss:Type="Number"><%= job.cost_center_id %></Data></Cell>
-        <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.get_shuttle_string %></Data></Cell>
-      </Row>
-    <% end %>
+        <% @bill.jobs.where( shuttle: false ).each do |job| %>
+            <Row ss:Height="47">
+                <Cell><Data ss:Type="Number"><%= job.id %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%=l job.actual_collection_time unless job.actual_collection_time.nil? %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%=l job.actual_delivery_time unless job.actual_delivery_time.nil? %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.from.complete_address %></Data></Cell>
+                <Cell><Data ss:Type="String"><%= job.registration_number %></Data></Cell>
+                <Cell><Data ss:Type="Number"><%= job.route.distance %></Data></Cell>
+                <Cell><Data ss:Type="Number"><%= job.distance %></Data></Cell>
+                <Cell><Data ss:Type="Number"><%= %></Data></Cell>
+                <Cell><Data ss:Type="String"><%= job.route.get_calculation_basis %></Data></Cell>
+                <Cell><Data ss:Type="String"></Data></Cell>
+                <Cell ss:StyleID="price"><Data ss:Type="Number"><%= job.price_sixt.to_s %></Data></Cell>
+                <Cell><Data ss:Type="Number"><%= job.cost_center_id %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.get_shuttle_string %></Data></Cell>
+            </Row>
+        <% end %>
+        <% @bill.jobs.where( shuttle: true ).each do |job| %>
+            <Row ss:Height="47">
+                <Cell><Data ss:Type="Number"><%= job.id %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%=l job.actual_collection_time unless job.actual_collection_time.nil? %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%=l job.actual_delivery_time unless job.actual_delivery_time.nil? %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.from.complete_address %></Data></Cell>
+                <Cell><Data ss:Type="String"><%= job.registration_number %></Data></Cell>
+                <Cell><Data ss:Type="Number"><%= job.route.distance %></Data></Cell>
+                <Cell><Data ss:Type="Number"><%= job.distance %></Data></Cell>
+                <Cell><Data ss:Type="Number"><%= %></Data></Cell>
+                <Cell><Data ss:Type="String"><%= job.route.get_calculation_basis %></Data></Cell>
+                <Cell><Data ss:Type="String"></Data></Cell>
+                <Cell ss:StyleID="price"><Data ss:Type="Number"><%= job.price_sixt.to_s %></Data></Cell>
+                <Cell><Data ss:Type="Number"><%= job.cost_center_id %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.get_shuttle_string %></Data></Cell>
+            </Row>
+        <% end %>
        <Row/>
        <Row>
         <Cell/>
