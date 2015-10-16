@@ -97,6 +97,7 @@ class JobsController < ApplicationController
   def create
     @job = Job.new(job_params)
     @job.status = Job::OPEN
+
     @job.actual_collection_time = @job.scheduled_collection_time
     @job.actual_delivery_time = @job.scheduled_delivery_time
     co_jobs = params[:co_jobs]
@@ -104,17 +105,23 @@ class JobsController < ApplicationController
     @job.driver = driver
     @job.created_by_id = current_user.id
     @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
-    co_job_error = @job.check_co_job_ids( co_jobs )
+    job_errors = @job.check_co_job_ids( co_jobs )
+    if @job.scheduled_collection_time > @job.scheduled_delivery_time
+      error = "Abfahrtsdatum liegt nach Ankunftsdatum"
+      if job_errors == true
+        job_errors = error
+      else
+        job_errors += error
+      end
+    end
     respond_to do |format|
-      if co_job_error == true && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
+      if job_errors == true && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
         format.html { redirect_to jobs_path, notice: 'Job was successfully created.' }
-        format.json { render :show, status: :created, location: @job }
       else
         @drivers = Driver.get_active
         @addresses = Address.get_active
-        flash[:error] = co_job_error
+        flash[:error] = job_errors
         format.html { redirect_to new_job_path }
-        format.json { render json: @job.errors, status: :unprocessable_entity }
       end
     end
   end
