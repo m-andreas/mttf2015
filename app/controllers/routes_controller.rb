@@ -1,6 +1,6 @@
 class RoutesController < ApplicationController
   before_action :set_route, only: [:show, :edit, :update, :destroy]
-
+  before_action :check_transfair
   # GET /routes
   # GET /routes.json
   def index

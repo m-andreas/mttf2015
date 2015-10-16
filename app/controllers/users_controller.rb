@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-
+  before_action :check_transfair
+  before_action :check_transfair, except: [ :show, :update, :edit ]
   # GET /users
   # GET /users.json
   def index
@@ -66,11 +67,18 @@ class UsersController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
+      if !current_user.is_intern? && current_user.id != params[ :id ].to_i
+        redirect_to root_path
+      end
       @user = User.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit( :username, :first_name, :last_name, :email, :company_id )
+      if current_user.is_intern?
+        params.require(:user).permit( :username, :first_name, :last_name, :email, :company_id )
+      else
+        params.require(:user).permit( :username, :first_name, :last_name, :email )
+      end
     end
 end

@@ -1,6 +1,6 @@
 class BreakpointsController < ApplicationController
   before_action :set_breakpoint, only: [:show, :edit, :update, :destroy]
-
+  before_action :check_transfair
   respond_to :html
 
   def index

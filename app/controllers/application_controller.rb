@@ -12,6 +12,12 @@ class ApplicationController < ActionController::Base
       params[:locale] ||= :de
     end
 
+    def check_transfair
+      unless current_user.is_intern?
+        redirect_to root_path
+      end
+    end
+
     def flash_to_headers
       return if !request.xhr? || request.env["REQUEST_PATH"] == "/jobs_ajax/show_regular_jobs" ||
         request.env["REQUEST_PATH"] == "/jobs_ajax/show_all" ||  request.env["REQUEST_PATH"] == "/datatable_i18n"
@@ -42,8 +48,8 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :first_name, :last_name, :company_id, :password, :password_confirmation, :remember_me) }
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :username, :password, :remember_me) }
+    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :username, :email, :password, :remember_me) }
     devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :email, :first_name, :last_name, :company_id, :password, :password_confirmation, :current_password) }
-    devise_parameter_sanitizer.for(:accept_invitation).concat [ :first_name, :last_name, :email ]
+    devise_parameter_sanitizer.for(:accept_invitation).concat [ :first_name, :last_name, :email, :username ]
   end
 end

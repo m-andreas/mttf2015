@@ -26,10 +26,12 @@
     <%= f.label "E-Mail" %><br>
     <%= f.text_field :email %>
   </div>
-  <div class="field">
-    <%= f.label :Firma %><br>
-    <%= f.select :company_id, @companies.collect {|c| [ c.name, c.id ] } %><br>
-  </div>
+  <% if current_user.is_intern? %>
+    <div class="field">
+      <%= f.label :Firma %><br>
+      <%= f.select :company_id, @companies.collect {|c| [ c.name, c.id ] } %><br>
+    </div>
+  <% end %>
   <div class="actions">
     <%= f.submit %>
   </div>

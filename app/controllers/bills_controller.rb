@@ -1,6 +1,6 @@
 class BillsController < ApplicationController
   before_action :set_bill, only: [:show, :edit, :update, :destroy, :pay, :remove_job, :sixt_bill, :drivers_bill]
-
+  before_action :check_transfair
   respond_to :html
 
   def index

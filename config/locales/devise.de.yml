@@ -1,11 +1,16 @@
 # Additional translations at https://github.com/plataformatec/devise/wiki/I18n
-
 de:
   devise:
     invitations:
+      edit:
+        header: "Legen Sie ihr Passwort fest"
+        submit_button: "Benutzer erstellen"
       new:
         header: "Einen neuen Benutzer anlegen"
         submit_button: "Email versenden"
+      user:
+        updated: "Ihr Benutzer wurde aktualisiert"
+        send_instructions: "Die Anleitung zum Anlegen eines Benutzers wurde per Mail versandt"
     confirmations:
       confirmed: "Vielen Dank für Ihre Registrierung. Bitte melden Sie sich jetzt an."
       confirmed_and_signed_in: "Vielen Dank für Ihre Registrierung. Sie sind jetzt angemeldet."
@@ -28,6 +33,12 @@ de:
         subject: "Anleitung um Ihr Passwort zurückzusetzen"
       unlock_instructions:
         subject: "Anleitung um Ihren Account freizuschalten"
+      invitation_instructions:
+        subject: "Einladung zur Registrierung im MT-Transfair Portal"
+        hello: "Guten Tag,"
+        someone_invited_you: "Sie wurden eingeladen sich bei MT-Transfair zu registrieren."
+        accept: "akzeptieren"
+        ignore: "Sie wissen nicht warum Sie diese Email bekommen? Dann bitte ignorieren Sie die Mail oder kontaktieren Sie uns unter office@mt-transfair.at"
     omniauth_callbacks:
       failure: "Sie konnten nicht mit Ihrem %{kind}-Account angemeldet werden, weil '%{reason}'."
       success: "Sie haben sich erfolgreich mit Ihrem %{kind}-Account angemeldet."

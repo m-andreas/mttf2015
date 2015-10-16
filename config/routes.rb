@@ -13,9 +13,9 @@ Rails.application.routes.draw do
   get 'bills/drivers_bill/:id', to: 'bills#drivers_bill', as: 'drivers_bill'
   resources :bills
   devise_for :users
+  get 'users/invitation', to: 'jobs#new'
   resources :users
   resources :companies
-
   get 'routes/show_new', to: 'routes#show_new', as: 'new_routes'
   resources :routes
 

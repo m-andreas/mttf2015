@@ -1,10 +1,12 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
     :add_to_current_bill, :add_co_driver, :remove_co_driver ]
+  before_action :check_transfair, except: [ :new, :create, :show_all, :index ]
 
   # GET /jobs
   # GET /jobs.json
   def index
+    redirect_to new_job_path unless current_user.is_intern?
   end
 
   def add_co_driver
