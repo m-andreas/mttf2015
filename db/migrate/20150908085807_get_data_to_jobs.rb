@@ -1,7 +1,7 @@
 class GetDataToJobs < ActiveRecord::Migration
   def up
     i = 1
-    Fahrtauftrag.find_each(batch_size: 1000) do |auftrag|
+    Fahrtauftrag.where( "InsertDate >= Convert( datetime, '2015-06-01' )" ).find_each(batch_size: 1000) do |auftrag|
       job = Job.new
       job.id = auftrag.id
       job.customer_job_id = auftrag.KundenauftragID
@@ -25,10 +25,10 @@ class GetDataToJobs < ActiveRecord::Migration
       job.car_brand = auftrag.AutoMarke.strip unless auftrag.AutoMarke.nil?
       job.car_type = auftrag.AutoType.strip unless auftrag.AutoType.nil?
       job.registration_number = auftrag.Kennzeichen.strip unless auftrag.Kennzeichen.nil?
-      job.chassis_number = auftrag.FgNr.strip unless auftrag.FgNr.nil? 
-      job.job_notice = auftrag.AuftragsBemerkungen.strip unless auftrag.AuftragsBemerkungen.nil? 
-      job.transport_notice = auftrag.TransportBemerkungen.strip unless auftrag.TransportBemerkungen.nil? 
-      job.transport_notice_extern = auftrag.TransportBemerkungenExtern.strip unless auftrag.TransportBemerkungenExtern.nil? 
+      job.chassis_number = auftrag.FgNr.strip unless auftrag.FgNr.nil?
+      job.job_notice = auftrag.AuftragsBemerkungen.strip unless auftrag.AuftragsBemerkungen.nil?
+      job.transport_notice = auftrag.TransportBemerkungen.strip unless auftrag.TransportBemerkungen.nil?
+      job.transport_notice_extern = auftrag.TransportBemerkungenExtern.strip unless auftrag.TransportBemerkungenExtern.nil?
       job.scheduled_collection_date = auftrag.GeplantesTransportDatumAbholung
       job.scheduled_delivery_date = auftrag.GeplanteTransportDatumAbgabe
       job.actual_collection_date = auftrag.RealesAbholDatum
