@@ -4,7 +4,7 @@
   <div class="medium-6 small-12 column">
     <p>
       <strong>Verrechnet am:</strong>
-      <%=l @bill.billed_at %>
+      <%=l @bill.billed_at unless @bill.billed_at.nil? %>
     </p>
   </div>
   <div class="medium-6 small-12 column">
@@ -20,8 +20,8 @@
 </div>
 <div class="small-12 column">
   <%= link_to 'Datum auf Rechnung editieren', edit_bill_path(@bill) %> |
-  <%= link_to 'Zurück', old_bills_path %><br>
-  <%= link_to "Excel für Sixt", sixt_bill_path(format: "xls") %><br>
-  <%= link_to "Excel für Fahrer", drivers_bill_path(format: "xls") %><br>
+  <%= link_to t(:back), old_bills_path %><br>
+  <%= link_to t("bills.sixt_excel"), sixt_bill_path(format: "xls") %><br>
+  <%= link_to t("bills.driver_excel"), drivers_bill_path(format: "xls") %><br>
   <%= link_to "Excel komplett", bill_path(format: "xls") %>
 </div>

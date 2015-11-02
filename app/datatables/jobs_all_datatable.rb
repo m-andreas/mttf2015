@@ -26,9 +26,9 @@ private
         from_address_short = job.from.nil? ? "" : job.from.address_short
         to_address_short = job.to.nil? ? "" : job.to.address_short
         if params[ :form_type ] == "edit"
-          icon = link_to( fa_icon( "user-plus", text: "hinzufügen" ), job_add_co_driver_path( id: params[:main_job_id], co_job_id: job.id ), remote: true )
+          icon = link_to( fa_icon( "user-plus", text: I18n.translate(:add)), job_add_co_driver_path( id: params[:main_job_id], co_job_id: job.id ), remote: true )
         else
-          icon = fa_icon( "user-plus", text: "hinzufügen" )
+          icon = fa_icon( "user-plus", text:  I18n.translate(:add) )
         end
 
         job = [
@@ -52,7 +52,7 @@ private
 
  def sort_order_filter
     if @job
-      # Alle die offen oder in aktueller Abrechnung sind, kein shuttle sind, noch nicht zu einem Shuttle gehören und nicht der Fahrer des Shuttels sind
+      # Alle die offen oder in aktueller Abrechnung sind, kein shuttle sind, noch nicht zu einem Shuttle gehoeren und nicht der Fahrer des Shuttels sind
       records = Job.includes( :driver  ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( id: Carrier.all.pluck(:co_job_id), drivers: { id: @job.driver.id } ).order("#{sort_column} #{sort_direction}")
     else
       records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( id: Carrier.all.pluck(:co_job_id)).order("#{sort_column} #{sort_direction}")

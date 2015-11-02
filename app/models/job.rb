@@ -50,7 +50,7 @@ class Job < ActiveRecord::Base
   def get_shuttle_string
     shuttle_string = ""
     if self.is_shuttle?
-      shuttle_string = "Shuttle für die Jobs:"
+      shuttle_string = I18n.t("jobs.shuttle_for_jobs")
       self.co_jobs.each do |co_job|
         if co_job == self.co_jobs.last
           shuttle_string += " #{co_job.id}"
@@ -145,7 +145,7 @@ class Job < ActiveRecord::Base
       return error
     end
     unless self.mileage_collection.to_i < self.mileage_delivery.to_i
-      error = html_escape "Kilometerstand Abholung höher als Kilometerstand Lieferung. Auftrag nicht verrechnet. Auftrag #{self.id}".encode("ISO-8859-1")
+      error = html_escape ( I18n.translate("jobs.not_billed_date_not_correct") + self.id.to_s ).encode("ISO-8859-1")
       return error
     end
     if self.is_shuttle?
@@ -153,11 +153,11 @@ class Job < ActiveRecord::Base
         current_mileage = self.mileage_collection
         self.breakpoints.order( :position ).each do |breakpoint|
           if breakpoint.mileage.nil?
-            error = "Kein Wert für Km Stand in Zwischenstop eingetragen. Auftrag nicht verrechnet. Auftrag #{self.id}"
+            error = I18n.t("jobs.not_billed_milage_breakpoint") + self.id.to_s
             return error
           end
           if breakpoint.mileage <= current_mileage
-            error = html_escape "Die Werte für einen Zwischenstopp sind niedriger oder gleich wie beim Stop davor. Auftrag nicht verrechnet. Auftrag #{self.id}".encode("ISO-8859-1")
+            error = html_escape ( I18n.t("jobs.not_billed_breakpoints_not_correct") + self.id.to_s ).encode("ISO-8859-1")
             return error
           end
           current_mileage = breakpoint.mileage
@@ -167,7 +167,7 @@ class Job < ActiveRecord::Base
 
 
     unless self.actual_collection_time.is_a?( Time ) && self.actual_delivery_time.is_a?( Time )
-      error = html_escape "Die Werte für Abhol oder Lieferzeitpunkt sind nicht gesetz. Auftrag nicht verrechnet. Auftrag #{self.id}".encode("ISO-8859-1")
+      error = html_escape(I18n.translate("jobs.not_billed_date_not_set") + self.id.to_s ).encode("ISO-8859-1")
       return error
     end
 
@@ -340,7 +340,7 @@ class Job < ActiveRecord::Base
     when CHARGED
       return "Verrechnet"
     when DELETED
-      return "Gelöscht"
+      return I18n.t(:deleted)
     else
       return "Status nicht bekannt"
     end

@@ -1,6 +1,6 @@
 <div class="small-12 columns"><h1>Auftrag <%= @job.id %></h1></div>
 <% if @job.has_shuttle? %>
-  <div class="small-12 columns"><h3>Gehört zu Schuttelauftrag <%= link_to @job.shuttle_job.id, job_path(@job.shuttle_job) %></h3></div>
+  <div class="small-12 columns"><h3><%= t("jobs.connected_shuttle_job") %> <%= link_to @job.shuttle_job.id, job_path(@job.shuttle_job) %></h3></div>
 <% end %>
 <div id="custom-row">
   <div class="large-6 columns">
@@ -42,11 +42,11 @@
       <%=l @job.scheduled_delivery_time unless @job.scheduled_delivery_time.nil? %>
     </p>
     <p>
-      <strong>Tatsächlicher Abholtermin:</strong>
+      <strong><%= t("jobs.actual_collection_time") %>:</strong>
       <%=l @job.actual_collection_time unless @job.actual_collection_time.nil? %>
     </p>
     <p>
-      <strong>Tatsächlicher Liefertermin:</strong>
+      <strong><%= t("jobs.actual_delivery_time") %>:</strong>
       <%=l @job.actual_delivery_time unless @job.actual_delivery_time.nil? %>
     </p>
   </div>
@@ -125,9 +125,9 @@
     <% if @job.is_open? %>
       <%= link_to 'Editieren', edit_job_path(@job) %> |
     <% end %>
-    <%= link_to 'Zurück', jobs_path %>
+    <%= link_to I18n.translate("back"), jobs_path %>
     <% unless @job.is_open? %>|
-      <%= link_to 'Löschen', @job, method: :delete, data: { confirm: 'Auftrag löschen?' } %>
+      <%= link_to I18n.translate("delete"), @job, method: :delete, data: { confirm: I18n.translate("jobs.really_delete") } %>
     <% end %>
   </div>
 </div>

@@ -52,7 +52,7 @@ class JobsController < ApplicationController
     msg = @job.check_for_billing
     if msg == true
       @job.set_to_current_bill
-      flash[:notice] = "Auftrag wurde verrechnet"
+      flash[:notice] = t("jobs.billed")
     else
       flash[:error] = msg
     end
@@ -107,7 +107,7 @@ class JobsController < ApplicationController
     @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
     job_errors = @job.check_co_job_ids( co_jobs )
     if @job.scheduled_collection_time > @job.scheduled_delivery_time
-      error = "Abfahrtsdatum liegt nach Ankunftsdatum"
+      error = t("jobs.date_error")
       if job_errors == true
         job_errors = error
       else
@@ -116,7 +116,7 @@ class JobsController < ApplicationController
     end
     respond_to do |format|
       if job_errors == true && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
-        format.html { redirect_to jobs_path, notice: 'Job was successfully created.' }
+        format.html { redirect_to jobs_path, notice: t("jobs.created") }
       else
         @drivers = Driver.get_active
         @addresses = Address.get_active
@@ -138,7 +138,7 @@ class JobsController < ApplicationController
           msg = @job.check_for_billing
           if msg == true
             @job.set_to_current_bill
-            flash[:notice] = 'Auftrag wurde aktualisiert und der aktuellen Verrechnung hinzugefügt'
+            flash[:notice] = t("jobs.updated_and_billed")
             format.html { redirect_to jobs_path }
           else
             flash[:error] = msg
@@ -149,7 +149,7 @@ class JobsController < ApplicationController
             format.html { redirect_to :back }
           end
         else
-          format.html { redirect_to jobs_path, notice: 'Auftrag wurde erfolgreicht aktualisiert.' }
+          format.html { redirect_to jobs_path, notice: t('jobs.updated') }
         end
       else
         flash[:error] = "Editieren fehlgeschlagen"
@@ -168,14 +168,14 @@ class JobsController < ApplicationController
       @job.remove_in_shuttles
       flash[:notice] = 'Auftrag wurde entfernt'
       respond_to do |format|
-        format.html { redirect_to jobs_url, notice: 'Auftrag gelöscht' }
+        format.html { redirect_to jobs_url, notice: t("jobs.deleted") }
         format.js   { render :layout => false }
         format.json { head :no_content }
       end
     else
       flash[:notice] = 'Auftrag konnte nicht entfernt werden'
       respond_to do |format|
-        format.html { redirect_to @job, notice: 'Verrechnete Aufträge können nicht gelöscht werden' }
+        format.html { redirect_to @job, notice: t("jobs.cant_delete_billed") }
         format.js   { render :layout => false }
         format.json { head :no_content }
       end

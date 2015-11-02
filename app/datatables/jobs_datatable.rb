@@ -25,12 +25,12 @@ private
 
         from_address_short = job.from.nil? ? "" : job.from.address_short
         to_address_short = job.to.nil? ? "" : job.to.address_short
-        icon = fa_icon "user-plus", text: "hinzufügen"
+        icon = fa_icon "user-plus", text: I18n.translate("add")
         shuttle = job.is_shuttle? ? "Ja" : "Nein"
         if job.is_open?
           edit = link_to 'Editieren', edit_job_path(job)
           add_to_current = link_to "verrechnen", add_job_to_current_bill_path( job ), method: :post, remote: true
-          delete = link_to 'löschen', job, method: :delete, data: { confirm: 'Auftrag löschen?' }, remote: true, :class => 'delete_job'
+          delete = link_to I18n.translate(:delete), job, method: :delete, data: { confirm: I18n.translate("jobs.really_delete") }, remote: true, :class => 'delete_job'
         else
           edit = ""
           add_to_current = ""

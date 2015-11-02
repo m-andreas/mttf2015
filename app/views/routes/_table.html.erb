@@ -22,7 +22,7 @@
         <td><%= route.get_status %></td>
         <td><%= link_to 'Zeigen', route %></td>
         <td><%= link_to 'Editieren', edit_route_path(route) %></td>
-        <td><%= link_to 'Löschen', route, method: :delete, data: { confirm: 'Route löschen?' } %></td>
+        <td><%= link_to I18n.translate(:delete), route, method: :delete, data: { confirm: 'Route löschen?' } %></td>
       </tr>
     <% end %>
   </tbody>

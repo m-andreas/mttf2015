@@ -79,7 +79,7 @@ class BillsController < ApplicationController
     @current_bill = Bill.get_current
     msg = @current_bill.add_jobs( Job.get_open )
     if msg == true
-      flash[:notice] = "Aufträge wurde verrechnet"
+      flash[:notice] = t("bills.billed")
     else
       flash[:error] = msg
     end

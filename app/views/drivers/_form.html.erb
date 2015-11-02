@@ -58,15 +58,15 @@
     <%= f.text_field :telephone2 %>
   </div>
   <div class="field">
-    <%= f.label :Führerscheinnummer %><br>
+    <%= f.label :licence_number, t("drivers.licence_number") %><br>
     <%= f.text_field :licence_number %>
   </div>
   <div class="field">
-    <%= f.label :issuing_authority, "Ausstellende Behörde" %><br>
+    <%= f.label :issuing_authority, t("drivers.issuing_authority") %><br>
     <%= f.text_field :issuing_authority %>
   </div>
   <div class="field">
-    <%= f.label "Führerscheinkategorien" %><br>
+    <%= f.label  t("drivers.driving_licence_category") %><br>
     <%= f.text_field :driving_licence_category %>
   </div>
   <div class="field">
@@ -89,7 +89,7 @@
 
   <div class="large-12 columns">
     <div class="large-4 small-12 columns">
-      <%= f.label :Führerscheinkopie %><br>
+      <%= f.label t("drivers.licence_copy") %><br>
       <%= f.check_box :driving_licence_copy %>
     </div>
     <div class="large-4 small-12 columns">

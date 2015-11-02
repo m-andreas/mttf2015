@@ -3,10 +3,10 @@
 </div>
 <div class="small-12 column padded-column">
   <div class="medium-4 column">
-    Aufträge Gesamtanzahl: <%= @bill.jobs.length %>
+    <%= t("bills.jobs_total") %> <%= @bill.jobs.length %>
   </div>
   <div class="medium-4 column">
-    davon Hauptaufträge: <%= @bill.jobs.where(shuttle:false).length %>
+     <%= t("bills.jobs_normal") %> <%= @bill.jobs.where(shuttle:false).length %>
   </div>
   <div class="medium-4 column">
     davon Shuttles: <%= @bill.jobs.where(shuttle:true).length %>
@@ -16,10 +16,10 @@
 <%= render "jobs_in_bill" %>
 <div class= "small-12 column">
   <div class= "small-12 medium-3 column">
-    <%= button_to "Aktuelle Rechnung entfernen", delete_current_bill_path, data: { confirm: "Alle Aufträge in der Rechnung werden wieder auf 'Offen' gesetz. Fortfahren?" } %>
+    <%= button_to "Aktuelle Rechnung entfernen", delete_current_bill_path, data: { confirm: t("bills.reset_to_current") } %>
   </div>
   <div class= "small-12 medium-3 column">
-    <%= button_to "Alle Offenen Aufträge in Rechnung übernehmen", add_jobs_to_bill_path %>
+    <%= button_to t( "jobs.add_open_to_current" ), add_jobs_to_bill_path %>
   </div>
   <div class= "small-12 medium-3 column">
     <%= button_to "Rechnung abschließen", pay_bill_path(@bill) %>

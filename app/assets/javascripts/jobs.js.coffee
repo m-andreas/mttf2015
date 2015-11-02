@@ -84,7 +84,7 @@ ready = ->
   $('*[data-role=activerecord_sortable]').activerecord_sortable();
 
 
-# Alle Aufträge Maske
+# Alle Auftraege Maske
 
   show_jobs_table = $('#show_jobs').DataTable
     processing: true

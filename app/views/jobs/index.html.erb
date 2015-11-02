@@ -1,5 +1,5 @@
 <div class= "small-12 column">
-  <h1>Alle Aufträge</h1>
+  <h1><%= t("jobs.all") %></h1>
 </div>
 <%= form_tag 'jobs_ajax/show_all', method: 'get' do %>
   <div class="custom-row">
@@ -52,5 +52,5 @@
   </tbody>
 </table>
 <div class= "small-12 column">
-<%= button_to "Alle Offenen Aufträge verrechnen", add_jobs_to_bill_path %>
+<%= button_to t("job.bill_open"), add_jobs_to_bill_path %>
 </div>

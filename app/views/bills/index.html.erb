@@ -16,7 +16,7 @@
         <td><%= bill.print_date %></td>
         <td><%= link_to 'Anzeigen', bill %></td>
         <td><%= link_to 'Angezeigtes Datum edieren', edit_bill_path(bill) %></td>
-        <td><%= link_to 'Löschen', bill, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to I18n.translate(:delete), bill, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

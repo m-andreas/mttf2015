@@ -1,7 +1,7 @@
 <p>Guten Tag <%= @resource.first_name + " " @resource.last_name %>!</p>
 
-<p>Es gab mit ihrem Account eine Reihe von missglückten Anmeldeversuchen und er wurde daher gesperrt.</p>
+<p><%= t("mail.wrong_sign_in")%></p>
 
-<p>Über den untenstehenden Link können Sie ihren Account wieder öfnen:</p>
+<p><%= t("mail.open_again")%></p>
 
-<p><%= link_to 'Account öffnen', unlock_url(@resource, unlock_token: @token) %></p>
+<p><%= link_to t("mail.open_account"), unlock_url(@resource, unlock_token: @token) %></p>

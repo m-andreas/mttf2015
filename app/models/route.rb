@@ -88,7 +88,7 @@ class Route < ActiveRecord::Base
     when PROCESSED
       return "Aktuell"
     when DELETED
-      return "Gelöscht"
+      return I18n.translate(:deleted)
     else
       return "Unbekannt"
     end

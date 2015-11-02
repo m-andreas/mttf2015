@@ -56,17 +56,17 @@
   </p>
 
   <p>
-    <strong>Führerscheinnummer:</strong>
+    <strong><%= t("driverrs.licence_number") %>:</strong>
     <%= @driver.licence_number %>
   </p>
 
   <p>
-    <strong>Aussstellende Behörde:</strong>
+    <strong><%= t("driverrs.issuing_authority") %>:</strong>
     <%= @driver.issuing_authority %>
   </p>
 
   <p>
-    <strong>Führerscheinklasse:</strong>
+    <strong><%= t("driverrs.driving_licence_category") %>:</strong>
     <%= @driver.driving_licence_category %>
   </p>
 
@@ -91,7 +91,7 @@
   </p>
 
   <p>
-    <strong>Führerscheinkopie:</strong>
+    <strong><%= t("driverrs.driving_licence_copy") %>:</strong>
     <%= @driver.driving_licence_copy %>
   </p>
 
@@ -106,5 +106,5 @@
   </p>
 
   <%= link_to 'Editieren', edit_driver_path(@driver) %> |
-  <%= link_to 'Zurück', drivers_path %>
+  <%= link_to t(:back), drivers_path %>
 </div>

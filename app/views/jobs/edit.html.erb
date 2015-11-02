@@ -51,11 +51,11 @@
       </div>
       <div class="row">
         <div class="field large-6 columns">
-          <h3><%= f.label "Tatsächliches Abholdatum" %></h3><br>
+          <h3><%= f.label t("jobs.actual_collection_time") %></h3><br>
           <%= f.datetime_local_field :actual_collection_time %>
         </div>
         <div class="field large-6 columns">
-          <h3><%= f.label "Tatsächliches Lieferdatum" %></h3><br>
+          <h3><%= f.label t("jobs.actual_delivery_time") %></h3><br>
           <%= f.datetime_local_field :actual_delivery_time %>
         </div>
       </div>
@@ -96,7 +96,7 @@
           <thead>
             <tr>
               <th class="dont_show">id</th>
-              <th>Auftrag hinzufügen</th>
+              <th><%= t("jobs.add") %></th>
               <th>Auftragnummer</th>
               <th>Name</th>
               <th>Von</th>
@@ -115,8 +115,8 @@
         <%= f.button  "aktualisieren" , name: "subaction",value: "update"%>
         <%= f.button  "aktualisieren und verrechnen" , name: "subaction",value: "update_and_pay"%>
       </div>
-      <%= link_to 'Show', @job %> |
-      <%= link_to 'Back', jobs_path %>
+      <%= link_to t(:show), @job %> |
+      <%= link_to t(:back), jobs_path %>
     </div>
   <% end %>
 </div>

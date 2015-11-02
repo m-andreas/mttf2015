@@ -65,7 +65,7 @@ class RoutesController < ApplicationController
   def destroy
     @route.delete
     respond_to do |format|
-      format.html { redirect_to routes_url, notice: 'Die Route wurde gelöscht' }
+      format.html { redirect_to routes_url, notice: t("routes.deleted") }
       format.json { head :no_content }
     end
   end

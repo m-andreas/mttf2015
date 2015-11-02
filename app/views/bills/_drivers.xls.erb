@@ -10,7 +10,7 @@
      <Column ss:Index="10" ss:AutoFitWidth="0" ss:Width="150"/>
      <Column ss:Index="11" ss:AutoFitWidth="0" ss:Width="150"/>
         <Row ss:Height="20" >
-            <Cell ss:StyleID="heading"><Data ss:Type="String">Abrechnung <%= @bill.print_date %> für <%= driver.fullname %></Data></Cell>
+            <Cell ss:StyleID="heading"><Data ss:Type="String">Abrechnung <%= @bill.print_date %> I18n.t( :for ) <%= driver.fullname %></Data></Cell>
         </Row>
         <Row/>
         <Row>
@@ -21,7 +21,7 @@
           <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">VON</Data></Cell>
           <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">KZ</Data></Cell>
           <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">Plan Km</Data></Cell>
-          <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">Tatsächliche Km</Data></Cell>
+          <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String"><%= I18n.translate( "jobs.actual_distance" )%></Data></Cell>
           <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String"></Data></Cell>
           <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">Verrechungsart</Data></Cell>
           <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">Shuttlefahrt</Data></Cell>
@@ -44,7 +44,7 @@
         </Row>
         <% if job.has_shuttle? %>
           <Row><Cell ss:Index="12" ss:StyleID="borderrechts"/></Row>
-          <Row><Cell ss:StyleID="borderlinks"/><Cell/><Cell/><Cell/><Cell/><Cell/><Cell/><Cell><Data ss:Type="String">Dazugehörige Shuttlefahrt: <%= job.shuttle_job.id %></Data></Cell><Cell/><Cell/><Cell/><Cell ss:StyleID="borderrechts"/></Row>
+          <Row><Cell ss:StyleID="borderlinks"/><Cell/><Cell/><Cell/><Cell/><Cell/><Cell/><Cell><Data ss:Type="String"><%= I18n.translate( "jobs.connected_shuttle_job" ) %>: <%= job.shuttle_job.id %></Data></Cell><Cell/><Cell/><Cell/><Cell ss:StyleID="borderrechts"/></Row>
           <Row>
             <Cell ss:StyleID="borderlinks"/>
             <Cell/>
