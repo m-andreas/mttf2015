@@ -11,3 +11,15 @@ jQuery ->
     dateFormat: 'yy-mm-dd'
   $('#driver_exit_date').datepicker
     dateFormat: 'yy-mm-dd'
+  $(document).ready(ready)
+  $(document).on('page:load', ready)
+
+
+ready = ->
+  $('#drivers-table').DataTable({
+    responsive: false,
+    columnDefs: [ {
+          targets: 'no-sort',
+          orderable: false,
+    } ]
+  });

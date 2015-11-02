@@ -1,0 +1,1 @@
+(function(){var e;jQuery(function(){return $(document).ready(e),$(document).on("page:load",e)}),e=function(){return $("#users-table").DataTable({responsive:!1,columnDefs:[{targets:"no-sort",orderable:!1}]})}}).call(this);

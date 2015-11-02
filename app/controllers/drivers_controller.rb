@@ -3,7 +3,7 @@ class DriversController < ApplicationController
   before_action :check_transfair
   # GET /drivers.json
   def index
-    @drivers = Driver.where( deleted: false ).page params[:page]
+    @drivers = Driver.where( deleted: false )
   end
 
   # GET /drivers/1

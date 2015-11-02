@@ -1,5 +1,5 @@
 <div class= "small-12 column">
-  <table id="jobs_in_bill" class="display">
+  <table id="jobs-in-bill-table" class="display">
     <thead>
       <tr>
         <th>Auftragnummer</th>
@@ -12,9 +12,9 @@
         <th>Tatsächliche Km</th>
         <th>Abweichung</th>
         <th>Shuttleauftrag</th>
-        <th></th>
+        <th class="no-sort" ></th>
         <% if @bill.is_current? %>
-          <th></th>
+          <th class="no-sort" ></th>
         <% end %>
       </tr>
     </thead>

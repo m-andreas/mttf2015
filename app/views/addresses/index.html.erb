@@ -1,7 +1,7 @@
 <div class="small-12 columns">
 <h1>Alle Adressen</h1>
 
-<table>
+<table id="addresses-table" >
   <thead>
     <tr>
       <th>Erstellt von</th>
@@ -11,7 +11,9 @@
       <th>Adressse</th>
       <th>Adresse kurz</th>
       <th>Deaktiviert</th>
-      <th colspan="3"></th>
+      <th class="no-sort" colspan="1"></th>
+      <th class="no-sort" colspan="1"></th>
+      <th class="no-sort" colspan="1"></th>
     </tr>
   </thead>
 
@@ -32,7 +34,6 @@
     <% end %>
   </tbody>
 </table>
-<%= paginate @addresses %>
 <br>
 
 <%= link_to 'Neue Adresse anlgen', new_address_path %>

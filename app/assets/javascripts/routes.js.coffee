@@ -8,7 +8,10 @@ jQuery ->
 
 
 ready = ->
-  console.log("ready");
   $('#routes-table').DataTable({
-    responsive: false
+    responsive: false,
+    columnDefs: [ {
+          targets: 'no-sort',
+          orderable: false,
+    } ]
   });

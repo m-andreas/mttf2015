@@ -7,7 +7,13 @@ jQuery ->
 
 
 ready = ->
-
+  $('#jobs-in-bill-table').DataTable({
+    responsive: false,
+    columnDefs: [ {
+          targets: 'no-sort',
+          orderable: false,
+    } ]
+  });
 # Auftragseingabemaske
 
   $("#job_driver_id").change ->
