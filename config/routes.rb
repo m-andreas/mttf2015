@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   post 'bills/delete_current', to: 'bills#delete_current', as: 'delete_current_bill'
   post 'bills/pay/:id', to: 'bills#pay', as: 'pay_bill'
   get 'bills/sixt_bill/:id', to: 'bills#sixt_bill', as: 'sixt_bill'
+  get 'bills/complete_bill/:id', to: 'bills#complete_bill', as: 'complete_bill'
   get 'bills/drivers_bill/:id', to: 'bills#drivers_bill', as: 'drivers_bill'
   resources :bills
   devise_for :users

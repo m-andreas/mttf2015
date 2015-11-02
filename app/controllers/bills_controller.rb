@@ -1,5 +1,5 @@
 class BillsController < ApplicationController
-  before_action :set_bill, only: [:show, :edit, :update, :destroy, :pay, :remove_job, :sixt_bill, :drivers_bill]
+  before_action :set_bill, only: [:show, :edit, :update, :destroy, :pay, :remove_job, :sixt_bill, :drivers_bill, :complete_bill]
   before_action :check_transfair
   respond_to :html
 
@@ -18,17 +18,21 @@ class BillsController < ApplicationController
   end
 
   def show
-    @bill
+    respond_to do |format|
+      format.html
+    end
+  end
+
+  def complete_bill
     respond_to do |format|
       format.html
       format.csv { send_data @bill.to_csv( col_sep: ";").encode('ISO-8859-1', 'UTF-8') }
-      headers["Content-Disposition"] = "attachment; filename=\"#{@bill.print_date}.xls\""
-      format.xls { }
+      headers["Content-Disposition"] = "attachment; filename=\"#{@bill.print_date}_komplett.xls\""
+      format.xls
     end
   end
 
   def sixt_bill
-    @bill
     respond_to do |format|
       format.html
       headers["Content-Disposition"] = "attachment; filename=\"#{@bill.print_date}_Sixt.xls\""
@@ -38,7 +42,6 @@ class BillsController < ApplicationController
   end
 
   def drivers_bill
-    @bill
     respond_to do |format|
       format.html
       headers["Content-Disposition"] = "attachment; filename=\"#{@bill.print_date}_Fahrer.xls\""
