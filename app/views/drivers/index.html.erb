@@ -35,7 +35,7 @@
         <td><%= check_box_tag 'service_contract', 'submitted', driver.registration_copy, disabled: true %></td>
         <td><%= check_box_tag 'service_contract', 'submitted', driver.service_contract, disabled: true %></td>
         <td><%= link_to 'Editieren', edit_driver_path(driver) %></td>
-        <td><%= link_to 'Löschen', driver, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to I18n.translate(:delete), driver, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
