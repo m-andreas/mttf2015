@@ -432,6 +432,51 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal 7, body["recordsFiltered"]
   end
 
+  test "dont_show_deleted_regular_jobs_ajax" do
+    jobs(:one).delete
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                "search"=>{"value"=>"", "regex"=>"false"}},
+                "1"=>{"data"=>"1", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "2"=>{"data"=>"2", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "7"=>{"data"=>"7", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "8"=>{"data"=>"8", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "9"=>{"data"=>"9", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "10"=>{"data"=>"10", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}},
+                "11"=>{"data"=>"11", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                  "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0",
+                "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "start_from_date"=>"",
+                "end_at_date"=>"",
+                "show_open"=>"true",
+                "show_finished"=>"false",
+                "show_charged"=>"false",
+                "show_shuttles"=>"false",
+                "show_regular_jobs"=>"true"}
+    sign_in @user
+    xhr :get, :show_regular_jobs, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 6, body["recordsFiltered"]
+  end
+
   test "show_regular_jobs_ajax_in_date" do
     params = {"draw"=>"1",
               "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"true", "orderable"=>"false",

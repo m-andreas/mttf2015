@@ -98,7 +98,7 @@ private
     search = params[:search][:value].strip
     start_from_date = Date.strptime( params[:start_from_date], "%d.%m.%Y" ) unless params[:start_from_date].nil? || params[:start_from_date].empty?
     end_at_date = Date.strptime( params[:end_at_date], "%d.%m.%Y" ) unless params[:end_at_date].nil? || params[:end_at_date].empty?
-    status = [ 99 ]
+    status = [ ]
     status << 1 if params[:show_open] == "true"
     status << 2 if params[:show_finished] == "true"
     status << 3 if params[:show_charged] == "true"

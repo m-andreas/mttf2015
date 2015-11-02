@@ -62,6 +62,11 @@ class Job < ActiveRecord::Base
     return shuttle_string
   end
 
+  def delete
+    self.status = DELETED
+    self.save
+  end
+
   def price_driver_shuttle( driver_job, get_array = false )
     drivers_in_car = self.co_jobs.length + 1
     breakpoints = self.breakpoints.order( :position )

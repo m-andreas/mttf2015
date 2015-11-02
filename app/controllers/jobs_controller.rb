@@ -162,8 +162,7 @@ class JobsController < ApplicationController
   # DELETE /jobs/1.json
   def destroy
     unless @job.charged?
-      @job.status = Job::DELETED
-      @job.save!
+      @job.delete
       @job.remove_shuttles
       @job.remove_in_shuttles
       flash[:notice] = 'Auftrag wurde entfernt'
