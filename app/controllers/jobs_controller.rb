@@ -163,8 +163,7 @@ class JobsController < ApplicationController
   def destroy
     unless @job.charged?
       @job.delete
-      @job.remove_shuttles
-      @job.remove_in_shuttles
+
       flash[:notice] = 'Auftrag wurde entfernt'
       respond_to do |format|
         format.html { redirect_to jobs_url, notice: t("jobs.deleted") }

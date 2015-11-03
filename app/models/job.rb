@@ -63,6 +63,8 @@ class Job < ActiveRecord::Base
   end
 
   def delete
+    self.remove_shuttles
+    self.remove_in_shuttles
     self.status = DELETED
     self.save
   end
@@ -186,6 +188,8 @@ class Job < ActiveRecord::Base
 
   def check_shuttle_dependencies
     missing_dependencies = []
+    error = self.check_for_billing
+    missing_dependencies << error unless error == true
     if self.is_shuttle?
       self.co_jobs.each do |co_job|
         unless co_job.bill == self.bill
@@ -239,8 +243,10 @@ class Job < ActiveRecord::Base
   end
 
   def remove_in_shuttles
+    shuttle = self.shuttle_job
     ActiveRecord::Base.connection.delete("DELETE FROM carriers WHERE co_job_id=#{self.id};")
     self.reload
+    shuttle.add_breakpoints
   end
 
   def remove_co_job co_job

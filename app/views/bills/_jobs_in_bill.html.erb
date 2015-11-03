@@ -29,7 +29,7 @@
           <td><%= l job.actual_delivery_time.to_date unless job.actual_collection_time.nil? %></td>
           <td><%= job.route.is_flat_rate? ? "Pauschale" : job.route.distance %></td>
           <td><%= job.distance %></td>
-          <td><%= ( job.distance - job.route.distance ).abs %></td>
+          <td><%= ( job.distance - job.route.distance.to_i ).abs %></td>
           <td><%= job.is_shuttle? ? "Ja" : "Nein" %></td>
           <td><%= link_to "anzeigen", job%>
           <% if @bill.is_current? %>

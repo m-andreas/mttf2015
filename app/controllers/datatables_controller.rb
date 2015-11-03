@@ -1,3 +1,4 @@
+#encoding: utf-8
 class DatatablesController < ApplicationController
   def datatable_i18n
     if I18n.default_locale == :de

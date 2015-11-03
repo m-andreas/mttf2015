@@ -66,7 +66,20 @@ class BillTest < ActiveSupport::TestCase
     assert_equal payment_driver3, bill.driver_total( drivers(:three) )
   end
 
-
+  test "set_current_bill_finished_after deleting job" do
+    jobs(:shuttle).set_to_current_bill
+    jobs(:one).set_to_current_bill
+    jobs(:two).delete
+    bill = Bill.get_current
+    dependencies = bill.pay
+    assert_equal 1, dependencies.length
+    assert dependencies.first.is_a? String
+    assert_not Bill.get_old.include? bill
+    assert bill.is_current?
+    bill.jobs.each do |job|
+      assert job.is_finished?
+    end
+  end
 
   test "set_current_bill_finished_with_missing_dependencys" do
     jobs(:shuttle).set_to_current_bill

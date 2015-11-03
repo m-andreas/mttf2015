@@ -69,7 +69,7 @@ class BillsControllerTest < ActionController::TestCase
 
   test "get_complete_xls" do
     sign_in @user
-    get "show", { id: @old_bill, format: :xls }
+    get "complete_bill", { id: @old_bill, format: :xls }
     assert_response :success, flash[:error]
   end
 
