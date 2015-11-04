@@ -10,7 +10,7 @@ class Job < ActiveRecord::Base
   belongs_to :created_by, class_name: "User"
   belongs_to :bill
   paginates_per 10
-  validates :driver_id, presence: true
+  #validates :driver_id, presence: true
   validates :status, numericality: { only_integer: true }
   has_many :breakpoints, -> { order(:position) }
   accepts_nested_attributes_for :breakpoints
