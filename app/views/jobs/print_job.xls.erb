@@ -1,0 +1,303 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Author>Michaela Fasching</Author>
+  <LastAuthor>Markus Andres</LastAuthor>
+  <Created>2015-11-04T14:21:34Z</Created>
+  <LastSaved>2015-11-04T14:33:17Z</LastSaved>
+  <Version>14.00</Version>
+ </DocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <AllowPNG/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>13350</WindowHeight>
+  <WindowWidth>28515</WindowWidth>
+  <WindowTopX>120</WindowTopX>
+  <WindowTopY>30</WindowTopY>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11" ss:Color="#000000"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s18">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+  </Style>
+  <Style ss:ID="s22">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+  </Style>
+  <Style ss:ID="s23">
+   <Alignment ss:Horizontal="Left" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="13" ss:Color="#000000"/>
+  </Style>
+  <Style ss:ID="s24">
+   <Alignment ss:Horizontal="Center" ss:Vertical="Bottom"/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="18" ss:Color="#000000"
+    ss:Bold="1"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Tabelle1">
+  <Table ss:ExpandedColumnCount="8" ss:ExpandedRowCount="53" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultColumnWidth="60" ss:DefaultRowHeight="15">
+   <Column ss:Index="3" ss:AutoFitWidth="0" ss:Width="47.25"/>
+   <Column ss:Index="5" ss:AutoFitWidth="0" ss:Width="100.5"/>
+   <Row ss:Height="23.25">
+    <Cell ss:MergeAcross="7" ss:StyleID="s24"><Data ss:Type="String">MT Trans-Fair GmbH</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="7" ss:StyleID="s22"><Data ss:Type="String">Tel.: +43 1 699 20 10     mail: dispo@mt-tranfair.at</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0" ss:Height="6">
+    <Cell ss:MergeAcross="7" ss:StyleID="s22"><Data ss:Type="String">___________________________________________________________________________________________</Data></Cell>
+   </Row>
+   <Row ss:Index="5" ss:Height="17.25">
+    <Cell ss:MergeAcross="2" ss:StyleID="s23"><Data ss:Type="String">FAHRZEUGBEGLEITSCHEIN</Data></Cell>
+   </Row>
+   <Row ss:Index="7">
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Auftraggeber:</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Auftrags ID:</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Externe ID:</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:Index="1" ss:StyleID="s18"><Data ss:Type="String">Sixt GmbH</Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s18"><Data ss:Type="String"><%= @job.id %></Data></Cell>
+    <Cell ss:Index="6" ss:StyleID="s18"><Data ss:Type="String"><%= @job.id_extern %></Data></Cell>
+    <Cell ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Automarke:</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Autotype:</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.car_brand %></Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s18"><Data ss:Type="String"><%= @job.car_type %></Data></Cell>
+    <Cell ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Kennzeichen:</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Fahrgestellnr.:</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.registration_number %></Data></Cell>
+    <Cell ss:Index="4" ss:StyleID="s18"><Data ss:Type="String"><%= @job.chassis_number %></Data></Cell>
+   </Row>
+   <Row ss:Index="14">
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Überstellung von:</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address_short %></Data></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address %></Data></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.zip_code + " " + @job.from.city %></Data></Cell>
+   </Row>
+   <Row ss:Index="18">
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Überstellung nach:</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address_short %></Data></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address %></Data></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.zip_code + " " + @job.to.city %></Data></Cell>
+   </Row>
+   <Row ss:Index="22">
+    <Cell><Data ss:Type="String">Geplantes Abholdatum:</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:index="3"><Data ss:Type="String"><%=l @job.scheduled_collection_time unless @job.scheduled_collection_time.nil? %></Data></Cell>
+   </Row>
+   <Row ss:Index="24">
+    <Cell><Data ss:Type="String">Geplantes Lieferdatum:</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:index="3"><Data ss:Type="String"><%=l @job.scheduled_delivery_time unless @job.scheduled_delivery_time.nil? %></Data></Cell>
+   </Row>   <Row ss:Index="26">
+    <Cell><Data ss:Type="String">Bemerkung:</Data></Cell>
+    <Cell ss:index="3"><Data ss:Type="String"><%= @job.job_notice %></Data></Cell>
+   </Row>
+   <Row ss:Index="29">
+    <Cell ss:MergeAcross="7" ss:StyleID="s22"><Data ss:Type="String">_______________________________________________________________________________________________</Data></Cell>
+   </Row>
+   <Row ss:Height="17.25">
+    <Cell ss:MergeAcross="2" ss:StyleID="s23"><Data ss:Type="String">ÜBERSTELLUNGSINFORMATION</Data></Cell>
+   </Row>
+   <Row ss:Index="32">
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Abholdatum:</Data></Cell>
+    <Cell ss:Index="6"><Data ss:Type="String">Fahrer:</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">______________________</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Abholuhrzeit:</Data></Cell>
+    <Cell ss:Index="6"><Data ss:Type="String">Beifahrer 1</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">______________________</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:Index="7" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">km-Stand Abholung:</Data></Cell>
+    <Cell ss:Index="6"><Data ss:Type="String">Beifahrer 2</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">______________________</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:Index="7" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Tankstand:</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">0          1/4        1/2        3/4        1</Data></Cell>
+    <Cell><Data ss:Type="String">Beifahrer 3</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">______________________</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+    <Cell ss:Index="7" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+    <Cell ss:Index="6"><Data ss:Type="String">Beifahrer 4</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">______________________</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Abholdatum:</Data></Cell>
+    <Cell ss:Index="7" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:Index="6"><Data ss:Type="String">Beifahrer 5</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">______________________</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Abholuhrzeit:</Data></Cell>
+    <Cell ss:Index="7" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:Index="6"><Data ss:Type="String">Beifahrer 6</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">______________________</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">km-Stand Abholung:</Data></Cell>
+    <Cell ss:Index="7" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:StyleID="s18"/>
+    <Cell ss:Index="6"><Data ss:Type="String">Beifahrer 7</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">______________________</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Tankstand:</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">0          1/4        1/2        3/4        1</Data></Cell>
+    <Cell ss:Index="7" ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+    <Cell ss:Index="6"><Data ss:Type="String">Beifahrer 8</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">______________________</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+   <Row>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Header x:Margin="0.31496062992125984"/>
+    <Footer x:Margin="0.31496062992125984"/>
+    <PageMargins x:Bottom="0.39370078740157483" x:Left="0.19685039370078741"
+     x:Right="0.19685039370078741" x:Top="0.39370078740157483"/>
+   </PageSetup>
+   <Print>
+    <ValidPrinterInfo/>
+    <PaperSizeIndex>9</PaperSizeIndex>
+    <HorizontalResolution>600</HorizontalResolution>
+    <VerticalResolution>0</VerticalResolution>
+   </Print>
+   <Selected/>
+   <TopRowVisible>3</TopRowVisible>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>22</ActiveRow>
+     <ActiveCol>4</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="Tabelle2">
+  <Table ss:ExpandedColumnCount="1" ss:ExpandedRowCount="1" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultColumnWidth="60" ss:DefaultRowHeight="15">
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Header x:Margin="0.3"/>
+    <Footer x:Margin="0.3"/>
+    <PageMargins x:Bottom="0.78740157499999996" x:Left="0.7" x:Right="0.7"
+     x:Top="0.78740157499999996"/>
+   </PageSetup>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="Tabelle3">
+  <Table ss:ExpandedColumnCount="1" ss:ExpandedRowCount="1" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultColumnWidth="60" ss:DefaultRowHeight="15">
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <PageSetup>
+    <Header x:Margin="0.3"/>
+    <Footer x:Margin="0.3"/>
+    <PageMargins x:Bottom="0.78740157499999996" x:Left="0.7" x:Right="0.7"
+     x:Top="0.78740157499999996"/>
+   </PageSetup>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>

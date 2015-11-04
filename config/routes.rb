@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   post 'jobs/remove_from_current_bill/:id', to: 'jobs#remove_from_current_bill', as: 'remove_job_from_current_bill'
   get 'jobs/add_co_driver/:id', to: 'jobs#add_co_driver', as: 'job_add_co_driver'
   get 'jobs/remove_co_driver/:id', to: 'jobs#remove_co_driver', as: 'job_remove_co_driver'
+  get 'jobs/print_job/:id', to: 'jobs#print_job', as: 'print_job'
 
   resources :jobs
   get 'jobs_ajax/show_all', to: 'jobs#show_all'

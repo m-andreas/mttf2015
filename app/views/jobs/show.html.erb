@@ -6,7 +6,7 @@
   <div class="large-6 columns">
     <p>
       <strong>Fahrer:</strong>
-      <%= @job.driver.fullname %>
+      <%= @job.driver.fullname unless @job.driver.nil? %>
     </p>
 
     <p>
@@ -109,7 +109,7 @@
       <tbody>
         <% @job.co_jobs.each do |co_job| %>
           <tr>
-            <td><%= co_job.driver.fullname %></td>
+            <td><%= co_job.driver.fullname unless job.driver.nil? %></td>
             <td><%= co_job.id %></td>
             <td><%= co_job.from.address_short %></td>
             <td><%= co_job.to.address_short %></td>
@@ -125,6 +125,7 @@
     <% if @job.is_open? %>
       <%= link_to 'Editieren', edit_job_path(@job) %> |
     <% end %>
+    <%= link_to "Druckfile herunterladen", print_job_path(format: "xls") %>|
     <%= link_to I18n.translate("back"), jobs_path %>
     <% unless @job.is_open? %>|
       <%= link_to I18n.translate("delete"), @job, method: :delete, data: { confirm: I18n.translate("jobs.really_delete") } %>

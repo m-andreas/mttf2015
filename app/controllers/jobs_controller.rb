@@ -1,6 +1,6 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
-    :add_to_current_bill, :add_co_driver, :remove_co_driver ]
+    :add_to_current_bill, :add_co_driver, :remove_co_driver, :print_job ]
   before_action :check_transfair, except: [ :new, :create, :show_all, :index ]
   before_action :get_new_jobs, only: [ :new, :add_to_current_bill, :show_all, :index, :show_regular_jobs ]
   # GET /jobs
@@ -74,6 +74,15 @@ class JobsController < ApplicationController
   # GET /jobs/1
   # GET /jobs/1.json
   def show
+  end
+
+  def print_job
+    @job
+    respond_to do |format|
+      format.html
+      headers["Content-Disposition"] = "attachment; filename=\"Auftrag_#{@job.id}.xls\""
+      format.xls
+    end
   end
 
   # GET /jobs/new
