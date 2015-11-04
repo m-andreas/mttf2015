@@ -2,7 +2,7 @@ class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
     :add_to_current_bill, :add_co_driver, :remove_co_driver ]
   before_action :check_transfair, except: [ :new, :create, :show_all, :index ]
-
+  before_action :get_new_jobs, only: [ :new, :add_to_current_bill, :show_all, :index, :show_regular_jobs ]
   # GET /jobs
   # GET /jobs.json
   def index
@@ -181,14 +181,41 @@ class JobsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_job
-      @job = Job.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_job
+    @job = Job.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def job_params
-      params.require(:job).permit( { :breakpoints_attributes => [ :address_id, :id, :position, :mileage ]}, :driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
-        :scheduled_collection_time, :scheduled_delivery_time, :actual_collection_time, :actual_delivery_time, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def job_params
+    params.require(:job).permit( { :breakpoints_attributes => [ :address_id, :id, :position, :mileage ]}, :driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
+      :scheduled_collection_time, :scheduled_delivery_time, :actual_collection_time, :actual_delivery_time, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
+  end
+
+  def get_new_jobs
+    Fahrtauftrag.where( "InsertDate >= Convert( datetime, '2015-11-03' )" ).find_each do |auftrag|
+      logger.info( "Neuer Auftrag" )
+      logger.info( auftrag.inspect )
+      job = Job.new
+      job.id = auftrag.id
+      job.status = Job::OPEN
+      from = Address.find_by_id( auftrag.UeberstellungVon )
+      job.from = Address.find_or_get( auftrag.UeberstellungVon )
+      job.to = Address.find_or_get( auftrag.UeberstellungNach )
+      job.shuttle = false
+      job.car_brand = auftrag.AutoMarke.strip unless auftrag.AutoMarke.nil?
+      job.car_type = auftrag.AutoType.strip unless auftrag.AutoType.nil?
+      job.registration_number = auftrag.Kennzeichen.strip unless auftrag.Kennzeichen.nil?
+      job.chassis_number = auftrag.FgNr.strip unless auftrag.FgNr.nil?
+      job.job_notice = auftrag.AuftragsBemerkungen.strip unless auftrag.AuftragsBemerkungen.nil?
+      job.transport_notice = auftrag.TransportBemerkungen.strip unless auftrag.TransportBemerkungen.nil?
+      job.transport_notice_extern = auftrag.TransportBemerkungenExtern.strip unless auftrag.TransportBemerkungenExtern.nil?
+      job.scheduled_collection_date = auftrag.GeplantesTransportDatumAbholung
+      job.scheduled_delivery_date = auftrag.GeplanteTransportDatumAbgabe
+      job.actual_collection_date = auftrag.GeplantesTransportDatumAbholung
+      job.actual_delivery_date = auftrag.GeplanteTransportDatumAbgabe
+      job.save!
+      auftrag.destroy
     end
+  end
 end

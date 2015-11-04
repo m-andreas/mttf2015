@@ -70,3 +70,6 @@ gem 'simplecov', :require => false, :group => :test
 
 #sort the stops of shuttles
 gem 'activerecord-sortable'
+
+# scheduled tasks, comming loading jobs is to slow
+# gem 'clockwork', '~> 1.2'

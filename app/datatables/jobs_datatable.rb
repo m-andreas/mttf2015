@@ -1,6 +1,5 @@
 class JobsDatatable
   delegate :params, :h, :link_to, :fa_icon,  to: :@view
-  include Rails.application.routes.url_helpers
 
   def initialize(view)
     @view = view

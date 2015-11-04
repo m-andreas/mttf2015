@@ -827,4 +827,8 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal 1, shuttle.co_drivers.length
     assert_equal [jobs(:one)], shuttle.co_jobs
   end
+
+  test "get_new_jobs" do
+    puts Fahrtauftrag.last
+  end
 end
