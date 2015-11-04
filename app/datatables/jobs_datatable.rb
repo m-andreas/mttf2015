@@ -20,22 +20,22 @@ private
 
     display_on_page.map do |job|
       unless job.nil?
-        fullname = job.driver.nil? ? "" : link_to( job.driver.fullname, driver_path(job.driver.id))
+        fullname = job.driver.nil? ? "" : link_to( job.driver.fullname, "drivers/#{job.driver.id}")
 
         from_address_short = job.from.nil? ? "" : job.from.address_short
         to_address_short = job.to.nil? ? "" : job.to.address_short
         icon = fa_icon "user-plus", text: I18n.translate("add")
         shuttle = job.is_shuttle? ? "Ja" : "Nein"
         if job.is_open?
-          edit = link_to 'Editieren', edit_job_path(job)
-          add_to_current = link_to "verrechnen", add_job_to_current_bill_path( job ), method: :post, remote: true
+          edit = link_to 'Editieren', "jobs/#{job.id}/edit"
+          add_to_current = link_to "verrechnen", "jobs/add_to_current_bill/#{job.id}", method: :post, remote: true
           delete = link_to I18n.translate(:delete), job, method: :delete, data: { confirm: I18n.translate("jobs.really_delete") }, remote: true, :class => 'delete_job'
         else
           edit = ""
           add_to_current = ""
           delete = ""
         end
-        show = link_to 'Anzeigen', job_path(job)
+        show = link_to 'Anzeigen', "jobs/#{job.id}"
         if job.actual_collection_time.nil?
           if job.scheduled_collection_time.nil?
             collection_date = ""
@@ -57,7 +57,7 @@ private
         end
 
         if job.has_shuttle?
-          in_shuttle = link_to job.shuttle_job.id, job_path( job.shuttle_job )
+          in_shuttle = link_to job.shuttle_job.id, "jobs/#{job.shuttle_job.id}"
         else
           in_shuttle = "Nein"
         end
