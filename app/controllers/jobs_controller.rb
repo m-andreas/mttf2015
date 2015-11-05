@@ -2,7 +2,6 @@ class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
     :add_to_current_bill, :add_co_driver, :remove_co_driver, :print_job ]
   before_action :check_transfair, except: [ :new, :create, :show_all, :index ]
-  before_action :get_new_jobs, only: [ :new, :add_to_current_bill, :show_all, :index, :show_regular_jobs ]
   # GET /jobs
   # GET /jobs.json
   def index
@@ -104,23 +103,28 @@ class JobsController < ApplicationController
   # POST /jobs
   # POST /jobs.json
   def create
-    @job = Job.new(job_params)
-    @job.status = Job::OPEN
-
-    @job.actual_collection_time = @job.scheduled_collection_time
-    @job.actual_delivery_time = @job.scheduled_delivery_time
-    co_jobs = params[:co_jobs]
-    driver = Driver.find_by( id: job_params[:driver_id])
-    @job.driver = driver
-    @job.created_by_id = current_user.id
-    @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
-    job_errors = @job.check_co_job_ids( co_jobs )
-    if @job.scheduled_collection_time > @job.scheduled_delivery_time
-      error = t("jobs.date_error")
-      if job_errors == true
-        job_errors = error
-      else
-        job_errors += error
+    unless job_params[:scheduled_collection_time] =~ /\A[0-9]{4}-[0-9]{2}-[0-9]{2}.[0-2][0-9]:[0-6][0-9]:[0-9]{2}.*/  &&
+      job_params[:scheduled_delivery_time] =~ /\A[0-9]{4}-[0-9]{2}-[0-9]{2}.[0-2][0-9]:[0-6][0-9]:[0-9]{2}.*/
+      error = t("jobs.date_format")
+      job_errors = error
+    else
+      @job = Job.new(job_params)
+      @job.status = Job::OPEN
+      @job.actual_collection_time = @job.scheduled_collection_time
+      @job.actual_delivery_time = @job.scheduled_delivery_time
+      co_jobs = params[:co_jobs]
+      driver = Driver.find_by( id: job_params[:driver_id])
+      @job.driver = driver
+      @job.created_by_id = current_user.id
+      @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
+      job_errors = @job.check_co_job_ids( co_jobs )
+      if @job.scheduled_collection_time > @job.scheduled_delivery_time
+        error = t("jobs.date_error")
+        if job_errors == true
+          job_errors = error
+        else
+          job_errors += error
+        end
       end
     end
     respond_to do |format|
@@ -199,32 +203,5 @@ class JobsController < ApplicationController
   def job_params
     params.require(:job).permit( { :breakpoints_attributes => [ :address_id, :id, :position, :mileage ]}, :driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
       :scheduled_collection_time, :scheduled_delivery_time, :actual_collection_time, :actual_delivery_time, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
-  end
-
-  def get_new_jobs
-    Fahrtauftrag.where( "InsertDate >= Convert( datetime, '2015-11-03' )" ).find_each do |auftrag|
-      logger.info( "Neuer Auftrag" )
-      logger.info( auftrag.inspect )
-      job = Job.new
-      job.id = auftrag.id
-      job.status = Job::OPEN
-      from = Address.find_by_id( auftrag.UeberstellungVon )
-      job.from = Address.find_or_get( auftrag.UeberstellungVon )
-      job.to = Address.find_or_get( auftrag.UeberstellungNach )
-      job.shuttle = false
-      job.car_brand = auftrag.AutoMarke.strip unless auftrag.AutoMarke.nil?
-      job.car_type = auftrag.AutoType.strip unless auftrag.AutoType.nil?
-      job.registration_number = auftrag.Kennzeichen.strip unless auftrag.Kennzeichen.nil?
-      job.chassis_number = auftrag.FgNr.strip unless auftrag.FgNr.nil?
-      job.job_notice = auftrag.AuftragsBemerkungen.strip unless auftrag.AuftragsBemerkungen.nil?
-      job.transport_notice = auftrag.TransportBemerkungen.strip unless auftrag.TransportBemerkungen.nil?
-      job.transport_notice_extern = auftrag.TransportBemerkungenExtern.strip unless auftrag.TransportBemerkungenExtern.nil?
-      job.scheduled_collection_date = auftrag.GeplantesTransportDatumAbholung
-      job.scheduled_delivery_date = auftrag.GeplanteTransportDatumAbgabe
-      job.actual_collection_date = auftrag.GeplantesTransportDatumAbholung
-      job.actual_delivery_date = auftrag.GeplanteTransportDatumAbgabe
-      job.save!
-      auftrag.destroy
-    end
   end
 end

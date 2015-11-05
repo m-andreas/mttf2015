@@ -37,9 +37,11 @@ class BillsControllerTest < ActionController::TestCase
   test "should add open jobs to current bill" do
     sign_in @user
     open_jobs_count = Job.where( status: Job::OPEN ).length + 1
+    jobs(:one_no_date).actual_collection_time = 2.day.ago.to_time
     jobs(:one_no_date).actual_delivery_time = 1.day.ago.to_time
-    jobs(:one_no_date).actual_collection_time = 1.day.ago.to_time
     jobs(:one_no_date).save
+    jobs(:one_no_driver).driver_id = drivers(:one).id
+    jobs(:one_no_driver).save
     post "add_jobs"
     assert_redirected_to current_bill_path
     assert assigns(:current_bill).is_current?
@@ -52,7 +54,7 @@ class BillsControllerTest < ActionController::TestCase
     open_jobs_count = Job.where( status: Job::OPEN ).length + 1
     assert_redirected_to current_bill_path
     assert flash[:error].present?
-    assert_equal ["Die Werte für Abhol oder Lieferzeitpunkt sind nicht gesetz. Auftrag nicht verrechnet. Auftrag #{jobs(:one_no_date).id}".encode("ISO-8859-1")], flash[:error]
+    assert_equal [ "Es ist kein Fahrer gesetz. Auftrag nicht verrechnet. Auftrag #{jobs(:one_no_driver).id}".encode("ISO-8859-1"), "Die Werte für Abhol oder Lieferzeitpunkt sind nicht gesetz. Auftrag nicht verrechnet. Auftrag #{jobs(:one_no_date).id}".encode("ISO-8859-1")], flash[:error]
   end
 
   test "get_sixt_xls" do

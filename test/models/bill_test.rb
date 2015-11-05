@@ -19,6 +19,7 @@ class BillTest < ActiveSupport::TestCase
     bill = Bill.get_current
     allready_in_bill = bill.jobs.length
     jobs.delete(jobs(:one_no_date))
+    jobs.delete(jobs(:one_no_driver))
     messages = bill.add_jobs( jobs )
     bill.reload
     assert_equal 0, Job.get_open.length, messages.inspect

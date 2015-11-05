@@ -47,6 +47,7 @@ de:
     actual_delivery_time: Tatsächliches Liefertermin
     add: Auftrag hinzufügen
     prevented_from_save: "haben diesen Auftag vom Speichern zurückgehalten:"
+    not_billed_no_driver: "Es ist kein Fahrer gesetz. Auftrag nicht verrechnet. Auftrag "
     not_billed_breakpoints_not_correct: "Die Werte für einen Zwischenstopp sind niedriger oder gleich wie beim Stop davor. Auftrag nicht verrechnet. Auftrag "
     not_billed_date_not_set: "Die Werte für Abhol oder Lieferzeitpunkt sind nicht gesetz. Auftrag nicht verrechnet. Auftrag "
     not_billed_date_not_correct: "Kilometerstand Abholung höher als Kilometerstand Lieferung. Auftrag nicht verrechnet. Auftrag "
@@ -55,6 +56,7 @@ de:
     really_delete: Auftrag wirklich löschen?
     billed:  Auftrag wurde verrechnet
     date_error: Abfahrtsdatum liegt nach Ankunftsdatum
+    date_format: Das Datum ist nicht korrekt formatiert
     created: Auftrag wurde erfolgreich erstellt
     updated_and_billed: Auftrag wurde aktualisiert und der aktuellen Verrechnung hinzugefügt
     updated: Auftrag wurde erfolgreicht aktualisiert.

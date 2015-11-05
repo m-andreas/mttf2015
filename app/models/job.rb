@@ -143,6 +143,10 @@ class Job < ActiveRecord::Base
   end
 
   def check_for_billing
+    if self.driver.nil?
+      error = html_escape ( I18n.translate("jobs.not_billed_no_driver") + self.id.to_s ).encode("ISO-8859-1")
+      return error
+    end
     unless self.route.is_active?
       error = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error

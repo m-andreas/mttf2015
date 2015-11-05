@@ -17,7 +17,7 @@ one:
   registration_number: "w123"
 
 one_no_date:
-  transport_notice: "one"
+  transport_notice: "one_no_date"
   driver: one
   cost_center_id: 1
   status: 1
@@ -28,6 +28,21 @@ one_no_date:
   mileage_collection: 100
   mileage_delivery: 200
   shuttle: false
+
+one_no_driver:
+  transport_notice: "one_no_driver"
+  driver:
+  cost_center_id: 1
+  status: 1
+  created_by_id: 1
+  route_id: 1
+  from_id: 1
+  to_id: 2
+  mileage_collection: 100
+  mileage_delivery: 200
+  shuttle: false
+  actual_delivery_time: <%= 1.day.ago.to_time %>
+  actual_collection_time:  <%= 1.day.ago.to_time %>
 
 two:
   transport_notice: "two"

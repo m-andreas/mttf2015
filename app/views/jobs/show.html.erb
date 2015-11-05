@@ -109,7 +109,7 @@
       <tbody>
         <% @job.co_jobs.each do |co_job| %>
           <tr>
-            <td><%= co_job.driver.fullname unless job.driver.nil? %></td>
+            <td><%= co_job.driver.fullname unless co_job.driver.nil? %></td>
             <td><%= co_job.id %></td>
             <td><%= co_job.from.address_short %></td>
             <td><%= co_job.to.address_short %></td>
