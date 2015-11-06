@@ -44,7 +44,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin]
 
 # ms sql support
 gem 'tiny_tds'
-gem 'activerecord-sqlserver-adapter', '~> 4.1-stable'
+gem 'activerecord-sqlserver-adapter', '~> 4.1'
 
 # load database entries
 gem 'yaml_db'
@@ -70,6 +70,3 @@ gem 'simplecov', :require => false, :group => :test
 
 #sort the stops of shuttles
 gem 'activerecord-sortable'
-
-# scheduled tasks, comming loading jobs is to slow
-# gem 'clockwork', '~> 1.2'

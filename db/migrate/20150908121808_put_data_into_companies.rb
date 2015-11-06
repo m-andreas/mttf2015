@@ -1,3 +1,4 @@
+#encoding: utf-8
 class PutDataIntoCompanies < ActiveRecord::Migration
   def up
     c = Company.new

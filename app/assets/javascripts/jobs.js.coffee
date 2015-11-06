@@ -62,7 +62,7 @@ ready = ->
     processing: true
     serverSide: true
     ajax:
-      url: '/jobs_ajax/show_all'
+      url: '/mttf2015/jobs_ajax/show_all'
       data: (d) ->
         d.form_type = document.getElementById("form_type").value;
         d.main_job_id = document.getElementById("main_job_id").value;
@@ -91,7 +91,7 @@ ready = ->
     serverSide: true
     hover: true
     ajax:
-      url: '/jobs_ajax/show_regular_jobs'
+      url: '/mttf2015/jobs_ajax/show_regular_jobs'
       data: (d) ->
         d.start_from_date = $('#start_from_date').val()
         d.end_at_date = $('#end_at_date').val()

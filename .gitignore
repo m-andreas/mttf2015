@@ -1,5 +1,9 @@
-log\*.*
-
+log/*.*
+public/assets/
+public/assets/.*
+.gem/
+console/
+GEM_HOME/
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -84,3 +88,10 @@ log/development.log
 *.log
 
 coverage
+Gemfile.lock
+config/database.yml
+public/deploy_sample.rb
+public/web.config
+web.config
+public/zoo-index.html
+public/assets/.*.json

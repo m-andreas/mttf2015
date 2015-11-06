@@ -55,6 +55,6 @@ class GetDataToJobs < ActiveRecord::Migration
 #        puts "Deleted #{i} Jobs"
 #      end
 #      i += 1
-    end
+#    end
   end
 end
