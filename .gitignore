@@ -95,3 +95,4 @@ public/web.config
 web.config
 public/zoo-index.html
 public/assets/.*.json
+database.yml
