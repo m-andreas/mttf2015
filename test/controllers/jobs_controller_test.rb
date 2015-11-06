@@ -114,6 +114,8 @@ class JobsControllerTest < ActionController::TestCase
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ",#{jobs(:one).id}, #{jobs(:two).id}"
       assert_redirected_to new_job_path
+      assert_equal routes(:one), assigns(:job).route
+
   end
 
   test "should show job" do
@@ -173,6 +175,14 @@ class JobsControllerTest < ActionController::TestCase
     assert_redirected_to jobs_path
     assert_equal date, assigns(:job).actual_collection_time.to_date
     assert_equal date, assigns(:job).actual_delivery_time.to_date
+  end
+
+  test "should update address id" do
+    sign_in @user
+    date = Date.current
+    patch :update, id: @job, subaction: "update", job: { actual_collection_time: date, actual_delivery_time: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: addresses(:four).id, shuttle: @job.shuttle, to_id: addresses(:three).id}
+    assert_redirected_to jobs_path
+    assert_equal routes(:four), assigns(:job).route
   end
 
   test "should remove co_jobs on update" do

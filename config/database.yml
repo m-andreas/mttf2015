@@ -12,7 +12,7 @@ production:
   port: 1433
   database: 'MCS'
   username: 'SA'
-  password: 123
+  password: <%= ENV['SQL_PW'] %>
 
 
 development:
@@ -23,7 +23,7 @@ development:
   port: 1433
   database: 'MCS'
   username: 'SA'
-  password: 123
+  password: <%= ENV['SQL_PW'] %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
