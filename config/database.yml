@@ -23,7 +23,7 @@ development:
   port: 1433
   database: 'MCS'
   username: 'SA'
-  password: <%= ENV['SQL_PW'] %>
+  password: '123'
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

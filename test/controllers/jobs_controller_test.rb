@@ -62,6 +62,7 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal jobs(:three), job.co_jobs.first
     assert_equal jobs(:not_in_shuttle), job.co_jobs.last
     assert_equal 2, job.co_jobs.length
+    assert_equal true, job.to_print
     assert_equal 2, job.breakpoints.length
     assert_equal jobs(:three).from, job.breakpoints.first.address
   end
