@@ -31,6 +31,7 @@ class JobsControllerTest < ActionController::TestCase
         co_jobs: ""
     end
     assert_equal users(:one), assigns(:job).created_by
+    assert_equal true, assigns(:job).to_print
     assert_equal routes(:one), assigns(:job).route
     assert_equal drivers(:one), assigns(:job).driver
     assert_equal "BMW", assigns(:job).car_brand
@@ -353,6 +354,34 @@ class JobsControllerTest < ActionController::TestCase
     assert_response :success
     body = JSON.parse(response.body)
     assert_equal 5, body["recordsFiltered"]
+  end
+
+  test "show_all_edit_ajax_no_driver" do
+    params = {"draw"=>"1",
+              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "1"=>{"data"=>"1", "name"=>"", "searchable"=>"true", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "2"=>{"data"=>"2", "name"=>"", "searchable"=>"true", "orderable"=>"true",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}},
+                  "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
+                    "search"=>{"value"=>"", "regex"=>"false"}}},
+                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
+                "start"=>"0", "length"=>"10",
+                "search"=>{"value"=>"", "regex"=>"false"},
+                "form_type"=>"edit",
+                "main_job_id"=>jobs(:one_no_driver).id.to_s}
+    sign_in @user
+    xhr :get, :show_all, params
+    assert_response :success
+    body = JSON.parse(response.body)
+    assert_equal 7, body["recordsFiltered"]
   end
 
   test "show_all_create_ajax" do

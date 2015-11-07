@@ -17,13 +17,23 @@ ready = ->
 # Auftragseingabemaske
 
   $("#job_driver_id").change ->
-    $("#drivername").text($( "#job_driver_id option:selected" ).text();)
+    setTimeout  ->
+      update_panel_field(  $( "#job_driver_id option:selected" ), $("#drivername") )
+    , 1000
 
   $("#job_to_id").change ->
-    $("#to").text($( "#job_to_id option:selected" ).text();)
+    setTimeout  ->
+      update_panel_field( $( "#job_to_id option:selected" ), $("#to") )
+    , 1000
+
+  update_panel_field = ( from, to ) ->
+    to.text from.text()
+
 
   $("#job_from_id").change ->
-    $("#from").text($( "#job_from_id option:selected" ).text();)
+    setTimeout  ->
+      update_panel_field( $( "#job_from_id option:selected" ), $("#from") )
+    , 1000
 
   $("#job_cost_center_id").keyup ->
     $("#cost-center").text($("#job_cost_center_id").val());
