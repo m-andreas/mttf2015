@@ -47,11 +47,11 @@ ready = ->
   $("#job_registration_number").keyup ->
     $("#registration_number").text($("#job_registration_number").val());
 
-  $("#job_scheduled_collection_date").keyup ->
-    $("#scheduled_collection_date").text($("#job_scheduled_collection_date").val());
+  $("#job_scheduled_collection_time").keyup ->
+    $("#scheduled_collection_time").text($("#job_scheduled_collection_time").val());
 
-  $("#job_scheduled_delivery_date").keyup ->
-    $("#scheduled_delivery_date").text($("#job_scheduled_delivery_date").val());
+  $("#job_scheduled_delivery_time").keyup ->
+    $("#scheduled_delivery_time").text($("#job_scheduled_delivery_time").val());
 
   $("#driver_filter").keyup ->
     $("#job_driver_id").change()
