@@ -103,8 +103,8 @@ class JobsController < ApplicationController
   # POST /jobs
   # POST /jobs.json
   def create
-    unless job_params[:scheduled_collection_time] =~ /\A[0-9]{4}-[0-9]{2}-[0-9]{2}.[0-2][0-9]:[0-6][0-9]:[0-9]{2}.*/  &&
-      job_params[:scheduled_delivery_time] =~ /\A[0-9]{4}-[0-9]{2}-[0-9]{2}.[0-2][0-9]:[0-6][0-9]:[0-9]{2}.*/
+    unless job_params[:scheduled_collection_time] =~ /\A[0-9]{4}-[0-9]{2}-[0-9]{2}.[0-2][0-9]:[0-6][0-9].*/  &&
+      job_params[:scheduled_delivery_time] =~ /\A[0-9]{4}-[0-9]{2}-[0-9]{2}.[0-2][0-9]:[0-6][0-9].*/
       error = t("jobs.date_format")
       job_errors = error
     else
