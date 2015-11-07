@@ -26,11 +26,13 @@ private
         from_address_short = job.from.nil? ? "" : job.from.address_short
         to_address_short = job.to.nil? ? "" : job.to.address_short
         if params[ :form_type ] == "edit"
-          icon = link_to( fa_icon( "user-plus", text: I18n.translate(:add)), job_add_co_driver_path( id: params[:main_job_id], co_job_id: job.id ), remote: true )
+          icon = link_to( fa_icon( "user-plus", text: I18n.translate(:add)), "/mttf2015/jobs/add_co_driver/#{params[:main_job_id]}?co_job_id=#{job.id}", remote: true )
         else
           icon = fa_icon( "user-plus", text:  I18n.translate(:add) )
         end
 
+		created_at = job.created_at.nil? ? "" : job.created_at.strftime("%e.%-m.%Y")
+		
         job = [
           job.id,
           icon,
@@ -38,7 +40,7 @@ private
           fullname,
           from_address_short,
           to_address_short,
-          job.created_at.strftime("%e.%-m.%Y"),
+          created_at
         ]
         jobs << job
       end

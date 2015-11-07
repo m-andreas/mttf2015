@@ -78,7 +78,7 @@ ready = ->
     ]
     order: [ [1,'desc'] ],
     oLanguage:{
-      sUrl: "/datatable_i18n"
+      sUrl: "/mttf2015/datatable_i18n"
     }
 
   $('*[data-role=activerecord_sortable]').activerecord_sortable();
@@ -117,7 +117,7 @@ ready = ->
     ]
     order: [ [1,'desc'] ],
     oLanguage:{
-      sUrl: "datatable_i18n"
+      sUrl: "/mttf2015/datatable_i18n"
     }
 
   $("#start_from_date").datepicker( dateFormat: "dd.mm.yy" );
