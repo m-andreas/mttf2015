@@ -110,6 +110,7 @@ class JobsController < ApplicationController
     else
       @job = Job.new(job_params)
       @job.status = Job::OPEN
+      @job.shuttle = false if @job.shuttle.nil?
       @job.actual_collection_time = @job.scheduled_collection_time
       @job.actual_delivery_time = @job.scheduled_delivery_time
       co_jobs = params[:co_jobs]

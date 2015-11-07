@@ -52,6 +52,17 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal @job.cost_center_id, assigns(:job).cost_center_id
   end
 
+  test "should create job no shuttle" do
+    sign_in @user
+    assert_difference('Job.count') do
+      post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, to_id: routes(:one).to_id,
+        scheduled_collection_time: "2015-02-02T00:00:00", scheduled_delivery_time: "2015-02-02T05:00:00"},
+        co_jobs: ""
+    end
+
+    assert_equal false, assigns(:job).shuttle
+  end
+
   test "should create job with co job" do
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
