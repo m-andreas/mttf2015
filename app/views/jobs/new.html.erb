@@ -17,6 +17,7 @@
         </div>
       <% end %>
       <div class="field row">
+      <input type="text" id="test" name="test" class="span2">
       <h3>Startpunkt</h3><br>
         Startpunkte hier filtern <input id="from_filter" type="text">
         <%= f.select :from_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
@@ -54,11 +55,11 @@
       <div class="row">
         <div class="field large-6 columns">
           <h3><%= f.label "Abholung" %></h3><br>
-          <%= f.datetime_local_field :scheduled_collection_time %>
+          <%= f.text_field :scheduled_collection_time %>
         </div>
         <div class="field large-6 columns">
           <h3><%= f.label "Lieferung" %></h3><br>
-          <%= f.datetime_local_field :scheduled_delivery_time %>
+          <%= f.text_field :scheduled_delivery_time %>
         </div>
       </div>
       <div class="row lightgray">

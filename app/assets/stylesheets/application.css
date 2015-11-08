@@ -13,9 +13,7 @@
  *= require foundation_and_overrides
  *= require jquery-ui
  *= require dataTables/jquery.dataTables.foundation
- *= require_self
- *= require_tree .
  *= require dataTables/extras/dataTables.responsive
  *= require font-awesome
-
+ *= require_tree .
  */

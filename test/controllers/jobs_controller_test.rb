@@ -26,7 +26,7 @@ class JobsControllerTest < ActionController::TestCase
     assert_difference('Job.count') do
       post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: false, to_id: routes(:one).to_id,
         car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-        scheduled_collection_time: "2015-02-02T00:00:00", scheduled_delivery_time: "2015-02-02T05:00:00", chassis_number: "123", mileage_delivery: "100000",
+        scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 01:00", chassis_number: "123", mileage_delivery: "100000",
         mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
         co_jobs: ""
     end
@@ -37,10 +37,10 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal "BMW", assigns(:job).car_brand
     assert_equal "Z4", assigns(:job).car_type
     assert_equal "W123", assigns(:job).registration_number
-    assert_equal "2015-02-02".to_date, assigns(:job).scheduled_collection_time.to_date
-    assert_equal "2015-02-02".to_date, assigns(:job).scheduled_delivery_time.to_date
-    assert_equal "2015-02-02".to_date, assigns(:job).actual_collection_time.to_date
-    assert_equal "2015-02-02".to_date, assigns(:job).actual_delivery_time.to_date
+    assert_equal "2015-04-02".to_date, assigns(:job).scheduled_collection_time.to_date
+    assert_equal "2015-04-02".to_date, assigns(:job).scheduled_delivery_time.to_date
+    assert_equal "2015-04-02".to_date, assigns(:job).actual_collection_time.to_date
+    assert_equal "2015-04-02".to_date, assigns(:job).actual_delivery_time.to_date
     assert_equal "123", assigns(:job).chassis_number
     assert_equal  100000, assigns(:job).mileage_delivery
     assert_equal  200000, assigns(:job).mileage_collection
@@ -56,7 +56,7 @@ class JobsControllerTest < ActionController::TestCase
     sign_in @user
     assert_difference('Job.count') do
       post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, to_id: routes(:one).to_id,
-        scheduled_collection_time: "2015-02-02T00:00:00", scheduled_delivery_time: "2015-02-02T05:00:00"},
+        scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 01:00"},
         co_jobs: ""
     end
 
@@ -67,7 +67,7 @@ class JobsControllerTest < ActionController::TestCase
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-      scheduled_collection_time: "2015-02-02T00:00:00", scheduled_delivery_time: "2015-02-02T05:00:00", chassis_number: "123", mileage_delivery: "100000",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ",#{jobs(:three).id}, #{jobs(:not_in_shuttle).id}"
     job = Job.find(assigns(:job).id)
@@ -83,52 +83,51 @@ class JobsControllerTest < ActionController::TestCase
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: false, to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-      scheduled_collection_time: "2015-02-02T00:00:00", scheduled_delivery_time: "123122015-02-02T00:00:00", chassis_number: "123", mileage_delivery: "100000",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2014 00:00", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ""
-    assert_redirected_to new_job_path
+
+    assert_template :new
   end
 
   test "should not create job with wrong date2" do
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: false, to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-      scheduled_collection_time: "2015-02-02T50:00:00", scheduled_delivery_time: "2015-02-02T00:00:00", chassis_number: "123", mileage_delivery: "100000",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 90:00", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ""
-    assert_redirected_to new_job_path
+    assert_template :new
   end
 
-  test "should create job with co job allready in shuttle" do
+  test "should not create job with co job allready in shuttle" do
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-      scheduled_collection_time: "2015-02-02T00:00:00", scheduled_delivery_time: "2015-02-02T00:00:00", chassis_number: "123", mileage_delivery: "100000",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 01:10", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ",#{jobs(:three).id}, #{jobs(:two).id}"
-    assert_redirected_to new_job_path
+    assert_template :new
   end
 
   test "should not create job with himself in co job" do
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-      scheduled_collection_time: "2015-02-02T00:00:00", scheduled_delivery_time: "2015-02-02T00:00:00", chassis_number: "123", mileage_delivery: "100000",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ",#{jobs(:one).id}, #{jobs(:two).id}"
-      assert_redirected_to new_job_path
+    assert_template :new
   end
 
   test "should not create job with co jobs with same driver" do
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
-      scheduled_collection_time: "2015-02-02T00:00:00", scheduled_delivery_time: "2015-02-02T00:00:00", chassis_number: "123", mileage_delivery: "100000",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_jobs: ",#{jobs(:one).id}, #{jobs(:two).id}"
-      assert_redirected_to new_job_path
-      assert_equal routes(:one), assigns(:job).route
-
+    assert_template :new
   end
 
   test "should show job" do

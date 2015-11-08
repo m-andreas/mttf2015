@@ -43,8 +43,8 @@ de:
     connected_shuttle_job: Dazugehörige Shuttlefahrt
     actual_distance: Tatsächliche Km
     all: Alle Aufträge
-    actual_collection_time: Tatsächliches Abholtermin
-    actual_delivery_time: Tatsächliches Liefertermin
+    actual_collection_time: Tatsächlicher Abholtermin
+    actual_delivery_time: Tatsächlicher Liefertermin
     add: Auftrag hinzufügen
     prevented_from_save: "haben diesen Auftag vom Speichern zurückgehalten:"
     not_billed_no_driver: "Es ist kein Fahrer gesetz. Auftrag nicht verrechnet. Auftrag "

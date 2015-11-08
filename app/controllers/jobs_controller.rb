@@ -103,10 +103,12 @@ class JobsController < ApplicationController
   # POST /jobs
   # POST /jobs.json
   def create
-    unless job_params[:scheduled_collection_time] =~ /\A[0-9]{4}-[0-9]{2}-[0-9]{2}.[0-2][0-9]:[0-6][0-9].*/  &&
-      job_params[:scheduled_delivery_time] =~ /\A[0-9]{4}-[0-9]{2}-[0-9]{2}.[0-2][0-9]:[0-6][0-9].*/
+    unless job_params[:scheduled_collection_time] =~ /\A[0-9]{2}.[0-9]{2}.[0-9]{4} [0-2][0-9]:[0-6][0-9]/  &&
+      job_params[:scheduled_delivery_time] =~ /\A[0-9]{2}.[0-9]{2}.[0-9]{4} [0-2][0-9]:[0-6][0-9]/
       error = t("jobs.date_format")
       job_errors = error
+      params[:job].except! :scheduled_delivery_time
+      params[:job].except! :scheduled_collection_time
     else
       @job = Job.new(job_params)
       @job.status = Job::OPEN
@@ -132,10 +134,11 @@ class JobsController < ApplicationController
       if job_errors == true && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
         format.html { redirect_to jobs_path, notice: t("jobs.created") }
       else
+        @job = Job.new(job_params)
         @drivers = Driver.get_active
         @addresses = Address.get_active
         flash[:error] = job_errors
-        format.html { redirect_to new_job_path }
+        format.html { render :action => 'new' }
       end
     end
   end

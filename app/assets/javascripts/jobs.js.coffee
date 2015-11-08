@@ -7,13 +7,53 @@ jQuery ->
 
 
 ready = ->
+  console.log("in")
+  setTimeout  ->
+    $.fn.fdatepicker.dates['de'] = {
+      days: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
+      daysShort: ["Son", "Mon", "Die", "Mit", "Don", "Fre", "Sam", "Son"],
+      daysMin: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+      months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+      monthsShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+      today: "Heute"
+    }
+    $('#job_scheduled_collection_time').fdatepicker
+      format: 'dd.mm.yyyy hh:ii',
+      disableDblClickSelection: true,
+      language: 'de',
+      pickTime: true
+    .change -> $("#scheduled_collection_time").text($("#job_scheduled_collection_time").val());
+
+    $('#job_scheduled_delivery_time').fdatepicker
+      format: 'dd.mm.yyyy hh:ii',
+      disableDblClickSelection: true,
+      language: 'de',
+      pickTime: true
+    .change ->
+      $("#scheduled_delivery_time").text($("#job_scheduled_delivery_time").val());
+
+    $('#job_actual_delivery_time').fdatepicker({
+      format: 'dd.mm.yyyy hh:ii',
+      disableDblClickSelection: true,
+      language: 'de',
+      pickTime: true
+    })
+
+    $('#job_actual_collection_time').fdatepicker({
+      format: 'dd.mm.yyyy hh:ii',
+      disableDblClickSelection: true,
+      language: 'de',
+      pickTime: true
+    })
+  ,1000
+
   $('#jobs-in-bill-table').DataTable({
     responsive: false,
     columnDefs: [ {
           targets: 'no-sort',
           orderable: false,
     } ]
-  });
+  })
 # Auftragseingabemaske
 
   $("#job_driver_id").change ->
@@ -46,12 +86,6 @@ ready = ->
 
   $("#job_registration_number").keyup ->
     $("#registration_number").text($("#job_registration_number").val());
-
-  $("#job_scheduled_collection_time").keyup ->
-    $("#scheduled_collection_time").text($("#job_scheduled_collection_time").val());
-
-  $("#job_scheduled_delivery_time").keyup ->
-    $("#scheduled_delivery_time").text($("#job_scheduled_delivery_time").val());
 
   $("#driver_filter").keyup ->
     $("#job_driver_id").change()
@@ -204,8 +238,8 @@ ready = ->
   $("#job_from_id").change();
   $("#job_cost_center_id").keyup();
   $("#job_car_type").keyup();
-  $("#job_scheduled_delivery_date").keyup();
-  $("#job_scheduled_collection_date").keyup();
   $("#job_car_type").keyup();
   $("#job_car_brand").keyup()
   $("#job_registration_number").keyup();
+  $("#scheduled_collection_time").text($("#job_scheduled_collection_time").val());
+  $("#scheduled_delivery_time").text($("#job_scheduled_delivery_time").val());

@@ -41,22 +41,27 @@
       </div>
       <div class="row">
         <div class="field large-6 columns">
-          <h3><%= f.label "Geplantes Abholdatum" %></h3><br>
-          <%= f.datetime_local_field :scheduled_collection_time %>
+          <% scheduled_collection_time = @job.scheduled_collection_time.strftime("%d.%m.%Y %H:%M") unless  @job.scheduled_collection_time.nil? %>
+          <% scheduled_delivery_time = @job.scheduled_delivery_time.strftime("%d.%m.%Y %H:%M") unless  @job.scheduled_delivery_time.nil? %>
+          <% actual_collection_time = @job.actual_collection_time.strftime("%d.%m.%Y %H:%M") unless  @job.actual_collection_time.nil? %>
+          <% actual_delivery_time = @job.actual_delivery_time.strftime("%d.%m.%Y %H:%M") unless  @job.actual_delivery_time.nil? %>
+          <h3><%= f.label "scheduled_collection_time", "Geplanter Abholtermin" %></h3><br>
+
+          <%= f.text_field :scheduled_collection_time, :value => scheduled_collection_time %>
         </div>
         <div class="field large-6 columns">
-          <h3><%= f.label "Geplantes Lieferdatum" %></h3><br>
-          <%= f.datetime_local_field :scheduled_delivery_time %>
+          <h3><%= f.label "scheduled_delivery_time", "Geplanter Liefertermin" %></h3><br>
+          <%= f.text_field :scheduled_delivery_time, :value => scheduled_delivery_time %>
         </div>
       </div>
       <div class="row">
         <div class="field large-6 columns">
-          <h3><%= f.label t("jobs.actual_collection_time") %></h3><br>
-          <%= f.datetime_local_field :actual_collection_time %>
+          <h3><%= f.label "actual_collection_time", t("jobs.actual_collection_time") %></h3><br>
+          <%= f.text_field :actual_collection_time, :value => actual_collection_time %>
         </div>
         <div class="field large-6 columns">
-          <h3><%= f.label t("jobs.actual_delivery_time") %></h3><br>
-          <%= f.datetime_local_field :actual_delivery_time %>
+          <h3><%= f.label "actual_delivery_time", t("jobs.actual_delivery_time") %></h3><br>
+          <%= f.text_field :actual_delivery_time, :value => actual_delivery_time %>
         </div>
       </div>
       <div class="row lightgray">
