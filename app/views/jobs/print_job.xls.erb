@@ -66,77 +66,71 @@
     <Cell ss:MergeAcross="2" ss:StyleID="s23"><Data ss:Type="String">FAHRZEUGBEGLEITSCHEIN</Data></Cell>
    </Row>
    <Row ss:Index="7">
-    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Auftraggeber:</Data></Cell>
-    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Auftrags ID:</Data></Cell>
-    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Externe ID:</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Auftraggeber:  Sixt GmbH</Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">AuftragsID:  <%= @job.customer_job_id %></Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">FahrtauftragsID:  <%= @job.id %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:Index="1" ss:StyleID="s18"><Data ss:Type="String">Sixt GmbH</Data></Cell>
-    <Cell ss:Index="4" ss:StyleID="s18"><Data ss:Type="String"><%= @job.id %></Data></Cell>
-    <Cell ss:Index="6" ss:StyleID="s18"><Data ss:Type="String"><%= @job.customer_job_id %></Data></Cell>
     <Cell ss:StyleID="s18"/>
    </Row>
    <Row>
-    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Automarke:</Data></Cell>
-    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Autotype:</Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Automarke:  <%= @job.car_brand %></Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Autotype:  <%= @job.car_type %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.car_brand %></Data></Cell>
-    <Cell ss:Index="4" ss:StyleID="s18"><Data ss:Type="String"><%= @job.car_type %></Data></Cell>
     <Cell ss:StyleID="s18"/>
    </Row>
    <Row>
-    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Kennzeichen:</Data></Cell>
-    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Fahrgestellnr.:</Data></Cell>
-   </Row>
-   <Row>
-    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.registration_number %></Data></Cell>
-    <Cell ss:Index="4" ss:StyleID="s18"><Data ss:Type="String"><%= @job.chassis_number %></Data></Cell>
+    <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Kennzeichen:  <%= @job.registration_number %></Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String">Fahrgestellnr.:  <%= @job.chassis_number %></Data></Cell>
    </Row>
    <Row ss:Index="14">
     <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Überstellung von:</Data></Cell>
-    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address_short %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address_short %></Data></Cell>
-    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"/>
+    <Cell ss:StyleID="s18"></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address %></Data></Cell>
-    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"/>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.zip_code + " " + @job.from.city %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.zip_code + " " + @job.from.city %></Data></Cell>
+    <Cell ss:StyleID="s18"></Cell>
    </Row>
    <Row ss:Index="18">
     <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Überstellung nach:</Data></Cell>
-    <Cell ss:MergeAcross="1" ss:StyleID="s18"/>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address_short %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address_short %></Data></Cell>
-    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"/>
+    <Cell ss:StyleID="s18"></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address %></Data></Cell>
-    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"/>
+    <Cell ss:StyleID="s18"></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.zip_code + " " + @job.to.city %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.zip_code + " " + @job.to.city %></Data></Cell>
+    <Cell ss:StyleID="s18"></Cell>
    </Row>
    <Row ss:Index="22">
     <Cell><Data ss:Type="String">Geplantes Abholdatum:</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String"><%=l @job.scheduled_collection_time unless @job.scheduled_collection_time.nil? %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:index="3"><Data ss:Type="String"><%=l @job.scheduled_collection_time unless @job.scheduled_collection_time.nil? %></Data></Cell>
+    <Cell ss:index="3"></Cell>
    </Row>
    <Row ss:Index="24">
     <Cell><Data ss:Type="String">Geplantes Lieferdatum:</Data></Cell>
+    <Cell ss:Index="4"><Data ss:Type="String"><%=l @job.scheduled_delivery_time unless @job.scheduled_delivery_time.nil? %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:index="3"><Data ss:Type="String"><%=l @job.scheduled_delivery_time unless @job.scheduled_delivery_time.nil? %></Data></Cell>
+    <Cell ss:index="3"></Cell>
    </Row>   <Row ss:Index="26">
     <Cell><Data ss:Type="String">Bemerkung:</Data></Cell>
-    <Cell ss:index="3"><Data ss:Type="String"><%= @job.job_notice %></Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String"><%= @job.job_notice %></Data></Cell>
    </Row>
    <Row ss:Index="29">
     <Cell ss:MergeAcross="7" ss:StyleID="s22"><Data ss:Type="String">_______________________________________________________________________________________________</Data></Cell>
