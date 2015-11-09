@@ -129,7 +129,7 @@
     <%= link_to "Druckfile herunterladen", print_job_path(format: "xls") %>|
     <%= link_to I18n.translate("back"), jobs_path %>
     <% if @job.is_open? %>|
-      <%= link_to I18n.translate("delete"), job_delete_path(@job), data: { confirm: I18n.translate("jobs.really_delete") } %>
+      <%= link_to I18n.translate("delete"), @job, method: :delete, data: { confirm: I18n.translate("jobs.really_delete") } %>
     <% end %>
   </div>
 </div>
