@@ -19,6 +19,21 @@ class Job < ActiveRecord::Base
   CHARGED = 3
   DELETED = 99
 
+  def self.save_many jobs
+    unless jobs.empty?
+      transaction do
+        success = jobs.map(&:save)
+        unless success.all?
+          errored = jobs.select{|b| !b.errors.blank?}
+          # do something with the errored values
+          raise ActiveRecord::Rollback
+          return false
+        end
+      end
+    end
+    return true
+  end
+
   def self.get_active
     where( "status in (:show)", show: [ OPEN, FINISHED, CHARGED ] ).includes( :from, :to )
   end

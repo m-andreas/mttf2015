@@ -79,6 +79,21 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal jobs(:three).from, job.breakpoints.first.address
   end
 
+  test "should create multible jobs" do
+    sign_in @user
+    old_count = Job.count
+    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01"},
+      job_amount: "4", registration_number_0: "w234", car_brand_0: "Merzedes", car_type_0: "A", registration_number_1: "w234", car_brand_1: "Merzedes", car_type_1: "A", registration_number_2: "w234", car_brand_2: "Merzedes", car_type_2: "A"
+    job = Job.find(assigns(:job).id)
+    assert_equal "w234", assigns(:registration_number_0)
+    assert_equal "Merzedes", assigns(:car_brand_0)
+    assert_equal "A", assigns(:car_type_0)
+    assert_equal true, job.to_print
+    assert_equal old_count + 4, Job.count
+  end
+
   test "should not create job with wrong date" do
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: false, to_id: routes(:one).to_id,

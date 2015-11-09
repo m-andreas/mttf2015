@@ -4,6 +4,7 @@
 <%= hidden_field_tag 'form_type', "new" %>
 
   <%= form_for(@job) do |f| %>
+    <%= hidden_field_tag 'job_amount',  @job_amount %>
     <div class="large-8 small-12 columns">
       <% if @job.errors.any? %>
         <div id="error_explanation">
@@ -16,8 +17,23 @@
           </ul>
         </div>
       <% end %>
+      <% if current_user.is_sixt? %>
       <div class="field row">
-      <input type="text" id="test" name="test" class="span2">
+        <h3>Wie viele Autos wollen Sie erfassen?</h3><br>
+        Aktuell gewählte Anzahl: <%= @job_amount %><br>
+        <nav id="primary_nav_wrap">
+        <ul>
+          <li><a href="#">Anzahl auswählen</a>
+            <ul>
+              <% (1..20).to_a.each do |i| %>
+                <li><%= link_to( i, job_multible_cars_path( :job_amount => i )) %></li>
+              <% end %>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <% end %>
+      <div class="field row">
       <h3>Startpunkt</h3><br>
         Startpunkte hier filtern <input id="from_filter" type="text">
         <%= f.select :from_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
@@ -52,6 +68,34 @@
           <%= f.text_field :registration_number %>
         </div>
       </div>
+      <div class="row lightgray">
+        <% ( @job_amount.to_i - 1 ).times do |i| %>
+          <div class="field large-4 columns">
+            <h3><%= f.label :Fahrzeugmarke %></h3><br>
+            <% if @job_values[i].is_a? Hash %>
+              <%= text_field_tag "car_brand" + "_#{i}", @job_values[i]["car_brand"] %>
+            <% else %>
+              <%= text_field_tag "car_brand" + "_#{i}" %>
+            <% end %>
+          </div>
+          <div class="field large-4 columns">
+            <h3><%= f.label :Fahrzeugtype %></h3><br>
+            <% if @job_values[i].is_a? Hash %>
+              <%= text_field_tag "car_type" + "_#{i}", @job_values[i]["car_type"] %>
+            <% else %>
+              <%= text_field_tag "car_type" + "_#{i}" %>
+            <% end %>
+          </div>
+          <div class="field large-4 columns">
+            <h3><%= f.label :Kennzeichen %></h3><br>
+            <% if @job_values[i].is_a? Hash %>
+              <%= text_field_tag "registration_number" + "_#{i}", @job_values[i]["registration_number"] %>
+            <% else %>
+              <%= text_field_tag "registration_number" + "_#{i}" %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
       <div class="row">
         <div class="field large-6 columns">
           <h3><%= f.label "Abholung" %></h3><br>
@@ -62,6 +106,7 @@
           <%= f.text_field :scheduled_delivery_time %>
         </div>
       </div>
+      <% if current_user.is_intern? %>
       <div class="row lightgray">
         <div class="field large-4 columns">
           <h3><%= f.label "chassis_number", :Fahrgestellnummer %></h3><br>
@@ -90,7 +135,6 @@
           <%= f.text_field :transport_notice_extern %>
         </div>
       </div>
-      <% if current_user.is_intern? %>
         <div class="field">
           <h3><%= f.label :shuttle %></h3><br>
           <%= f.check_box :shuttle %>
