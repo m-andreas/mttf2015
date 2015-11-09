@@ -22,19 +22,22 @@
     <%= f.text_field :last_name %>
   </div>
   <div class="field">
+    <% entry_date = @driver.entry_date.strftime("%d.%m.%Y") unless  @driver.entry_date.nil? %>
     <%= f.label :Eintrittsdatum %><br>
-    <%= f.text_field :entry_date %>
+    <%= f.text_field :entry_date, value: entry_date %>
   </div>
   <div class="field">
+    <% exit_date = @driver.exit_date.strftime("%d.%m.%Y") unless  @driver.exit_date.nil? %>
     <%= f.label :Austrittsdatum %><br>
-    <%= f.text_field :exit_date %>
+    <%= f.text_field :exit_date, value: exit_date %>
   </div>
   <div class="field">
+    <% date_of_birth = @driver.date_of_birth.strftime("%d.%m.%Y") unless  @driver.date_of_birth.nil? %>
     <%= f.label :Geburtsdatum %><br>
-    <%= f.text_field :date_of_birth %>
+    <%= f.text_field :date_of_birth, value: date_of_birth %>
   </div>
   <div class="field">
-    <%= f.label :Geburtsort %><br>
+    <%= f.label :place_of_birth, "Staatsbürgerschaft" %><br>
     <%= f.text_field :place_of_birth %>
   </div>
   <div class="field">
