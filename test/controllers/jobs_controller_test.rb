@@ -92,6 +92,11 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal "A", assigns(:car_type_0)
     assert_equal true, job.to_print
     assert_equal old_count + 4, Job.count
+    jobs = Job.last(3)
+    jobs.each do |job|
+      assert_equal false, job.shuttle
+      assert_equal 1, job.status
+    end
   end
 
   test "should not create job with wrong date" do

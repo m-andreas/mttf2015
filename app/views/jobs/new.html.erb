@@ -44,11 +44,13 @@
         <%= f.select :to_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
       </div>
       <div class="row">
+        <% if current_user.is_intern? %>
         <div class="field large-8 columns">
           <h3>Fahrer</h3><br>
           Fahrer hier filtern <input id="driver_filter" type="text">
           <%= f.select :driver_id, options_from_collection_for_select(@drivers, "id", "fullname_id")%>
         </div>
+        <% end %>
         <div class="field large-4 columns">
           <h3>Kostenstelle</h3><br>
           <%= f.text_field :cost_center_id %>
@@ -159,29 +161,34 @@
       <% end %>
     </div>
     <div class="large-4 small-12 columns sidebar">
-      <%= hidden_field_tag 'co_jobs',  '' %>
-      <h2>Auftragszusammenfassung:</h2>
-      <table>
-          <tr><td>Fahrername:</td><td><span id="drivername"></span></td></tr>
-          <tr><td>Startpunkt:</td><td><span id="from"></span></td></tr>
-          <tr><td>Endpunkt:</td><td><span id="to"></span></td></tr>
-          <tr><td>Kostenstelle:</td><td><span id="cost-center"></span></td></tr>
-          <tr><td>Fahrzeugmarke:</td><td><span id="car_brand"></span></td></tr>
-          <tr><td>Fahrzeugtype:</td><td><span id="car_type"></span></td></tr>
-          <tr><td>Kennzeichen:</td><td><span id="registration_number"></span></td></tr>
-          <tr><td>Abholdatum:</td><td><span id="scheduled_collection_time"></span></td></tr>
-          <tr><td>Lieferdatum:</td><td><span id="scheduled_delivery_time"></span></td></tr>
-        </table>
-      <div id="shuttle-co-drivers">
+      <% if current_user.is_intern? %>
+        <%= hidden_field_tag 'co_jobs',  '' %>
+        <h2>Auftragszusammenfassung:</h2>
         <table>
-          <thead>
-            <th>Mitfahrer</th>
-            <th>Auftragsnummer</th>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
+            <tr><td>Fahrername:</td><td><span id="drivername"></span></td></tr>
+            <tr><td>Startpunkt:</td><td><span id="from"></span></td></tr>
+            <tr><td>Endpunkt:</td><td><span id="to"></span></td></tr>
+            <tr><td>Kostenstelle:</td><td><span id="cost-center"></span></td></tr>
+            <tr><td>Fahrzeugmarke:</td><td><span id="car_brand"></span></td></tr>
+            <tr><td>Fahrzeugtype:</td><td><span id="car_type"></span></td></tr>
+            <tr><td>Kennzeichen:</td><td><span id="registration_number"></span></td></tr>
+            <tr><td>Abholdatum:</td><td><span id="scheduled_collection_time"></span></td></tr>
+            <tr><td>Lieferdatum:</td><td><span id="scheduled_delivery_time"></span></td></tr>
+          </table>
+        <div id="shuttle-co-drivers">
+          <table>
+            <thead>
+              <th>Mitfahrer</th>
+              <th>Auftragsnummer</th>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <h2>Abschließen:</h2>
+      <br>
+      <% end %>
       <div class="actions">
         <%= f.submit %>
       </div>

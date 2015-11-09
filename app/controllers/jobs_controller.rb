@@ -145,7 +145,7 @@ class JobsController < ApplicationController
       additional_jobs = []
       if @job_amount > 1
         ( @job_amount - 1 ).times do |i|
-          if params["registration_number_" + i.to_s ].present?
+          if params["registration_number_" + i.to_s ].present? || params["car_brand_" + i.to_s ].present? || params["car_type_" + i.to_s ].present?
             instance_variable_set("@registration_number_" + i.to_s, params[ "registration_number_" + i.to_s ])
             instance_variable_set("@car_brand_" + i.to_s, params[ "car_brand_" + i.to_s ])
             instance_variable_set("@car_type_" + i.to_s, params[ "car_type_" + i.to_s ])
@@ -153,6 +153,7 @@ class JobsController < ApplicationController
             additional_job.actual_collection_time = @job.scheduled_collection_time
             additional_job.actual_delivery_time = @job.scheduled_delivery_time
             additional_job.status = Job::OPEN
+            additional_job.shuttle = false
             additional_job.route_id = @job.route_id
             additional_job.registration_number = params[ "registration_number_" + i.to_s ]
             additional_job.car_brand = params[ "car_brand_" + i.to_s ]
