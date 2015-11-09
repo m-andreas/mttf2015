@@ -1,6 +1,6 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
-    :add_to_current_bill, :add_co_driver, :remove_co_driver, :print_job ]
+    :add_to_current_bill, :add_co_driver, :remove_co_driver, :print_job, :set_to_print ]
   before_action :check_transfair, except: [ :new, :create, :show_all, :index, :multible_cars ]
   # GET /jobs
   # GET /jobs.json
@@ -185,6 +185,12 @@ class JobsController < ApplicationController
     @addresses = Address.get_active
     @job_amount = params[:job_amount]
     render :action => 'new'
+  end
+
+  def set_to_print
+    @job.to_print = true
+    @job.save
+    redirect_to jobs_path, notice: t('jobs.sent_to_printer')
   end
 
   # PATCH/PUT /jobs/1

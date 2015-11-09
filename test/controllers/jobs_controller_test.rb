@@ -99,6 +99,16 @@ class JobsControllerTest < ActionController::TestCase
     end
   end
 
+  test "set to print" do
+    sign_in @user
+    @job.to_print = false
+    @job.save!
+    get :set_to_print, id: @job
+    @job.reload
+    assert_equal true, @job.to_print
+  end
+
+
   test "should not create job with wrong date" do
     sign_in @user
     post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: false, to_id: routes(:one).to_id,

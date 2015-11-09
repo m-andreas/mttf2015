@@ -39,6 +39,7 @@ de:
   routes:
     deleted: Die Route wurde gelöscht
   jobs:
+    sent_to_printer: Ihr Job wird in spätestens 5 Minuten gedruckt. Bitte um etwas Geduld.
     bill_open: Alle Offenen Aufträge verrechnen
     connected_shuttle_job: Dazugehörige Shuttlefahrt
     actual_distance: Tatsächliche Km

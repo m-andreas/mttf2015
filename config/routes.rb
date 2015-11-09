@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   get 'jobs/print_job/:id', to: 'jobs#print_job', as: 'print_job'
   get 'jobs/delete/:id', to: 'jobs#destroy', as: 'job_delete'
   get 'jobs/multible_cars/:job_amount', to: 'jobs#multible_cars', as: 'job_multible_cars'
+  get 'jobs/set_to_print/:id', to: 'jobs#set_to_print', as: 'job_set_to_print'
 
   resources :jobs
   get 'jobs_ajax/show_all', to: 'jobs#show_all'

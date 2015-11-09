@@ -125,6 +125,7 @@
     <% if @job.is_open? %>
       <%= link_to 'Editieren', edit_job_path(@job) %> |
     <% end %>
+    <%= link_to "An Hauptdrucker senden", job_set_to_print_path(@job) %>|
     <%= link_to "Druckfile herunterladen", print_job_path(format: "xls") %>|
     <%= link_to I18n.translate("back"), jobs_path %>
     <% if @job.is_open? %>|
