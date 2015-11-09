@@ -263,9 +263,11 @@ class Job < ActiveRecord::Base
 
   def remove_in_shuttles
     shuttle = self.shuttle_job
-    ActiveRecord::Base.connection.delete("DELETE FROM carriers WHERE co_job_id=#{self.id};")
-    self.reload
-    shuttle.add_breakpoints
+    unless shuttle.nil?
+      ActiveRecord::Base.connection.delete("DELETE FROM carriers WHERE co_job_id=#{self.id};")
+      self.reload
+      shuttle.add_breakpoints
+    end
   end
 
   def remove_co_job co_job

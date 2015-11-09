@@ -29,7 +29,7 @@ private
         if job.is_open?
           edit = link_to 'Editieren', "jobs/#{job.id}/edit"
           add_to_current = link_to "verrechnen", "jobs/add_to_current_bill/#{job.id}", method: :post, remote: true
-          delete = link_to I18n.translate(:delete), "jobs/delete/#{job.id}", method: :post, data: { confirm: I18n.translate("jobs.really_delete") }, remote: true, :class => 'delete_job'
+          delete = link_to I18n.translate(:delete), "jobs/delete/#{job.id}", method: :post, data: { confirm: I18n.translate("jobs.really_delete") }, remote: true
         else
           edit = ""
           add_to_current = ""
