@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   devise_for :users
   get 'users/invitation', to: 'jobs#new'
   resources :users
+
   resources :companies
   get 'routes/show_new', to: 'routes#show_new', as: 'new_routes'
   resources :routes
@@ -29,6 +30,7 @@ Rails.application.routes.draw do
   get 'jobs/add_co_driver/:id', to: 'jobs#add_co_driver', as: 'job_add_co_driver'
   get 'jobs/remove_co_driver/:id', to: 'jobs#remove_co_driver', as: 'job_remove_co_driver'
   get 'jobs/print_job/:id', to: 'jobs#print_job', as: 'print_job'
+  get 'jobs/delete/:id', to: 'jobs#destroy', as: 'job_delete'
   get 'jobs/multible_cars/:job_amount', to: 'jobs#multible_cars', as: 'job_multible_cars'
 
   resources :jobs

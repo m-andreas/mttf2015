@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_action :check_transfair
   before_action :check_transfair, except: [ :show, :update, :edit ]
   # GET /users
   # GET /users.json
