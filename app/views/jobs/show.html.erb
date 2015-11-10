@@ -1,4 +1,6 @@
-<div class="small-12 columns"><h1>Auftrag <%= @job.id %></h1></div>
+<div class="small-12 columns">
+  <h1>Auftrag <%= @job.id %></h1>
+</div>
 <% if @job.has_shuttle? %>
   <div class="small-12 columns"><h3><%= t("jobs.connected_shuttle_job") %> <%= link_to @job.shuttle_job.id, job_path(@job.shuttle_job) %></h3></div>
 <% end %>
