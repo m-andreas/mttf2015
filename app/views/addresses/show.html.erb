@@ -1,39 +1,39 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Created by:</strong>
+  <strong>Erstellt von:</strong>
   <%= @address.created_by %>
 </p>
 
 <p>
-  <strong>Country:</strong>
+  <strong>Land:</strong>
   <%= @address.country %>
 </p>
 
 <p>
-  <strong>City:</strong>
+  <strong>Stadt:</strong>
   <%= @address.city %>
 </p>
 
 <p>
-  <strong>Zip code:</strong>
+  <strong>PLZ:</strong>
   <%= @address.zip_code %>
 </p>
 
 <p>
-  <strong>Address:</strong>
+  <strong>Adresse:</strong>
   <%= @address.address %>
 </p>
 
 <p>
-  <strong>Address short:</strong>
+  <strong>Adresse kurz:</strong>
   <%= @address.address_short %>
 </p>
 
 <p>
-  <strong>Inactive:</strong>
+  <strong>inaktiv:</strong>
   <%= @address.inactive %>
 </p>
 
-<%= link_to 'Edit', edit_address_path(@address) %> |
-<%= link_to 'Back', addresses_path %>
+<%= link_to 'Editieren', edit_address_path(@address) %> |
+<%= link_to t( :back ), addresses_path %>

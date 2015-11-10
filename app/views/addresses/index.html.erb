@@ -26,15 +26,15 @@
         <td><%= address.zip_code %></td>
         <td><%= address.address %></td>
         <td><%= address.address_short %></td>
-        <td><%= address.inactive %></td>
-        <td><%= link_to 'Show', address %></td>
-        <td><%= link_to 'Edit', edit_address_path(address) %></td>
-        <td><%= link_to 'Destroy', address, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= address.inactive? ? "Ja" : "Nein" %></td>
+        <td><%= link_to 'Anzeigen', address %></td>
+        <td><%= link_to 'Editieren', edit_address_path(address) %></td>
+        <td><%= link_to I18n.translate(:delete), address, method: :delete, data: { confirm: 'Sind sie sicher?' } %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 <br>
 
-<%= link_to 'Neue Adresse anlgen', new_address_path %>
+<%= link_to 'Neue Adresse anlegen', new_address_path %>
 </div>
