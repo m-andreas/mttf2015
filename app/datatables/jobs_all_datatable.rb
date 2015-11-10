@@ -22,7 +22,7 @@ private
 
     display_on_page.map do |job|
       unless job.nil?
-        fullname = job.driver.nil? ? "" : job.driver.fullname
+        fullname = job.driver.nil? ? "" : job.driver.fullname_id
         from_address_short = job.from.nil? ? "" : job.from.address_short
         to_address_short = job.to.nil? ? "" : job.to.address_short
         if params[ :form_type ] == "edit"

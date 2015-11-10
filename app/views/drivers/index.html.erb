@@ -4,7 +4,7 @@
 <table id="drivers-table" class="display no-wrap">
   <thead>
     <tr>
-      <th colspan="1"></th>
+      <th>id</th>
       <th>Vorname</th>
       <th>Familienname</th>
       <th colspan="1">Austrittsdatum</th>
@@ -17,13 +17,14 @@
       <th colspan="1">Werkvertrag</th>
       <th class="no-sort" colspan="1"></th>
       <th class="no-sort" colspan="1"></th>
+      <th class="no-sort" colspan="1"></th>
     </tr>
   </thead>
 
   <tbody>
     <% @drivers.each do |driver| %>
       <tr>
-        <td><%= link_to 'Details', driver %></td>
+        <td><%= driver.id %></td>
         <td><%= driver.first_name %></td>
         <td><%= driver.last_name %></td>
         <td><%= driver.exit_date %></td>
@@ -34,6 +35,7 @@
         <td><%= check_box_tag 'service_contract', 'submitted', driver.driving_licence_copy, disabled: true %></td>
         <td><%= check_box_tag 'service_contract', 'submitted', driver.registration_copy, disabled: true %></td>
         <td><%= check_box_tag 'service_contract', 'submitted', driver.service_contract, disabled: true %></td>
+        <td><%= link_to 'Details', driver %></td>
         <td><%= link_to 'Editieren', edit_driver_path(driver) %></td>
         <td><%= link_to I18n.translate(:delete), driver, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>

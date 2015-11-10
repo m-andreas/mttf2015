@@ -8,18 +8,18 @@ class Driver < ActiveRecord::Base
   end
 
   def fullname
-    firstname + " " + lastname
+    self.firstname + " " + self.lastname
   end
 
   def fullname_id
-    fullname + " (" + self.id.to_s + ")"
+    self.fullname + " (" + self.id.to_s + ")"
   end
 
   def firstname
-    first_name
+    self.first_name
   end
 
   def lastname
-    last_name
+    self.last_name
   end
 end
