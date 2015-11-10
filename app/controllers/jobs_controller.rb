@@ -90,7 +90,7 @@ class JobsController < ApplicationController
     @job_values = []
     @job = Job.new
     @drivers = Driver.get_active
-    @addresses = Address.get_active
+    @addresses = Address.get_active.order(:address_short)
     @shuttles = []
   end
 
@@ -114,6 +114,10 @@ class JobsController < ApplicationController
         @job_values[i]["car_brand"] =  params[ "car_brand_" + i.to_s ]
         @job_values[i]["car_type"] =  params[ "car_type_" + i.to_s ]
       end
+    end
+    if job_params[:scheduled_collection_time].nil? && job_params[:scheduled_delivery_time].nil? && current_user.is_sixt?
+      params[:job][:scheduled_collection_time] = Time.now.strftime("%d.%m.%Y")
+      params[:job][:scheduled_delivery_time] = Time.now.strftime("%d.%m.%Y")
     end
     unless job_params[:scheduled_collection_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[0-9]{4}( [0-2][0-9]:[0-6][0-9])?\z/  &&
       job_params[:scheduled_delivery_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[0-9]{4}( [0-2][0-9]:[0-6][0-9])?\z/
