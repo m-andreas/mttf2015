@@ -82,20 +82,35 @@ class JobsControllerTest < ActionController::TestCase
   test "should create multible jobs" do
     sign_in users(:extern)
     old_count = Job.count
-    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, to_id: routes(:one).to_id,
-      car_brand: "BMW", car_type: "Z4", registration_number: "W123"},
-      job_amount: "4", registration_number_0: "w234", car_brand_0: "Merzedes", car_type_0: "A", registration_number_1: "w234", car_brand_1: "Merzedes", car_type_1: "A", registration_number_2: "w234", car_brand_2: "Merzedes", car_type_2: "A"
-    job = Job.find(assigns(:job).id)
-    assert_equal "w234", assigns(:registration_number_0)
-    assert_equal "Merzedes", assigns(:car_brand_0)
-    assert_equal "A", assigns(:car_type_0)
-    assert_equal true, job.to_print
+    post :create_sixt, jobs: [{ opening_hours: "12-22 Uhr", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, car_brand: "BMW", car_type: "Z4", registration_number: "W123"},
+      {opening_hours: "", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, registration_number: "w234", car_brand: "Merzedes", car_type: "A"},
+      {opening_hours: "", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, registration_number: "w234", car_brand: "Merzedes", car_type: "A"},
+      {opening_hours: "", cost_center_id: "22", from_id: routes(:two).from_id, to_id: routes(:two).to_id, registration_number: "345", car_brand: "Audi", car_type: "A8"}],
+      job_amount: "4"
+    assert_redirected_to job_new_sixt_path
     assert_equal old_count + 4, Job.count
-    jobs = Job.last(3)
+    jobs = Job.last(4)
+    assert_equal "12-22 Uhr", jobs.first.from.opening_hours
+    assert_equal "W123", jobs.first.registration_number
+    assert_equal "BMW", jobs.first.car_brand
+    assert_equal "Z4", jobs.first.car_type
+    assert_equal @job.cost_center_id, jobs.first.cost_center_id
+    assert_equal routes(:one).from, jobs.first.from
+    assert_equal routes(:one).to, jobs.first.to
+    assert_equal true, jobs.first.to_print
+    assert_equal "345", jobs.last.registration_number
+    assert_equal "Audi", jobs.last.car_brand
+    assert_equal "A8", jobs.last.car_type
+    assert_equal 22, jobs.last.cost_center_id
+    assert_equal routes(:two).from, jobs.last.from
+    assert_equal routes(:two).to, jobs.last.to
+    assert_equal true, jobs.last.to_print
     jobs.each do |job|
       assert_equal false, job.shuttle
       assert_equal 1, job.status
     end
+    jobs.first.from.reload
+    assert_equal "12-22 Uhr", jobs.first.from.opening_hours
   end
 
   test "set to print" do

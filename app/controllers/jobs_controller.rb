@@ -1,11 +1,11 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
     :add_to_current_bill, :add_co_driver, :remove_co_driver, :print_job, :set_to_print ]
-  before_action :check_transfair, except: [ :new, :create, :show_all, :index, :multible_cars ]
+  before_action :check_transfair, except: [ :multible_cars, :create_sixt, :new_sixt ]
   # GET /jobs
   # GET /jobs.json
   def index
-    redirect_to new_job_path unless current_user.is_intern?
+    redirect_to job_new_sixt_path unless current_user.is_intern?
   end
 
   def add_co_driver
@@ -105,20 +105,6 @@ class JobsController < ApplicationController
   # POST /jobs
   # POST /jobs.json
   def create
-    @job_amount = params[:job_amount].to_i
-    @job_values = []
-    ( @job_amount - 1 ).times do |i|
-      if params["registration_number_" + i.to_s ].present?
-        @job_values[i] = {}
-        @job_values[i]["registration_number"] =  params[ "registration_number_" + i.to_s ]
-        @job_values[i]["car_brand"] =  params[ "car_brand_" + i.to_s ]
-        @job_values[i]["car_type"] =  params[ "car_type_" + i.to_s ]
-      end
-    end
-    if job_params[:scheduled_collection_time].nil? && job_params[:scheduled_delivery_time].nil? && current_user.is_sixt?
-      params[:job][:scheduled_collection_time] = Time.now.strftime("%d.%m.%Y")
-      params[:job][:scheduled_delivery_time] = Time.now.strftime("%d.%m.%Y")
-    end
     unless job_params[:scheduled_collection_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[0-9]{4}( [0-2][0-9]:[0-6][0-9])?\z/  &&
       job_params[:scheduled_delivery_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[0-9]{4}( [0-2][0-9]:[0-6][0-9])?\z/
       error = t("jobs.date_format")
@@ -146,31 +132,11 @@ class JobsController < ApplicationController
           job_errors += error
         end
       end
-      additional_jobs = []
-      if @job_amount > 1
-        ( @job_amount - 1 ).times do |i|
-          if params["registration_number_" + i.to_s ].present? || params["car_brand_" + i.to_s ].present? || params["car_type_" + i.to_s ].present?
-            instance_variable_set("@registration_number_" + i.to_s, params[ "registration_number_" + i.to_s ])
-            instance_variable_set("@car_brand_" + i.to_s, params[ "car_brand_" + i.to_s ])
-            instance_variable_set("@car_type_" + i.to_s, params[ "car_type_" + i.to_s ])
-            additional_job = Job.new(job_params)
-            additional_job.actual_collection_time = @job.scheduled_collection_time
-            additional_job.actual_delivery_time = @job.scheduled_delivery_time
-            additional_job.status = Job::OPEN
-            additional_job.shuttle = false
-            additional_job.route_id = @job.route_id
-            additional_job.registration_number = params[ "registration_number_" + i.to_s ]
-            additional_job.car_brand = params[ "car_brand_" + i.to_s ]
-            additional_job.car_type = params[ "car_type_" + i.to_s ]
-            additional_jobs << additional_job
-          end
-        end
-      end
     end
 
     respond_to do |format|
 
-      if job_errors == true && Job.save_many( additional_jobs ) && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
+      if job_errors == true && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
         format.html { redirect_to jobs_path, notice: t("jobs.created") }
       else
         @job = Job.new(job_params)
@@ -182,13 +148,46 @@ class JobsController < ApplicationController
     end
   end
 
+  def new_sixt()
+    @job_amount = 1
+    @addresses = Address.get_active.order(:address_short)
+  end
+
+  def create_sixt
+    i = 0
+    jobs_params[:jobs].each do |single_params|
+      next if single_params[:registration_number].empty?
+      from = Address.find_by(id: single_params[:from_id])
+      to = Address.find_by(id: single_params[:to_id])
+      if from.nil? || to.nil?
+        redirect_to :back, notice: t("jobs.save_error")
+        return
+      end
+      unless single_params[:opening_hours].empty?
+        from.opening_hours = single_params[:opening_hours]
+        from.save
+      end
+      single_params.except! :opening_hours
+      job = Job.new(single_params)
+      job.status = Job::OPEN
+      job.shuttle = false
+      job.scheduled_collection_time = Time.now.strftime("%d.%m.%Y")
+      job.scheduled_delivery_time = Time.now.strftime("%d.%m.%Y")
+      job.route_id = Route.find_or_create( from.id , to.id )
+      job.to_print = true
+      ret = job.save
+      unless ret == true
+        redirect_to :back, notice: t("jobs.save_error")
+      end
+      i += 1
+    end
+    redirect_to job_new_sixt_path, notice: i.to_s + " " + t("jobs.created_multible")
+  end
+
   def multible_cars
-    @job_values = []
-    @job = Job.new
-    @drivers = Driver.get_active
     @addresses = Address.get_active
-    @job_amount = params[:job_amount]
-    render :action => 'new'
+    @job_amount = params[:job_amount].to_i
+    render :action => 'new_sixt'
   end
 
   def set_to_print
@@ -261,5 +260,9 @@ class JobsController < ApplicationController
   def job_params
     params.require(:job).permit( { :breakpoints_attributes => [ :address_id, :id, :position, :mileage ]}, :driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :co_driver_ids, :car_brand, :car_type, :registration_number,
       :scheduled_collection_time, :scheduled_delivery_time, :actual_collection_time, :actual_delivery_time, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
+  end
+
+  def jobs_params
+    params.permit( :jobs => [ :registration_number, :cost_center_id, :car_brand, :car_type, :from_id, :to_id, :job_notice, :opening_hours ]  )
   end
 end

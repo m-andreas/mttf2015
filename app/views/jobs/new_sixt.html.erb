@@ -1,0 +1,55 @@
+<div class="custom-row">
+<h1>Neuen Auftrag erfassen</h1>
+  <div class="small-12 columns">
+    <div class="field row">
+      <h3>Wie viele Autos wollen Sie erfassen?</h3><br>
+      Aktuell gewählte Anzahl: <%= @job_amount %><br>
+      <nav id="primary_nav_wrap">
+      <ul>
+        <li><a href="#">Anzahl auswählen</a>
+          <ul>
+            <% (1..20).to_a.each do |i| %>
+              <li><%= link_to( i, job_multible_cars_path( :job_amount => i )) %></li>
+            <% end %>
+          </ul>
+        </li>
+      </ul>
+      </nav>
+    </div>
+  </div>
+  <%= form_tag(job_create_sixt_path, method: "get") do %>
+    <%= hidden_field_tag 'job_amount',  @job_amount %>
+    <div class="custom-row">
+      <table class="sixt-table">
+        <thead>
+          <th width="10%">Kennzeichen*</th>
+          <th width="10%">Marke</th>
+          <th width="10%">Type</th>
+          <th width="15%">Von</th>
+          <th width="15%">Nach</th>
+          <th width="10%">Kostenstelle</th>
+          <th width="10%">Bemerkungen</th>
+          <th width="20%">Öffnungszeiten</th>
+        </thead>
+        <tbody>
+          <% ( @job_amount ).times do |i| %>
+            <tr>
+              <td><%= text_field_tag "jobs[][registration_number]", '', class: "registration_number" %></td>
+              <td><%= text_field_tag "jobs[][car_brand]", '', class: "car_brand" %></td>
+              <td><%= text_field_tag "jobs[][car_type]", '', class: "car_type" %></td>
+              <td><%= select_tag "jobs[][from_id]", options_from_collection_for_select(@addresses, "id", "address_short"), class: "from_id" %></td>
+              <td><%= select_tag "jobs[][to_id]", options_from_collection_for_select(@addresses, "id", "address_short"), class: "to_id" %></td>
+              <td><%= text_field_tag "jobs[][cost_center_id]", '', class: "cost_center_id" %></td>
+              <td><%= text_field_tag "jobs[][job_notice]", '', class: "job_notice" %></td>
+              <td><%= text_area_tag "jobs[][opening_hours]", nil, rows: 1, cols: 25, class: "opening_hours" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      *) Aufträge ohne Kennzeichen werden nicht gespeichert.<br>
+    </div>
+    <div class="actions">
+      <%= submit_tag("erstellen") %>
+    </div>
+  <% end %>
+</div>

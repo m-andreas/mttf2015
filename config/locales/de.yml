@@ -17,6 +17,8 @@ de:
   back: Zurück
   for: für
   show: anzeigen
+  users:
+    really_delete: Wollen Sie den Benutzer wirklich löschen?
   bills:
     edit_date: Angezeigtes Datum verändern
     jobs_total: "Aufträge Gesamtanzahl:"
@@ -39,6 +41,7 @@ de:
   routes:
     deleted: Die Route wurde gelöscht
   jobs:
+    save_error: Ein Fehler ist aufgetreten. Aufträge wurden nicht gespeichert.
     sent_to_printer: Ihr Job wird in spätestens 5 Minuten gedruckt. Bitte um etwas Geduld.
     bill_open: Alle Offenen Aufträge verrechnen
     connected_shuttle_job: Dazugehörige Shuttlefahrt
@@ -58,6 +61,7 @@ de:
     billed:  Auftrag wurde verrechnet
     date_error: Abfahrtsdatum liegt nach Ankunftsdatum
     date_format: Das Datum ist nicht korrekt formatiert
+    created_multible: Aufträge wurden erfolgreich erstellt.
     created: Auftrag wurde erfolgreich erstellt
     updated_and_billed: Auftrag wurde aktualisiert und der aktuellen Verrechnung hinzugefügt
     updated: Auftrag wurde erfolgreicht aktualisiert.

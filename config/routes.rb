@@ -25,6 +25,8 @@ Rails.application.routes.draw do
 
   resources :addresses
 
+  get 'jobs/create_sixt/', to: 'jobs#create_sixt', as: 'job_create_sixt'
+  get 'jobs/new_sixt/', to: 'jobs#new_sixt', as: 'job_new_sixt'
   post 'jobs/add_to_current_bill/:id', to: 'jobs#add_to_current_bill', as: 'add_job_to_current_bill'
   post 'jobs/remove_from_current_bill/:id', to: 'jobs#remove_from_current_bill', as: 'remove_job_from_current_bill'
   get 'jobs/add_co_driver/:id', to: 'jobs#add_co_driver', as: 'job_add_co_driver'

@@ -1,4 +1,5 @@
 <p id="notice"><%= notice %></p>
+<div class="small-12 column">
 
 <p>
   <strong>Erstellt von:</strong>
@@ -31,9 +32,16 @@
 </p>
 
 <p>
+  <strong>Öffnungszeiten:</strong>
+  <%= simple_format(@address.opening_hours) %>
+</p>
+
+
+<p>
   <strong>inaktiv:</strong>
   <%= @address.inactive %>
 </p>
 
 <%= link_to 'Editieren', edit_address_path(@address) %> |
 <%= link_to t( :back ), addresses_path %>
+</div>

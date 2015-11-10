@@ -1,4 +1,5 @@
-</p>
+<p id="notice"><%= notice %></p>
+<div class="small-12 column">
 <p>
   <strong>Von:</strong>
   <%= @route.from.complete_address %>
@@ -26,3 +27,4 @@
 
 <%= link_to 'Editieren', edit_route_path(@route) %> |
 <%= link_to t(:back), routes_path %>
+</div>

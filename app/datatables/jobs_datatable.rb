@@ -22,8 +22,8 @@ private
       unless job.nil?
         fullname = job.driver.nil? ? "" : link_to( job.driver.fullname_id, "/mttf2015/drivers/#{job.driver.id}")
 
-        from_address_short = job.from.nil? ? "" : job.from.address_short
-        to_address_short = job.to.nil? ? "" : job.to.address_short
+        from_address_short = job.from.nil? ? "" : ('<span data-tooltip aria-haspopup="true" class="has-tip" title="' + job.from.opening_hours.to_s + '">' + job.from.address_short + '</span>')
+        to_address_short = job.to.nil? ? "" : ('<span data-tooltip aria-haspopup="true" class="has-tip" title="' + job.to.opening_hours.to_s + '">' + job.to.address_short + '</span>')
         icon = fa_icon "user-plus", text: I18n.translate("add")
         shuttle = job.is_shuttle? ? "Ja" : "Nein"
         if job.is_open?
