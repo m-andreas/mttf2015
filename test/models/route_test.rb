@@ -13,6 +13,10 @@ class RouteTest < ActiveSupport::TestCase
     end
   end
 
+  test "Route allready exists turned arround" do
+    assert_equal Route.find_or_create(4,3), Route.find_or_create(3,4)
+  end
+
   test "Route doesnt exists" do
     assert_difference('Route.count') do
       route_id = Route.find_or_create( addresses( :two ), addresses(:three))

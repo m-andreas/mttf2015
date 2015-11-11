@@ -19,7 +19,10 @@ class Route < ActiveRecord::Base
   end
 
   def self.find_or_create( from_id, to_id)
-    route = find_by( from_id: from_id, to_id: to_id )
+    from_id = from_id.id if from_id.is_a? Address
+    to_id = to_id.id if to_id.is_a? Address
+
+    route = find_by( "( from_id = #{from_id} and to_id = #{to_id} ) or ( to_id= #{from_id} and from_id = #{to_id} )" )
     if route.nil?
       route = Route.create(
         from_id: from_id,
