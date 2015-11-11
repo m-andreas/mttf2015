@@ -137,6 +137,7 @@ class JobsController < ApplicationController
     respond_to do |format|
 
       if job_errors == true && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
+        AuftragsMailer.job_confirmation(@job,current_user).deliver
         format.html { redirect_to jobs_path, notice: t("jobs.created") }
       else
         @job = Job.new(job_params)
@@ -155,6 +156,7 @@ class JobsController < ApplicationController
 
   def create_sixt
     i = 0
+    jobs = []
     jobs_params[:jobs].each do |single_params|
       next if single_params[:registration_number].empty?
       from = Address.find_by(id: single_params[:from_id])
@@ -179,7 +181,13 @@ class JobsController < ApplicationController
       unless ret == true
         redirect_to :back, notice: t("jobs.save_error")
       end
+      jobs << job
       i += 1
+    end
+    if i > 1
+      AuftragsMailer.mass_job_confirmation(jobs,current_user).deliver
+    elsif i == 1
+      AuftragsMailer.job_confirmation(jobs.first,current_user).deliver
     end
     redirect_to job_new_sixt_path, notice: i.to_s + " " + t("jobs.created_multible")
   end

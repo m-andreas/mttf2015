@@ -27,7 +27,7 @@ Rails.application.configure do
     authentication: "plain",
     enable_starttls_auto: true,
     user_name: "marandreas1987@gmail.com",
-    password: "kwmp1234"
+    password: "******"
   }
   config.mailer_sender = 'marandreas1987@gmail.com'
 

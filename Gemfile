@@ -70,3 +70,6 @@ gem 'simplecov', :require => false, :group => :test
 
 #sort the stops of shuttles
 gem 'activerecord-sortable'
+
+#email über exchange
+gem 'ruby-ntlm'

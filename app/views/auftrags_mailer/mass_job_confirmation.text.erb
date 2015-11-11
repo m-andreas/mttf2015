@@ -1,0 +1,20 @@
+Folgende Aufträge wurden im System erfasst
+
+Auftraggeber: <%= @user.company.name %> - <%= @user.first_name %> <%= @user.last_name %>
+
+<% @jobs.each do |job| %>
+Auftragsnummer: <%= job.id %>
+
+Fahrzeugdaten: <%= job.car_brand %> / <%= job.car_type %> / <%= job.registration_number %>
+Überstellung Datum: <%= job.scheduled_collection_time.strftime("%d.%m.%Y") %>
+Überstellung Von: <%= job.from.address_short %>
+Überstellung Nach: <%= job.to.address_short %>
+Bemerkungen: <%= job.job_notice %>
+Öffnungszeiten:
+<%= job.from.opening_hours %>
+<% unless @jobs.last == job %>
+
+================================================================
+
+<% end %>
+<% end %>
