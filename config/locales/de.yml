@@ -8,6 +8,7 @@ de:
     open_again: "Über den untenstehenden Link können Sie ihren Account wieder öfnen:"
     open_account: Account öffnen
   auftragsmail:
+    subject: Auftragsbestätigung für
     date: Überstellung Datum
     from: Überstellung Von
     to: Überstellung Nach
