@@ -16,6 +16,6 @@ class AuftragsMailer < ActionMailer::Base
     recipients = ['dispo@mt-transfair.at', 'michael.schneider2@sixt.com']
     recipients << user.email
     recipients.uniq!
-    mail(to: recipients, subject: "MT Transfair - Auftragsbestätigung für mehrere Fahrten")
+    mail(to: recipients, subject: "MT Transfair - Auftragsbestätigung für #{jobs.length} Fahrten")
   end
 end

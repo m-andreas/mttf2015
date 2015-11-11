@@ -3,7 +3,9 @@ Folgender Auftrag wurden im System erfasst
 Auftragsnummer: <%= @job.id %> Auftraggeber: <%= @user.company.name %> - <%= @user.first_name %> <%= @user.last_name %>
 
 Fahrzeugdaten: <%= @job.car_brand %> / <%= @job.car_type %> / <%= @job.registration_number %>
-Überstellung Datum: <%= @job.scheduled_collection_time.strftime("%d.%m.%Y") %>
-Überstellung Von: <%= @job.from.address_short %>
-Überstellung Nach: <%= @job.to.address_short %>
+<%= t("auftragsmail.date") %>: <%= @job.scheduled_collection_time.strftime("%d.%m.%Y") %>
+<%= t("auftragsmail.from") %>: <%= @job.from.address_short %>
+<%= t("auftragsmail.to") %>: <%= @job.to.address_short %>
 Bemerkungen: <%= @job.job_notice %>
+<%= t("opening_times") %>:
+<%= @job.from.opening_hours %>

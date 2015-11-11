@@ -7,6 +7,13 @@ de:
     wrong_sign_in: Es gab mit ihrem Account eine Reihe von missglückten Anmeldeversuchen und er wurde daher gesperrt.
     open_again: "Über den untenstehenden Link können Sie ihren Account wieder öfnen:"
     open_account: Account öffnen
+  auftragsmail:
+    date: Überstellung Datum
+    from: Überstellung Von
+    to: Überstellung Nach
+    single:
+    mass:
+      intro: Folgende Aufträge wurden im System erfasst
   password:
     change: Passwort ändern
     confirm: Passwort bestätigen
@@ -17,6 +24,7 @@ de:
   back: Zurück
   for: für
   show: anzeigen
+  opening_times: Öffnungszeiten
   users:
     really_delete: Wollen Sie den Benutzer wirklich löschen?
   bills:
