@@ -1,7 +1,7 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
     :add_to_current_bill, :add_co_driver, :remove_co_driver, :print_job, :set_to_print ]
-  before_action :check_transfair, except: [ :multible_cars, :create_sixt, :new_sixt ]
+  before_action :check_transfair, except: [ :multible_cars, :create_sixt, :new_sixt, :index  ]
   # GET /jobs
   # GET /jobs.json
   def index
