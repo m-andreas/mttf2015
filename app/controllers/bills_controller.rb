@@ -81,6 +81,11 @@ class BillsController < ApplicationController
   def add_jobs
     @current_bill = Bill.get_current
     msg = @current_bill.add_jobs( Job.get_open )
+    if msg.length > 4
+      length = msg.length
+      msg = msg[0..3]
+      msg << "#{ length - 4 } weitere Fehler ..."
+    end
     if msg == true
       flash[:notice] = t("bills.billed")
     else
@@ -100,6 +105,11 @@ class BillsController < ApplicationController
 
   def pay
     dependencies = @bill.pay
+    if dependencies.length > 4
+      length = msg.length
+      dependencies = msg[0..3]
+      dependencies << "#{ length - 4 } weitere Fehler ..."
+    end
     if dependencies == true
       redirect_to @bill
     else
