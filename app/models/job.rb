@@ -247,12 +247,12 @@ class Job < ActiveRecord::Base
     status == CHARGED
   end
 
-  def co_drivers
-    co_drivers = []
+  def co_job_drivers
+    co_job_drivers = []
     co_jobs.each do |co_job|
-      co_drivers << co_job.driver
+      co_job_drivers << co_job.driver
     end
-    co_drivers
+    co_job_drivers
   end
 
   def remove_shuttles

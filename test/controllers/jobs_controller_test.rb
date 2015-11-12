@@ -243,11 +243,11 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should remove co_jobs on update" do
     sign_in @user
-    assert_not jobs(:shuttle).co_drivers.empty?
+    assert_not jobs(:shuttle).co_job_drivers.empty?
     patch :update, id: jobs(:shuttle), subaction: "update", job: { shuttle: "0" }
     assert_redirected_to jobs_path
     jobs(:shuttle).reload
-    assert jobs(:shuttle).co_drivers.empty?
+    assert jobs(:shuttle).co_job_drivers.empty?
   end
 
   test "should update job and set to current" do
@@ -361,25 +361,25 @@ class JobsControllerTest < ActionController::TestCase
     assert_redirected_to jobs_path
   end
 
-  test "add_co_driver" do
+  test "add_co_job" do
     sign_in @user
-    assert_equal 0, jobs(:empty_shuttle).co_drivers.length
-    post :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :three ).id
+    assert_equal 0, jobs(:empty_shuttle).co_job_drivers.length
+    post :add_co_job, id: jobs(:empty_shuttle), co_job_id: jobs( :three ).id
     jobs(:empty_shuttle).reload
-    assert_equal 1, jobs(:empty_shuttle).co_drivers.length
+    assert_equal 1, jobs(:empty_shuttle).co_job_drivers.length
   end
 
-  test "add_co_driver_ajax" do
+  test "add_co_job_ajax" do
     sign_in @user
-    assert_equal 0, jobs(:empty_shuttle).co_drivers.length
-    xhr :post, :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :three ).id
+    assert_equal 0, jobs(:empty_shuttle).co_job_drivers.length
+    xhr :post, :add_co_job, id: jobs(:empty_shuttle), co_job_id: jobs( :three ).id
     assert_response :success
     assert_select_jquery :html, '#sidepanel-inner' do
       assert_select '#shuttle-summary tbody > tr', 1
       assert_select '#breakpoints ol', 1
     end
     jobs(:empty_shuttle).reload
-    assert_equal 1, jobs(:empty_shuttle).co_drivers.length
+    assert_equal 1, jobs(:empty_shuttle).co_job_drivers.length
   end
 
   test "show_all_edit_ajax" do
@@ -922,35 +922,36 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should_not_add_co_driver_whos_in_shuttle" do
     sign_in @user
-    assert_equal 0, jobs(:empty_shuttle).co_drivers.length
-    post :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :one ).id
+    assert_equal 0, jobs(:empty_shuttle).co_job_drivers.length
+    post :add_co_job, id: jobs(:empty_shuttle), co_job_id: jobs( :one ).id
     jobs(:empty_shuttle).reload
-    assert_equal 0, jobs(:empty_shuttle).co_drivers.length
+    assert_equal 0, jobs(:empty_shuttle).co_job_drivers.length
   end
 
-  test "should_not_add_co_driver_twice" do
+  test "should_not_add_co_job_with_same_driver" do
     sign_in @user
-    assert_equal 0, jobs(:empty_shuttle).co_drivers.length
-    post :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :three ).id
-    post :add_co_driver, id: jobs(:empty_shuttle), co_job_id: jobs( :same_driver_as_three ).id
+    assert_equal 0, jobs(:empty_shuttle).co_job_drivers.length
+    post :add_co_job, id: jobs(:empty_shuttle), co_job_id: jobs( :three ).id
+    post :add_co_job, id: jobs(:empty_shuttle), co_job_id: jobs( :same_driver_as_three ).id
 
     jobs(:empty_shuttle).reload
-    assert_equal 1, jobs(:empty_shuttle).co_drivers.length
+    assert_equal 1, jobs(:empty_shuttle).co_jobs.length
+    assert_equal 1, jobs(:empty_shuttle).co_job_drivers.length
   end
 
-  test "remove_co_driver" do
+  test "remove_co_job" do
     sign_in @user
-    assert_equal 2, jobs(:shuttle).co_drivers.length
-    post :remove_co_driver, id: jobs(:shuttle), co_job_id: jobs( :two ).id
+    assert_equal 2, jobs(:shuttle).co_job_drivers.length
+    post :remove_co_job, id: jobs(:shuttle), co_job_id: jobs( :two ).id
     shuttle = Job.find(jobs(:shuttle).id)
-    assert_equal 1, shuttle.co_drivers.length
+    assert_equal 1, shuttle.co_job_drivers.length
     assert_equal [jobs(:one)], shuttle.co_jobs
   end
 
-  test "remove_co_driver_ajax" do
+  test "remove_co_job_ajax" do
     sign_in @user
-    assert_equal 2, jobs(:shuttle).co_drivers.length
-    xhr :post, :remove_co_driver, id: jobs(:shuttle), co_job_id: jobs( :two ).id
+    assert_equal 2, jobs(:shuttle).co_job_drivers.length
+    xhr :post, :remove_co_job, id: jobs(:shuttle), co_job_id: jobs( :two ).id
     assert_response :success
     assert_select_jquery :html, '#sidepanel-inner' do
       assert_select '#shuttle-summary tbody > tr', 1
@@ -958,7 +959,7 @@ class JobsControllerTest < ActionController::TestCase
     end
 
     shuttle = Job.find(jobs(:shuttle).id)
-    assert_equal 1, shuttle.co_drivers.length
+    assert_equal 1, shuttle.co_job_drivers.length
     assert_equal [jobs(:one)], shuttle.co_jobs
   end
 
