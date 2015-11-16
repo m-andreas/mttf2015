@@ -8,9 +8,17 @@
   <div class="large-6 columns">
     <p>
       <strong>Fahrer:</strong>
-      <%= @job.driver.fullname unless @job.driver.nil? %>
+      <%= @job.driver.fullname_id unless @job.driver.nil? %>
     </p>
 
+    <% if @job.has_co_drivers? %>
+      <% @job.co_drivers.each_with_index do |co_driver, i| %>
+        <p>
+          <strong><%= i + 2 %>. Fahrer:</strong>
+          <%= co_driver.fullname_id %>
+        </p>
+      <% end %>
+    <% end %>
     <p>
       <strong>Kostenstelle:</strong>
       <%= @job.cost_center_id %>

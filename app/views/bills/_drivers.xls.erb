@@ -10,7 +10,7 @@
      <Column ss:Index="10" ss:AutoFitWidth="0" ss:Width="150"/>
      <Column ss:Index="11" ss:AutoFitWidth="0" ss:Width="150"/>
         <Row ss:Height="20" >
-            <Cell ss:StyleID="heading"><Data ss:Type="String">Abrechnung <%= @bill.print_date %> I18n.t( :for ) <%= driver.fullname %></Data></Cell>
+            <Cell ss:StyleID="heading"><Data ss:Type="String">Abrechnung <%= @bill.print_date %> <%= I18n.t( :for ) %> <%= driver.fullname %></Data></Cell>
         </Row>
         <Row/>
         <Row>

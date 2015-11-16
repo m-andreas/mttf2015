@@ -65,17 +65,28 @@ class Bill < ActiveRecord::Base
     drivers_in_bill = []
     self.jobs.each do |job|
       drivers_in_bill << job.driver
+      if job.has_co_drivers?
+        job.co_drivers.each do |co_driver|
+          drivers_in_bill << co_driver
+        end
+      end
     end
     drivers_in_bill.uniq!
     return drivers_in_bill
   end
 
   def get_main_drives_array( driver )
-    self.jobs.where( driver_id: driver.id ).pluck( :id )
+    jobs = self.jobs.where( driver_id: driver.id ).pluck( :id )
+    jobs += Passenger.where(driver_id: driver.id, job_id: self.jobs).pluck(:job_id)
+    return jobs
   end
 
   def get_main_drives( driver )
-    self.jobs.where( driver_id: driver.id )
+    jobs = self.jobs.where( driver_id: driver.id )
+    Passenger.where(driver_id: driver.id, job_id: self.jobs).each do |passenger|
+      jobs << passenger.job
+    end
+    return jobs
   end
 
   def get_jobs_array( driver )

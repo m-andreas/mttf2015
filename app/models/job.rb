@@ -87,6 +87,10 @@ class Job < ActiveRecord::Base
     self.mileage_delivery.to_i - self.mileage_collection.to_i
   end
 
+  def number_of_drivers
+    return self.passengers.length + 1 # Plus 1 for the driver himself
+  end
+
   def price_driver
     if self.final_calculation_basis == Route::FLAT_RATE
       price = self.bill.driver_price_flat_rate
@@ -95,7 +99,7 @@ class Job < ActiveRecord::Base
     else
       return false
     end
-    return price
+    return price / self.number_of_drivers
   end
 
   def get_shuttle_string
@@ -154,9 +158,9 @@ class Job < ActiveRecord::Base
       end
     end
     if breakpoints.empty?
-      price = self.bill.driver_price_per_km * (job.distance ) / drivers_in_car
+      price = self.bill.driver_price_per_km * (self.distance ) / drivers_in_car
       if get_array
-        breakpoints_array << [ self.from.address_short, self.from.address_short, job.distance, drivers_in_car, price ]
+        breakpoints_array << [ self.from.address_short, self.from.address_short, self.distance, drivers_in_car, price ]
       end
     end
 
