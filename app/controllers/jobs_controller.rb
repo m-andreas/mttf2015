@@ -8,6 +8,14 @@ class JobsController < ApplicationController
     redirect_to job_new_sixt_path unless current_user.is_intern?
   end
 
+  def add_co_driver # just add graphical, real add at update or create
+    @drivers = Driver.get_active
+    @number_of_co_drivers = params[:number_of_co_drivers].to_i + 1
+    respond_to do | format | format.html { redirect_to jobs_path }
+      format.js { render 'add_co_driver.js.erb' }
+    end
+  end
+
   def add_co_job
     if @job.is_open?
       @job.shuttle = true
@@ -22,7 +30,8 @@ class JobsController < ApplicationController
       end
     end
     @shuttles = @job.get_shuttle_array
-    respond_to do | format | format.html { redirect_to jobs_path }
+    respond_to do | format |
+      format.html { redirect_to jobs_path }
       format.js { render 'change_co_jobs.js.erb' }
     end
   end
@@ -92,10 +101,14 @@ class JobsController < ApplicationController
     @drivers = Driver.get_active
     @addresses = Address.get_active.order(:address_short)
     @shuttles = []
+    @co_driver_ids = []
+    @co_job_ids = ""
   end
 
   # GET /jobs/1/edit
   def edit
+    @co_driver_ids = @job.get_co_driver_ids
+    @number_of_co_drivers = @co_driver_ids.length
     @drivers = Driver.get_active
     @addresses = Address.get_active
     @shuttles = @job.get_shuttle_array
@@ -112,37 +125,52 @@ class JobsController < ApplicationController
       params[:job].except! :scheduled_delivery_time
       params[:job].except! :scheduled_collection_time
     else
-
       @job = Job.new(job_params)
       @job.status = Job::OPEN
       @job.shuttle = false if @job.shuttle.nil?
       @job.actual_collection_time = @job.scheduled_collection_time
       @job.actual_delivery_time = @job.scheduled_delivery_time
-      co_jobs = params[:co_jobs]
       driver = Driver.find_by( id: job_params[:driver_id])
       @job.driver = driver
       @job.created_by_id = current_user.id
       @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
+      co_jobs = params[:co_jobs]
       job_errors = @job.check_co_job_ids( co_jobs )
       if @job.scheduled_collection_time > @job.scheduled_delivery_time
         error = t("jobs.date_error")
         if job_errors == true
-          job_errors = error
+          job_errors = [ error ]
         else
-          job_errors += error
+          job_errors << error
+        end
+      end
+      if params[:co_driver_ids].present? && params[:co_driver_ids].length > 0 && @job.shuttle?
+        if job_errors == true
+          job_errors = [ "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein." ]
+        else
+          job_errors << "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein."
         end
       end
     end
 
+
     respond_to do |format|
 
-      if job_errors == true && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints
+      if job_errors == true && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints && @job.add_co_drivers(params[:co_driver_ids])
         AuftragsMailer.job_confirmation(@job,current_user).deliver
         format.html { redirect_to jobs_path, notice: t("jobs.created") }
       else
+        @co_job_ids = params[:co_jobs]
+        @co_driver_ids = params[:co_driver_ids] || []
         @job = Job.new(job_params)
         @drivers = Driver.get_active
         @addresses = Address.get_active
+        @shuttles = []
+        co_jobs = @job.co_job_ids_to_co_jobs(params[:co_jobs])
+        co_jobs.each do |co_job|
+          fullname = co_job.driver.nil? ? "" : co_job.driver.fullname_id
+          @shuttles << [ fullname, co_job.id ]
+        end
         flash[:error] = job_errors
         format.html { render :action => 'new' }
       end
@@ -208,7 +236,14 @@ class JobsController < ApplicationController
   # PATCH/PUT /jobs/1.json
   def update
     respond_to do |format|
-      if @job.is_open? && @job.update(job_params) && @job.set_route
+      if params[:co_driver_ids].present? && params[:co_driver_ids].length > 0 && job_params[:shuttle] == "1"
+        flash[:error] = "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein."
+        @addresses = Address.get_active
+        @shuttles = @job.get_shuttle_array
+        @co_jobs = @job.get_co_jobs_string
+        format.html { redirect_to :back }
+      end
+      if @job.is_open? && @job.update(job_params) && @job.set_route && @job.add_co_drivers(params[:co_driver_ids])
         if job_params["shuttle"] == "0"
           @job.remove_shuttles
         end

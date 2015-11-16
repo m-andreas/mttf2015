@@ -1,0 +1,10 @@
+$('#co_drivers').append( "<%= j render( 'co_driver', index: @number_of_co_drivers ) %>" )
+$('a#add_co_driver').replaceWith(" <%= j link_to fa_icon( 'user-plus', text: I18n.translate('add_driver') ),job_add_co_driver_path(@job, number_of_co_drivers: @number_of_co_drivers ), method: 'post', remote: true, :id => 'add_co_driver' %>")
+
+$($(".select_co_drivers")[<%= @number_of_co_drivers - 1 %>]).on("change", function(){
+    setTimeout(function(){
+      $("#drivername").text( $($( ".select_co_drivers option:selected" )[<%= @number_of_co_drivers - 1 %>]).text() );
+    }, 1000)
+})
+
+$($(".select_co_drivers")[<%= @number_of_co_drivers - 1 %>]).filterByText($($(".co_drivers_filter")[<%= @number_of_co_drivers -1 %>]), true);

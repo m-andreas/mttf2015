@@ -19,6 +19,7 @@ de:
     change: Passwort ändern
     confirm: Passwort bestätigen
     send_reset_mail: Senden Sie mir ein Mail zur Zurücksetzung
+  add_driver: Fahrer hinzufügen
   add: Hinzufügen
   delete: Löschen
   deleted: Gelöscht

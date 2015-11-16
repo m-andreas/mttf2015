@@ -9,6 +9,7 @@ class Job < ActiveRecord::Base
   belongs_to :route
   belongs_to :created_by, class_name: "User"
   belongs_to :bill
+  has_many :passengers
   paginates_per 10
   #validates :driver_id, presence: true
   validates :status, numericality: { only_integer: true }
@@ -18,6 +19,29 @@ class Job < ActiveRecord::Base
   FINISHED = 2
   CHARGED = 3
   DELETED = 99
+
+  def get_co_driver_ids
+    self.passengers.pluck(:driver_id)
+  end
+
+  def add_co_driver co_driver
+    Passenger.create( {job_id: self.id, driver_id: co_driver.id})
+  end
+
+  def add_co_drivers co_driver_ids
+    self.remove_co_drivers
+    if !co_driver_ids.nil? && co_driver_ids.is_a?( Array )
+      co_driver_ids.each do |co_driver_id|
+        driver = Driver.find_by(id: co_driver_id)
+        self.add_co_driver driver
+      end
+    end
+    return true
+  end
+
+  def remove_co_drivers
+    Passenger.where(job_id: self.id).delete_all
+  end
 
   def self.save_many jobs
     unless jobs.empty?
@@ -32,6 +56,18 @@ class Job < ActiveRecord::Base
       end
     end
     return true
+  end
+
+  def co_drivers
+    co_drivers = []
+    self.passengers.each do |passenger|
+      co_drivers << passenger.driver
+    end
+    co_drivers
+  end
+
+  def has_co_drivers?
+    !self.passengers.empty?
   end
 
   def self.get_active
@@ -294,9 +330,9 @@ class Job < ActiveRecord::Base
   def check_co_jobs( co_jobs )
     driver_ids = self.co_jobs.pluck( :driver_id )
     co_jobs.each do |co_job|
-      return "Fahrer kann nicht in eigenem Shuttel sitzen" if self.driver_id == co_job.driver_id
-      return "Fahrer kann nicht 2 Mal in Shuttle sitzen" if driver_ids.include? co_job.driver_id
-      return "Eine der Fahrten ist bereits in einem anderen Shuttle" if co_job.has_shuttle?
+      return [ "Fahrer kann nicht in eigenem Shuttel sitzen" ] if self.driver_id == co_job.driver_id
+      return [ "Fahrer kann nicht 2 Mal in Shuttle sitzen" ] if driver_ids.include? co_job.driver_id
+      return [ "Eine der Fahrten ist bereits in einem anderen Shuttle" ] if co_job.has_shuttle?
       driver_ids << co_job.driver_id
     end
     return true

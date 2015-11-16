@@ -24,7 +24,7 @@ class JobsControllerTest < ActionController::TestCase
   test "should create job" do
     sign_in @user
     assert_difference('Job.count') do
-      post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: false, to_id: routes(:one).to_id,
+      post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "0", to_id: routes(:one).to_id,
         car_brand: "BMW", car_type: "Z4", registration_number: "W123",
         scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 01:00", chassis_number: "123", mileage_delivery: "100000",
         mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
@@ -63,13 +63,88 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal false, assigns(:job).shuttle
   end
 
-  test "should create job with co job" do
+  test "should create job with co driver" do
     sign_in @user
-    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: true, to_id: routes(:one).to_id,
+    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "0", to_id: routes(:one).to_id,
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01"},
+      co_driver_ids: [drivers(:two).id, drivers(:three).id]
+    job = Job.find(assigns(:job).id)
+    assert job.co_drivers.include? drivers(:two)
+    assert job.co_drivers.include? drivers(:three)
+    assert_equal 2, job.co_drivers.length
+  end
+
+  test "should not create shuttle job with co driver" do
+    sign_in @user
+    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "1", to_id: routes(:one).to_id,
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01"},
+      co_driver_ids: [drivers(:two).id, drivers(:three).id]
+    assert_template :new
+    assert flash[:error].present?
+    assert_equal [ "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein." ], flash[:error]
+  end
+
+  test "should not edit job with shuttle and co drivers" do
+    sign_in @user
+    @request.env['HTTP_REFERER'] = edit_job_path(jobs(:one))
+    patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "1", to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
       scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
-      co_jobs: ",#{jobs(:three).id}, #{jobs(:not_in_shuttle).id}"
+      co_driver_ids: [ drivers(:two).id, drivers(:three).id ], id: jobs(:one)
+    assert_redirected_to edit_job_path(jobs(:one))
+    assert flash[:error].present?
+    assert_equal "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein.", flash[:error]
+  end
+
+  test "should edit job and add co drivers" do
+    sign_in @user
+    patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "0", to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
+      mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
+      co_driver_ids: [ drivers(:two).id, drivers(:three).id ], id: jobs(:one)
+    job = Job.find(assigns(:job).id)
+    assert job.co_drivers.include? drivers(:two)
+    assert job.co_drivers.include? drivers(:three)
+    assert_equal 2, job.co_drivers.length
+  end
+
+  test "should remove co drivers on edit" do
+    sign_in @user
+    patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "0", to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
+      mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"}, id: jobs(:with_co_drivers)
+
+    job = Job.find(assigns(:job).id)
+    assert_equal 0, job.co_drivers.length
+    assert_not job.has_co_drivers?
+  end
+
+  test "should change co drivers on edit" do
+    sign_in @user
+    patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "0", to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
+      mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
+      co_driver_ids: [ drivers(:two).id, drivers(:three).id ], id: jobs(:with_co_drivers)
+
+    job = Job.find(assigns(:job).id)
+    assert job.co_drivers.include? drivers(:three)
+    assert job.co_drivers.include? drivers(:two)
+    assert_equal 2, job.co_drivers.length
+    assert_equal 0, job.breakpoints.length
+  end
+
+
+  test "should create job with co job" do
+    sign_in @user
+    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "1", to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
+      mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
+      co_jobs: [ jobs(:three).id, jobs(:not_in_shuttle).id ]
     job = Job.find(assigns(:job).id)
     assert_equal jobs(:three), job.co_jobs.first
     assert_equal jobs(:not_in_shuttle), job.co_jobs.last
@@ -264,9 +339,9 @@ class JobsControllerTest < ActionController::TestCase
   test "should update job and not set to current" do
     sign_in @user
     date = Date.current
-    @request.env['HTTP_REFERER'] = 'http://localhost:3000/jobs/edit'
+    @request.env['HTTP_REFERER'] = edit_job_path(@job)
     patch :update, id: @job, subaction: "update_and_pay", job: { actual_collection_time: date, actual_delivery_time: nil, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
-    assert_redirected_to 'http://localhost:3000/jobs/edit'
+    assert_redirected_to edit_job_path(@job)
     assert @job.reload
     assert @job.is_open?
     assert_equal date, assigns(:job).actual_collection_time
@@ -407,7 +482,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 5, body["recordsFiltered"]
+    assert_equal 6, body["recordsFiltered"]
   end
 
   test "show_all_edit_ajax_no_driver" do
@@ -435,7 +510,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 7, body["recordsFiltered"]
+    assert_equal 8, body["recordsFiltered"]
   end
 
   test "show_all_create_ajax" do
@@ -463,7 +538,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 7, body["recordsFiltered"]
+    assert_equal 8, body["recordsFiltered"]
   end
 
   test "show_all_create_ajax_search1" do
@@ -491,7 +566,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 5, body["recordsFiltered"]
+    assert_equal 6, body["recordsFiltered"]
   end
 
   test "show_all_create_ajax_search2" do
@@ -519,7 +594,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 3, body["recordsFiltered"]
+    assert_equal 4, body["recordsFiltered"]
   end
 
   test "show_regular_jobs_ajax" do
@@ -563,7 +638,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_regular_jobs, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 8, body["recordsFiltered"]
+    assert_equal 9, body["recordsFiltered"]
   end
 
   test "dont_show_deleted_regular_jobs_ajax" do
@@ -608,7 +683,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_regular_jobs, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 7, body["recordsFiltered"]
+    assert_equal 8, body["recordsFiltered"]
   end
 
   test "show_regular_jobs_ajax_in_date" do
@@ -652,7 +727,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_regular_jobs, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 4, body["recordsFiltered"]
+    assert_equal 5, body["recordsFiltered"]
   end
 
   test "show_regular_jobs_ajax_from_date" do
@@ -696,7 +771,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_regular_jobs, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 5, body["recordsFiltered"]
+    assert_equal 6, body["recordsFiltered"]
   end
 
   test "show_regular_jobs_ajax_end_date" do
@@ -740,7 +815,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_regular_jobs, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 6, body["recordsFiltered"]
+    assert_equal 7, body["recordsFiltered"]
   end
 
 
@@ -785,7 +860,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_regular_jobs, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 10, body["recordsFiltered"]
+    assert_equal 11, body["recordsFiltered"]
   end
 
   test "show_regular_jobs_ajax_just_finished" do

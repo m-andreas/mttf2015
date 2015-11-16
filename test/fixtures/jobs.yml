@@ -236,3 +236,18 @@ finished:
   actual_collection_time:  <%= Time.now.to_time %>
   mileage_collection: 100
   mileage_delivery: 200
+
+with_co_drivers:
+  transport_notice: "with_co_drivers"
+  driver: one
+  cost_center_id: 1
+  status: 1
+  created_by_id: 1
+  route_id: 2
+  from_id: 2
+  to_id: 1
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+  actual_delivery_time: <%= Time.now.to_time %>
+  actual_collection_time:  <%= Time.now.to_time %>
