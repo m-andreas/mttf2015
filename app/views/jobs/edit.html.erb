@@ -17,7 +17,7 @@
       <div class="row">
         <div class="field large-8 columns">
           <h3 style="display: inline;">Fahrer&nbsp&nbsp&nbsp</h3><%= link_to fa_icon( "user-plus", text: I18n.translate("add_driver") ),
-            job_add_co_driver_path(@job, number_of_co_drivers: @job.co_drivers.length ), method: "post", remote: true, :id => "add_co_driver" %><br>
+            job_add_co_driver_path(number_of_co_drivers: @job.co_drivers.length ), method: "post", format: 'js', remote: true, :id => "add_co_driver" %><br>
           Fahrer hier filtern <input id="driver_filter" type="text">
           <%= f.select :driver_id, @drivers.collect {|d| [ "#{d.fullname_id}", d.id ] }%>
           <div id="co_drivers">
@@ -137,7 +137,7 @@
     <% @number_of_co_drivers.times do |index| %>
       $($(".select_co_drivers")[<%= index %>]).on("change", function(){
           setTimeout(function(){
-            $("#drivername").text( $($( ".select_co_drivers option:selected" )[<%= index  %>]).text() );
+            //$("#drivername").text( $($( ".select_co_drivers option:selected" )[<%= index  %>]).text() );
           }, 1000)
       })
 

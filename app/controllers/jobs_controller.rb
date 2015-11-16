@@ -11,7 +11,8 @@ class JobsController < ApplicationController
   def add_co_driver # just add graphical, real add at update or create
     @drivers = Driver.get_active
     @number_of_co_drivers = params[:number_of_co_drivers].to_i + 1
-    respond_to do | format | format.html { redirect_to jobs_path }
+    respond_to do | format |
+      format.html { redirect_to jobs_path }
       format.js { render 'add_co_driver.js.erb' }
     end
   end

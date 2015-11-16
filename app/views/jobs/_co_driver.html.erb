@@ -1,8 +1,13 @@
-<div class="co_driver">
-  <%= index + 1 %>. Fahrer hier filtern <input class="co_drivers_filter %>" type="text">
-  <% if @co_driver_ids.nil? %>
-    <%= select_tag "co_driver_ids[]", options_from_collection_for_select( @drivers, "id", "fullname_id" ), class: "select_co_drivers" %>
-  <% else %>
-    <%= select_tag "co_driver_ids[]", options_from_collection_for_select( @drivers, "id", "fullname_id", @co_driver_ids[ index - 1 ].to_s ), class: "select_co_drivers" %>
-  <% end %>
+<div class="co_driver row">
+  <div class="small-1 column remove-co_driver">
+    <br><br><br><%= fa_icon( "minus", text: "" ) %>
+  </div>
+  <div class="small-11 column">
+    <%= index + 1 %>. Fahrer hier filtern <input class="co_drivers_filter %>" type="text">
+    <% if @co_driver_ids.nil? %>
+      <%= select_tag "co_driver_ids[]", options_from_collection_for_select( @drivers, "id", "fullname_id" ), class: "select_co_drivers" %>
+    <% else %>
+      <%= select_tag "co_driver_ids[]", options_from_collection_for_select( @drivers, "id", "fullname_id", @co_driver_ids[ index - 1 ].to_s ), class: "select_co_drivers" %>
+    <% end %>
+  </div>
 </div>

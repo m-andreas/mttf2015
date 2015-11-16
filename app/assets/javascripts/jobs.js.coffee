@@ -7,7 +7,7 @@ jQuery ->
 
 
 ready = ->
-  console.log("in")
+
   setTimeout  ->
     $.fn.fdatepicker.dates['de'] = {
       days: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
@@ -17,6 +17,8 @@ ready = ->
       monthsShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
       today: "Heute"
     }
+    $(".remove-co_driver").click ->
+      $(this.parentElement).remove()
     $('#job_scheduled_collection_time').fdatepicker
       format: 'dd.mm.yyyy hh:ii',
       disableDblClickSelection: true,
