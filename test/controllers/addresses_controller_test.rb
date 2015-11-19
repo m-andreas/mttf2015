@@ -48,7 +48,7 @@ class AddressesControllerTest < ActionController::TestCase
 
   test "should destroy address" do
     sign_in @user
-    assert_difference('Address.count', -1) do
+    assert_difference('Address.get_active.count', -1) do
       delete :destroy, id: @address
     end
 

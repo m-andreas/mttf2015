@@ -47,6 +47,7 @@ de:
     issuing_authority: Ausstellende Behörde
     licence_number: Führerscheinnummer
   addresses:
+    destroyed: Adresse wurde erfolgreich entfernt
     add: Adresse hinzufügen
   routes:
     deleted: Die Route wurde gelöscht

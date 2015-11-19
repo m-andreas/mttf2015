@@ -2,12 +2,14 @@
 <div class="small-12 column">
 <p>
   <strong>Von:</strong>
-  <%= @route.from.complete_address %>
+  <%= @route.from.complete_address + " | " + @route.from.address_short %><br>
+  Adresse deaktiviert?&nbsp <%= check_box_tag 'from_active', 'from_active' , @route.from.inactive?, disabled: true %>
 </p>
 
 <p>
   <strong>Nach:</strong>
-  <%= @route.to.complete_address %>
+  <%= @route.to.complete_address + " | " + @route.to.address_short  %><br>
+  Adresse deaktiviert?&nbsp <%= check_box_tag 'to_active', 'to_active' , @route.to.inactive? , disabled: true %>
 </p>
 
 <p>

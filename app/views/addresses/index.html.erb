@@ -29,7 +29,7 @@
         <td><%= address.inactive? ? "Ja" : "Nein" %></td>
         <td><%= link_to 'Anzeigen', address %></td>
         <td><%= link_to 'Editieren', edit_address_path(address) %></td>
-        <td><%= link_to I18n.translate(:delete), address, method: :delete, data: { confirm: 'Sind sie sicher?' } %></td>
+        <td><%= link_to "Deaktivieren", address, method: :delete, data: { confirm: 'Sind sie sicher?' } %></td>
       </tr>
     <% end %>
   </tbody>

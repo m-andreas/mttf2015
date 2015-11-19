@@ -1,6 +1,44 @@
-<h1>Route editieren</h1>
+<div class="small-12 column">
+  <h1>Route editieren</h1>
 
-<%= render 'form' %>
+  <%= form_for(@route) do |f| %>
+    <% if @route.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@route.errors.count, "error") %> prohibited this route from being saved:</h2>
 
-<%= link_to 'Anzeigen', @route %> |
-<%= link_to t( :back ), routes_path %>
+        <ul>
+        <% @route.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <strong>Von:</strong>
+      <%= @route.from.complete_address + " | " + @route.from.address_short %><br>
+      Adresse deaktiviert?&nbsp <%= check_box_tag 'from_active', 'from_active' , @route.from.inactive?, disabled: true %>
+    </div>
+
+    <div class="field">
+      <strong>Nach:</strong>
+      <%= @route.to.complete_address + " | " + @route.to.address_short  %><br>
+      Adresse deaktiviert?&nbsp <%= check_box_tag 'to_active', 'to_active' , @route.to.inactive? , disabled: true %>
+    </div>
+
+    <div class="field">
+      <%= f.label :calculation_basis %><br>
+      <%= f.select :calculation_basis, @calculation_bases.collect {|a| [ a[1], a[0] ] }%>
+    </div>
+    <div class="field">
+      <%= f.label :distance %><br>
+      <%= f.text_field :distance %>
+    </div>
+    <div class="actions">
+      <%= f.submit %>
+    </div>
+  <% end %>
+
+  <%= link_to 'Anzeigen', @route %> |
+  <%= link_to t( :back ), routes_path %>
+</div>
