@@ -1,5 +1,5 @@
-<div class="custom-row">
-<h1>Neuen Auftrag erfassen</h1>
+<div class="small-12 columns">
+  <h1>Neuen Auftrag erfassen</h1>
   <div class="small-12 columns">
     <div class="field row">
       <h3>Wie viele Autos wollen Sie erfassen?</h3><br>
@@ -34,14 +34,14 @@
         <tbody>
           <% ( @job_amount ).times do |i| %>
             <tr>
-              <td><%= text_field_tag "jobs[][registration_number]", '', class: "registration_number" %></td>
-              <td><%= text_field_tag "jobs[][car_brand]", '', class: "car_brand" %></td>
-              <td><%= text_field_tag "jobs[][car_type]", '', class: "car_type" %></td>
-              <td><%= select_tag "jobs[][from_id]", options_from_collection_for_select(@addresses, "id", "address_short"), class: "from_id" %></td>
-              <td><%= select_tag "jobs[][to_id]", options_from_collection_for_select(@addresses, "id", "address_short"), class: "to_id" %></td>
-              <td><%= text_field_tag "jobs[][cost_center_id]", '', class: "cost_center_id" %></td>
-              <td><%= text_field_tag "jobs[][job_notice]", '', class: "job_notice" %></td>
-              <td><%= text_area_tag "jobs[][opening_hours]", nil, rows: 1, cols: 25, class: "opening_hours" %></td>
+              <td><%= text_field_tag "jobs[][registration_number]", @jobs[i]["registration_number"], class: "registration_number" %></td>
+              <td><%= text_field_tag "jobs[][car_brand]", @jobs[i]["car_brand"], class: "car_brand" %></td>
+              <td><%= text_field_tag "jobs[][car_type]",  @jobs[i]["car_type"], class: "car_type" %></td>
+              <td><%= select_tag "jobs[][from_id]", options_from_collection_for_select(@addresses, "id", "address_short", @jobs[i]["from_id"]), class: "from_id" %></td>
+              <td><%= select_tag "jobs[][to_id]", options_from_collection_for_select(@addresses, "id", "address_short", @jobs[i]["to_id"]), class: "to_id" %></td>
+              <td><%= text_field_tag "jobs[][cost_center_id]", @jobs[i]["cost_center_id"], class: "cost_center_id" %></td>
+              <td><%= text_field_tag "jobs[][job_notice]", @jobs[i]["job_notice"], class: "job_notice" %></td>
+              <td><%= text_area_tag "jobs[][opening_hours]", @jobs[i]["opening_hours"], rows: 1, cols: 25, class: "opening_hours" %></td>
             </tr>
           <% end %>
         </tbody>
@@ -50,6 +50,36 @@
     </div>
     <div class="actions">
       <%= submit_tag("erstellen") %>
+    </div>
+    <div class="lightgray small-12 columns">
+      <h2>Adresse anlegen</h2>
+      <div class="field">
+        <%= label_tag :country, "Land" %><br>
+        <%= text_field_tag :country %>
+      </div>
+      <div class="field">
+        <%= label_tag :city, "Ort" %><br>
+        <%= text_field_tag :city %>
+      </div>
+      <div class="field">
+        <%= label_tag :zip_code, "PLZ" %><br>
+        <%= text_field_tag :zip_code %>
+      </div>
+      <div class="field">
+        <%= label_tag :address, "Adresse" %><br>
+        <%= text_field_tag :address %>
+      </div>
+      <div class="field">
+        <%= label_tag :address_short, "Adresse kurz" %><br>
+        <%= text_field_tag :address_short %>
+      </div>
+      <div class="field">
+        <%= label_tag :opening_hours, t("addresses.opening_hours") %><br>
+        <%= text_area_tag :opening_hours %>
+      </div>
+      <div class="actions">
+        <%= submit_tag("anlegen") %>
+      </div>
     </div>
   <% end %>
 </div>

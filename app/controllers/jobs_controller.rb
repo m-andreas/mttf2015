@@ -181,49 +181,63 @@ class JobsController < ApplicationController
   def new_sixt()
     @job_amount = 1
     @addresses = Address.get_active.order(:address_short)
+    @jobs = [{}]
   end
 
   def create_sixt
     i = 0
     jobs = []
-    jobs_params[:jobs].each do |single_params|
-      next if single_params[:registration_number].empty?
-      from = Address.find_by(id: single_params[:from_id])
-      to = Address.find_by(id: single_params[:to_id])
-      if from.nil? || to.nil?
-        redirect_to :back, notice: t("jobs.save_error")
-        return
+    if params[:commit] == "erstellen"
+      jobs_params[:jobs].each do |single_params|
+        next if single_params[:registration_number].empty?
+        from = Address.find_by(id: single_params[:from_id])
+        to = Address.find_by(id: single_params[:to_id])
+        if from.nil? || to.nil?
+          redirect_to :back, notice: t("jobs.save_error")
+          return
+        end
+        unless single_params[:opening_hours].empty?
+          from.opening_hours = single_params[:opening_hours]
+          from.save
+        end
+        single_params.except! :opening_hours
+        job = Job.new(single_params)
+        job.status = Job::OPEN
+        job.shuttle = false
+        job.scheduled_collection_time = Time.now.strftime("%d.%m.%Y")
+        job.scheduled_delivery_time = Time.now.strftime("%d.%m.%Y")
+        job.route_id = Route.find_or_create( from.id , to.id )
+        job.to_print = true
+        ret = job.save
+        unless ret == true
+          redirect_to :back, notice: t("jobs.save_error")
+        end
+        jobs << job
+        i += 1
       end
-      unless single_params[:opening_hours].empty?
-        from.opening_hours = single_params[:opening_hours]
-        from.save
+      if i > 1
+        AuftragsMailer.mass_job_confirmation(jobs,current_user).deliver
+      elsif i == 1
+        AuftragsMailer.job_confirmation(jobs.first,current_user).deliver
       end
-      single_params.except! :opening_hours
-      job = Job.new(single_params)
-      job.status = Job::OPEN
-      job.shuttle = false
-      job.scheduled_collection_time = Time.now.strftime("%d.%m.%Y")
-      job.scheduled_delivery_time = Time.now.strftime("%d.%m.%Y")
-      job.route_id = Route.find_or_create( from.id , to.id )
-      job.to_print = true
-      ret = job.save
-      unless ret == true
-        redirect_to :back, notice: t("jobs.save_error")
-      end
-      jobs << job
-      i += 1
+      redirect_to job_new_sixt_path, notice: i.to_s + " " + t("jobs.created_multible")
+    else
+      a = Address.create(address_params)
+      @addresses = Address.get_active
+      @job_amount = params[:job_amount].to_i
+      @jobs = jobs_params[:jobs]
+      puts a.inspect
+      render :action => 'new_sixt'
     end
-    if i > 1
-      AuftragsMailer.mass_job_confirmation(jobs,current_user).deliver
-    elsif i == 1
-      AuftragsMailer.job_confirmation(jobs.first,current_user).deliver
-    end
-    redirect_to job_new_sixt_path, notice: i.to_s + " " + t("jobs.created_multible")
   end
 
   def multible_cars
     @addresses = Address.get_active
     @job_amount = params[:job_amount].to_i
+    @jobs = []
+    @job_amount.times do |i|
+      @jobs << {}
+    end
     render :action => 'new_sixt'
   end
 
@@ -304,6 +318,10 @@ class JobsController < ApplicationController
   def job_params
     params.require(:job).permit( { :breakpoints_attributes => [ :address_id, :id, :position, :mileage ]}, :driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :car_brand, :car_type, :registration_number,
       :scheduled_collection_time, :scheduled_delivery_time, :actual_collection_time, :actual_delivery_time, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
+  end
+
+  def address_params
+    params.permit( :country, :city, :zip_code, :address, :address_short, :opening_hours )
   end
 
   def jobs_params
