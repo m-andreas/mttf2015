@@ -1,5 +1,5 @@
 class AuftragsMailer < ActionMailer::Base
-  default from: "auftrag@mt-transfair.at"
+  default from: "system@mt-transfair.at"
 
   def job_confirmation( job, user )
     @user = user

@@ -69,8 +69,8 @@ Rails.application.configure do
       address: "192.168.40.200",
       port: 25,
       domain: "mt-transfair.at",
-      user_name: "admin",
-      password: "Mttfneu!",
+      user_name: "msystem",
+      password: "Mttf2331",
       authentication: :ntlm,
     }
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
