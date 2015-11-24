@@ -221,12 +221,15 @@ class JobsController < ApplicationController
         AuftragsMailer.job_confirmation(jobs.first,current_user).deliver
       end
       redirect_to job_new_sixt_path, notice: i.to_s + " " + t("jobs.created_multible")
-    else
+    elsif params[:commit] == "anlegen"
       a = Address.create(address_params)
       @addresses = Address.get_active
       @job_amount = params[:job_amount].to_i
       @jobs = jobs_params[:jobs]
-      puts a.inspect
+      render :action => 'new_sixt'
+    else
+      @job_amount = params[:job_amount].to_i
+      @jobs = jobs_params[:jobs]
       render :action => 'new_sixt'
     end
   end

@@ -5,7 +5,11 @@ class Address < ActiveRecord::Base
   end
 
   def complete_address
-    self.address.to_s + ", " + self.zip_code.to_s + " " + self.city.to_s + " " + self.country.to_s
+    complete_address = self.address_short
+    complete_address = complete_address + ", " + self.address.to_s unless self.address.to_s.gsub(",","").gsub(".","").strip.empty?
+    add_info =  self.zip_code.to_s + " " + self.city.to_s + " " + self.country.to_s
+    complete_address = complete_address + " " + add_info unless add_info.gsub(",","").gsub(".","").strip.empty?
+    return complete_address
   end
 
   def self.find_or_get( address_id )

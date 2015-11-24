@@ -161,7 +161,7 @@ class JobsControllerTest < ActionController::TestCase
       {opening_hours: "", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, registration_number: "w234", car_brand: "Merzedes", car_type: "A"},
       {opening_hours: "", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, registration_number: "w234", car_brand: "Merzedes", car_type: "A"},
       {opening_hours: "", cost_center_id: "22", from_id: routes(:two).from_id, to_id: routes(:two).to_id, registration_number: "345", car_brand: "Audi", car_type: "A8"}],
-      job_amount: "4"
+      job_amount: "4", commit: "erstellen"
     assert_redirected_to job_new_sixt_path
     assert_equal old_count + 4, Job.count
     jobs = Job.last(4)
@@ -186,6 +186,47 @@ class JobsControllerTest < ActionController::TestCase
     end
     jobs.first.from.reload
     assert_equal "12-22 Uhr", jobs.first.from.opening_hours
+  end
+
+  test "should not create jobs without registration number" do
+    sign_in users(:extern)
+    old_count = Job.count
+    post :create_sixt, jobs: [{ opening_hours: "12-22 Uhr", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, car_brand: "BMW", car_type: "Z4", registration_number: "W123"},
+      {opening_hours: "", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, registration_number: "", car_brand: "Merzedes", car_type: "A"},
+      {opening_hours: "", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, registration_number: "", car_brand: "Merzedes", car_type: "A"},
+      {opening_hours: "", cost_center_id: "22", from_id: routes(:two).from_id, to_id: routes(:two).to_id, registration_number: "", car_brand: "Audi", car_type: "A8"}],
+      job_amount: "4", commit: "erstellen"
+    assert_redirected_to job_new_sixt_path
+    assert_equal old_count + 1, Job.count
+  end
+
+  test "should create address" do
+    sign_in users(:extern)
+    old_count = Job.count
+    post :create_sixt, jobs: [{ opening_hours: "12-22 Uhr", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, car_brand: "BMW", car_type: "Z4", registration_number: "W123"},
+      {opening_hours: "", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, registration_number: "w234", car_brand: "Merzedes", car_type: "A"},
+      {opening_hours: "", cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, to_id: routes(:one).to_id, registration_number: "w234", car_brand: "Merzedes", car_type: "A"},
+      {opening_hours: "", cost_center_id: "22", from_id: routes(:two).from_id, to_id: routes(:two).to_id, registration_number: "345", car_brand: "Audi", car_type: "A8"}],
+      job_amount: "4", commit: "anlegen", "country"=>"Österreich", "city"=>"Wien", "zip_code"=>"1220", "address"=>"Tietzestrasse", "address_short"=>"nach Hause", "opening_hours"=>"test"
+    assert_template :new_sixt
+    assert_equal old_count , Job.count
+    address = Address.last
+    assert_equal "Österreich", address.country
+    assert_equal "Wien", address.city
+    assert_equal "1220", address.zip_code
+    assert_equal "Tietzestrasse", address.address
+    assert_equal "nach Hause", address.address_short
+    assert_equal "test", address.opening_hours
+    assert assigns(:jobs).is_a? Array
+    assert_equal 4, assigns(:jobs).length
+    assigns(:jobs).each do |job|
+      assert_not job["registration_number"].empty?
+      assert_not job["cost_center_id"].empty?
+      assert_not job["from_id"].empty?
+      assert_not job["to_id"].empty?
+      assert_not job["car_brand"].empty?
+      assert_not job["car_type"].empty?
+    end
   end
 
   test "set to print" do
