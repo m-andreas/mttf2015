@@ -171,6 +171,16 @@ class Job < ActiveRecord::Base
     end
   end
 
+  def price_sixt_current( sixt = Company.sixt )
+    if self.route.calculation_basis == Route::FLAT_RATE
+      price = sixt.price_flat_rate
+    elsif self.route.calculation_basis == Route::PAY_PER_KM
+      price = self.distance * sixt.price_per_km
+    else
+      return false
+    end
+  end
+
   def price_sixt
     if self.final_calculation_basis == Route::FLAT_RATE
       price = self.bill.price_flat_rate

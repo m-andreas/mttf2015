@@ -122,10 +122,19 @@ class Bill < ActiveRecord::Base
 
   def sixt_total
     total = 0
-    self.jobs.each do |job|
-      job_price = job.price_sixt
-      return false unless job_price
-      total += job_price
+    if self.billed_at.nil?
+      sixt = Company.sixt
+      self.jobs.each do |job|
+        job_price = job.price_sixt_current(sixt)
+        return false unless job_price
+        total += job_price
+      end
+    else
+      self.jobs.each do |job|
+        job_price = job.price_sixt
+        return false unless job_price
+        total += job_price
+      end
     end
     return total
   end

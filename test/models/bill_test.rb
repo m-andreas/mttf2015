@@ -67,6 +67,15 @@ class BillTest < ActiveSupport::TestCase
     assert_equal payment_driver3, bill.driver_total( drivers(:three) )
   end
 
+  test "get_sixt_price_for_current" do
+    bill = Bill.get_current
+    jobs(:shuttle).set_to_current_bill
+    jobs(:one).set_to_current_bill
+    jobs(:two).set_to_current_bill
+    payment_sixt = 300 * 0.24 + 19
+    assert_equal payment_sixt, bill.sixt_total
+  end
+
   test "set_current_bill_finished_after deleting job" do
     jobs(:shuttle).set_to_current_bill
     jobs(:one).set_to_current_bill

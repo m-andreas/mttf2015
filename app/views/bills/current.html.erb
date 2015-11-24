@@ -12,7 +12,9 @@
     davon Shuttles: <%= @bill.jobs.where(shuttle:true).length %>
   </div>
 </div>
-
+<div class="small-12 column padded-column">
+Momentaner Preis für Sixt: <span id="price_sixt"><%= number_to_currency @bill.sixt_total %></span>
+</div>
 <%= render "jobs_in_bill" %>
 <div class= "small-12 column">
   <div class= "small-12 medium-3 column">
