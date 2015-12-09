@@ -69,6 +69,10 @@ class UsersController < ApplicationController
       if !current_user.is_intern? && current_user.id != params[ :id ].to_i
         redirect_to root_path
       end
+      # if params[:id] = "sign_out"
+      #   sign_out current_user
+      #   return
+      # end
       @user = User.find(params[:id])
     end
 

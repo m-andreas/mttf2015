@@ -119,8 +119,8 @@ class JobsController < ApplicationController
   # POST /jobs
   # POST /jobs.json
   def create
-    unless job_params[:scheduled_collection_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[0-9]{4}( [0-2][0-9]:[0-6][0-9])?\z/  &&
-      job_params[:scheduled_delivery_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[0-9]{4}( [0-2][0-9]:[0-6][0-9])?\z/
+    unless job_params[:scheduled_collection_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[1-9][0-9]{3}( [0-2][0-9]:[0-6][0-9])?\z/  &&
+      job_params[:scheduled_delivery_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[1-9][0-9]{3}( [0-2][0-9]:[0-6][0-9])?\z/
       error = t("jobs.date_format")
       job_errors = error
       params[:job].except! :scheduled_delivery_time
@@ -254,12 +254,24 @@ class JobsController < ApplicationController
   # PATCH/PUT /jobs/1.json
   def update
     respond_to do |format|
-      if params[:co_driver_ids].present? && params[:co_driver_ids].length > 0 && job_params[:shuttle] == "1"
-        flash[:error] = "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein."
+      if !( job_params[:scheduled_collection_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[2-9][0-9]{3}( [0-2][0-9]:[0-6][0-9])?\z/ || job_params[:scheduled_collection_time].nil? || job_params[:scheduled_collection_time].empty? ) ||
+        !( job_params[:scheduled_delivery_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[2-9][0-9]{3}( [0-2][0-9]:[0-6][0-9])?\z/ || job_params[:scheduled_delivery_time].nil? || job_params[:scheduled_delivery_time].empty? ) ||
+        !( job_params[:actual_collection_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[2-9][0-9]{3}( [0-2][0-9]:[0-6][0-9])?\z/ || job_params[:actual_collection_time].nil? || job_params[:actual_collection_time].empty? ) ||
+        !( job_params[:actual_delivery_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[2-9][0-9]{3}( [0-2][0-9]:[0-6][0-9])?\z/ || job_params[:actual_delivery_time].nil? || job_params[:actual_delivery_time].empty? )
+        flash[:error] = t("jobs.date_format")
+        @drivers = Driver.get_active
         @addresses = Address.get_active
         @shuttles = @job.get_shuttle_array
         @co_jobs = @job.get_co_jobs_string
-        format.html { redirect_to :back }
+        return redirect_to :back
+      end
+      if params[:co_driver_ids].present? && params[:co_driver_ids].length > 0 && job_params[:shuttle] == "1"
+        flash[:error] = "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein."
+            @drivers = Driver.get_active
+            @addresses = Address.get_active
+            @shuttles = @job.get_shuttle_array
+            @co_jobs = @job.get_co_jobs_string
+            return redirect_to :back
       end
       if @job.is_open? && @job.update(job_params) && @job.set_route && @job.add_co_drivers(params[:co_driver_ids])
         if job_params["shuttle"] == "0"

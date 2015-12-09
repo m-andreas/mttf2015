@@ -84,11 +84,38 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal [ "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein." ], flash[:error]
   end
 
-  test "should not edit job with shuttle and co drivers" do
+  test "should not edit with wrong date" do
     sign_in @user
     @request.env['HTTP_REFERER'] = edit_job_path(jobs(:one))
     patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "1", to_id: routes(:one).to_id,
       car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_time: "02.04.20154 00:00", scheduled_delivery_time: "02.04.2015 00:01", actual_collection_time: "02.04.2015 00:00", actual_delivery_time: "02.04.2015 00:01",
+      chassis_number: "123", mileage_delivery: "100000", mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice",
+      transport_notice_extern: "transport_notice_extern"},
+      co_driver_ids: [ drivers(:two).id, drivers(:three).id ], id: jobs(:one)
+    assert_redirected_to edit_job_path(jobs(:one))
+    assert flash[:error].present?
+  end
+
+  test "should not edit with wrong date2" do
+    sign_in @user
+    @request.env['HTTP_REFERER'] = edit_job_path(jobs(:one))
+    patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "1", to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", actual_collection_time: "02.04.2015 00:00", actual_delivery_time: "02.04.0015 00:01",
+      chassis_number: "123", mileage_delivery: "100000", mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice",
+      transport_notice_extern: "transport_notice_extern"},
+      co_driver_ids: [ drivers(:two).id, drivers(:three).id ], id: jobs(:one)
+    assert_redirected_to edit_job_path(jobs(:one))
+    assert flash[:error].present?
+  end
+
+
+  test "should not edit job with shuttle and co drivers" do
+    sign_in @user
+    @request.env['HTTP_REFERER'] = edit_job_path(jobs(:one))
+    patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "1", to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123", actual_collection_time: "", actual_delivery_time: "",
       scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_driver_ids: [ drivers(:two).id, drivers(:three).id ], id: jobs(:one)
@@ -97,10 +124,11 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein.", flash[:error]
   end
 
+
   test "should edit job and add co drivers" do
     sign_in @user
     patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "0", to_id: routes(:one).to_id,
-      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123", actual_collection_time: "", actual_delivery_time: "",
       scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_driver_ids: [ drivers(:two).id, drivers(:three).id ], id: jobs(:one)
@@ -113,7 +141,7 @@ class JobsControllerTest < ActionController::TestCase
   test "should remove co drivers on edit" do
     sign_in @user
     patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "0", to_id: routes(:one).to_id,
-      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123", actual_collection_time: "", actual_delivery_time: "",
       scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"}, id: jobs(:with_co_drivers)
 
@@ -125,7 +153,7 @@ class JobsControllerTest < ActionController::TestCase
   test "should change co drivers on edit" do
     sign_in @user
     patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, shuttle: "0", to_id: routes(:one).to_id,
-      car_brand: "BMW", car_type: "Z4", registration_number: "W123",
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123", actual_collection_time: "", actual_delivery_time: "",
       scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
       mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
       co_driver_ids: [ drivers(:two).id, drivers(:three).id ], id: jobs(:with_co_drivers)
@@ -328,7 +356,7 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should reorder positions" do
     sign_in @user
-    date = Date.current
+    date = "02.04.2015 00:00"
     breakpoints_beginn = jobs( :shuttle ).breakpoints.order(:position)
     patch :update, id: jobs( :shuttle ), subaction: "update", job: { "breakpoints_attributes" => { "0" => { id: breakpoints_beginn.last.id, position: 0, mileage: 10 }, "1" => { id: breakpoints_beginn.first.id, position: 1, mileage: 100 } } }
     assert_redirected_to jobs_path
@@ -342,16 +370,16 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should update job" do
     sign_in @user
-    date = Date.current
+    date = "02.04.2015 00:00"
     patch :update, id: @job, subaction: "update", job: { actual_collection_time: date, actual_delivery_time: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
     assert_redirected_to jobs_path
-    assert_equal date, assigns(:job).actual_collection_time.to_date
-    assert_equal date, assigns(:job).actual_delivery_time.to_date
+    assert_equal date, assigns(:job).actual_collection_time.to_date.strftime("%d.%m.%Y %H:%M")
+    assert_equal date, assigns(:job).actual_delivery_time.strftime("%d.%m.%Y %H:%M")
   end
 
   test "should update address id" do
     sign_in @user
-    date = Date.current
+    date = "02.04.2015 00:00"
     patch :update, id: @job, subaction: "update", job: { actual_collection_time: date, actual_delivery_time: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: addresses(:four).id, shuttle: @job.shuttle, to_id: addresses(:three).id}
     assert_redirected_to jobs_path
     assert_equal routes(:four), assigns(:job).route
@@ -368,24 +396,24 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should update job and set to current" do
     sign_in @user
-    date = Date.current
+    date = "02.04.2015 00:00"
     patch :update, id: @job, subaction: "update_and_pay", job: { actual_collection_time: date, actual_delivery_time: date, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
     assert_redirected_to jobs_path
     assert @job.reload
     assert @job.is_finished?
-    assert_equal date, assigns(:job).actual_collection_time.to_date
-    assert_equal date, assigns(:job).actual_delivery_time.to_date
+    assert_equal date, assigns(:job).actual_collection_time.strftime("%d.%m.%Y %H:%M")
+    assert_equal date, assigns(:job).actual_delivery_time.strftime("%d.%m.%Y %H:%M")
   end
 
   test "should update job and not set to current" do
     sign_in @user
-    date = Date.current
+    date = "02.04.2015 00:00"
     @request.env['HTTP_REFERER'] = edit_job_path(@job)
     patch :update, id: @job, subaction: "update_and_pay", job: { actual_collection_time: date, actual_delivery_time: nil, cost_center_id: @job.cost_center_id, created_by_id: @job.created_by_id, driver_id: @job.driver_id, status: @job.status, from_id: @job.from_id, route_id: @job.route_id, shuttle: @job.shuttle, to_id: @job.to_id }
     assert_redirected_to edit_job_path(@job)
     assert @job.reload
     assert @job.is_open?
-    assert_equal date, assigns(:job).actual_collection_time
+    assert_equal date, assigns(:job).actual_collection_time.strftime("%d.%m.%Y %H:%M")
     assert_equal nil, assigns(:job).actual_delivery_time
   end
 
