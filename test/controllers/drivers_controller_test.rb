@@ -42,8 +42,16 @@ class DriversControllerTest < ActionController::TestCase
 
   test "should update driver" do
     sign_in @user
-    patch :update, id: @driver, driver: { address: @driver.address, city: @driver.city, comment: @driver.comment, date_of_birth: @driver.date_of_birth, driving_licence_category: @driver.driving_licence_category, driving_licence_copy: @driver.driving_licence_copy, entry_date: @driver.entry_date, exit_date: @driver.exit_date, first_name: @driver.first_name, issuing_authority: @driver.issuing_authority, last_name: @driver.last_name, licence_number: @driver.licence_number, place_of_birth: @driver.place_of_birth, registration_copy: @driver.registration_copy, service_contract: @driver.service_contract, social_security_number: @driver.social_security_number, telephone2: @driver.telephone2, telepone: @driver.telepone, zip_code: @driver.zip_code }
+    patch :update, id: @driver, driver: { address: @driver.address, city: @driver.city, comment: @driver.comment, date_of_birth: @driver.date_of_birth, 
+      driving_licence_category: @driver.driving_licence_category, driving_licence_copy: @driver.driving_licence_copy, entry_date: @driver.entry_date, 
+      exit_date: @driver.exit_date, first_name: @driver.first_name, issuing_authority: @driver.issuing_authority, last_name: @driver.last_name, 
+      licence_number: @driver.licence_number, place_of_birth: @driver.place_of_birth, registration_copy: @driver.registration_copy, service_contract: @driver.service_contract, 
+      social_security_number: @driver.social_security_number, telephone2: @driver.telephone2, telepone: @driver.telepone, zip_code: @driver.zip_code, iban: "iban", bic: "bic" }
     assert_redirected_to driver_path(assigns(:driver))
+
+    @driver.reload
+    assert_equal "iban", @driver.iban
+    assert_equal "bic", @driver.bic
   end
 
   test "should destroy driver" do
