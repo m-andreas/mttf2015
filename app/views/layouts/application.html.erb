@@ -41,6 +41,7 @@
               <% end %>
             <% else %>
               <li><%= link_to t("addresses.add"), new_address_path %></li>
+              <li><%= link_to 'Adressen editieren', addresses_path %></li>
               <li><%= link_to 'Benutzerdaten editieren', current_user %></li>
             <% end %>
           </ul>

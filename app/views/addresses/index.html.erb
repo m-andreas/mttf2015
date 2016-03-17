@@ -20,7 +20,7 @@
   <tbody>
     <% @addresses.each do |address| %>
       <tr>
-        <td><%= address.created_by %></td>
+        <td><%= User.find_by_id(address.created_by).username unless address.created_by.nil? || User.find_by_id(address.created_by).nil? %></td>
         <td><%= address.country %></td>
         <td><%= address.city %></td>
         <td><%= address.zip_code %></td>

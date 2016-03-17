@@ -1,6 +1,6 @@
 class AddressesController < ApplicationController
   before_action :set_address, only: [:show, :edit, :update, :destroy]
-  before_action :check_transfair, except: [ :new, :create ]
+  before_action :check_transfair, except: [ :new, :create, :update, :edit, :show, :index, :destroy ]
   # GET /addresses
   # GET /addresses.json
   def index
@@ -71,6 +71,6 @@ class AddressesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def address_params
-      params.require(:address).permit(:created_by, :country, :city, :zip_code, :address, :address_short, :inactive, :opening_hours)
+      params.require(:address).permit(:created_by, :country, :city, :zip_code, :address, :address_short, :inactive, :opening_hours, :display_name)
     end
 end
