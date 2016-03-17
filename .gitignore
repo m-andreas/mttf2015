@@ -97,3 +97,7 @@ public/zoo-index.html
 public/assets/.*.json
 database.yml
 .group(
+db/schema.rb
+App_Data/ASPNETDB.MDF
+*.ldf
+db/schema.rb
