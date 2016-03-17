@@ -49,7 +49,7 @@
       *) Aufträge ohne Kennzeichen werden nicht gespeichert.<br>
     </div>
     <div class="actions">
-      <%= submit_tag("erstellen") %>
+      <%= submit_tag"erstellen", data: { confirm: "Aufträge absenden?" } %>
     </div>
     <div class="lightgray small-12 columns">
       <h2>Adresse anlegen</h2>
