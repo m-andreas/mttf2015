@@ -42,8 +42,12 @@ class AddressesControllerTest < ActionController::TestCase
 
   test "should update address" do
     sign_in @user
-    patch :update, id: @address, address: { address: @address.address, address_short: @address.address_short, city: @address.city, country: @address.country, created_by: @address.created_by, inactive: @address.inactive, zip_code: @address.zip_code }
+    patch :update, id: @address, address: { address: @address.address, address_short: "new_address_short", city: @address.city, country: @address.country, 
+      created_by: @address.created_by, inactive: @address.inactive, zip_code: @address.zip_code, display_name: "display_name" }
     assert_redirected_to address_path(assigns(:address))
+    @address.reload
+    assert_not_equal "new_address_short", @address.address_short
+    assert_equal "display_name", @address.display_name
   end
 
   test "should destroy address" do

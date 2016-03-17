@@ -20,12 +20,12 @@
       <div class="field row">
       <h3>Startpunkt</h3><br>
         Startpunkte hier filtern <input id="from_filter" type="text">
-        <%= f.select :from_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
+        <%= f.select :from_id, @addresses.collect {|a| [ "#{a.show_address}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
       </div>
       <div class="field row">
         <h3>Endpunkt</h3><br>
         Endpunkte hier filtern <input id="to_filter" type="text">
-        <%= f.select :to_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
+        <%= f.select :to_id, @addresses.collect {|a| [ "#{a.show_address}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
       </div>
       <div class="row">
         <% if current_user.is_intern? %>

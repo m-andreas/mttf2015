@@ -38,7 +38,7 @@
               <td><%= text_field_tag "jobs[][car_brand]", @jobs[i]["car_brand"], class: "car_brand" %></td>
               <td><%= text_field_tag "jobs[][car_type]",  @jobs[i]["car_type"], class: "car_type" %></td>
               <td><%= select_tag "jobs[][from_id]", options_from_collection_for_select(@addresses, "id", "show_address", @jobs[i]["from_id"]), class: "from_id" %></td>
-              <td><%= select_tag "jobs[][to_id]", options_from_collection_for_select(@addresses, "id", "address_short", @jobs[i]["to_id"]), class: "to_id" %></td>
+              <td><%= select_tag "jobs[][to_id]", options_from_collection_for_select(@addresses, "id", "show_address", @jobs[i]["to_id"]), class: "to_id" %></td>
               <td><%= text_field_tag "jobs[][cost_center_id]", @jobs[i]["cost_center_id"], class: "cost_center_id" %></td>
               <td><%= text_field_tag "jobs[][job_notice]", @jobs[i]["job_notice"], class: "job_notice" %></td>
               <td><%= text_area_tag "jobs[][opening_hours]", @jobs[i]["opening_hours"], rows: 1, cols: 25, class: "opening_hours" %></td>

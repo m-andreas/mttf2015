@@ -9,7 +9,7 @@
       <th>Stadt</th>
       <th>PLZ</th>
       <th>Adressse</th>
-      <th>Adresse kurz</th>
+      <th>Anzeigename</th>
       <th>Deaktiviert</th>
       <th class="no-sort" colspan="1"></th>
       <th class="no-sort" colspan="1"></th>
@@ -25,7 +25,7 @@
         <td><%= address.city %></td>
         <td><%= address.zip_code %></td>
         <td><%= address.address %></td>
-        <td><%= address.address_short %></td>
+        <td><%= address.show_address %></td>
         <td><%= address.inactive? ? "Ja" : "Nein" %></td>
         <td><%= link_to 'Anzeigen', address %></td>
         <td><%= link_to 'Editieren', edit_address_path(address) %></td>

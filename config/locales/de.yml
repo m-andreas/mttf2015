@@ -50,6 +50,7 @@ de:
     destroyed: Adresse wurde erfolgreich entfernt
     opening_hours: Öffnungszeiten
     add: Adresse hinzufügen
+    save: Adresse speichern
   routes:
     deleted: Die Route wurde gelöscht
   jobs:

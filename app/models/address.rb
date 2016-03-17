@@ -35,4 +35,13 @@ class Address < ActiveRecord::Base
       return from
     end
   end
+
+
+  def show_address
+    if self.display_name.to_s.empty?
+      return self.address_short
+    else
+      return self.display_name.to_s
+    end
+  end
 end
