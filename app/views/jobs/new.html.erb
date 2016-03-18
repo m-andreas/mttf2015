@@ -1,193 +1,162 @@
-<div class="custom-row">
-<h1>Neuen Auftrag erfassen</h1>
-<%= hidden_field_tag 'main_job_id',  @job.id %>
-<%= hidden_field_tag 'form_type', "new" %>
+<% if @job.shuttle? %> 
+  <ul class="tabs" data-tab>
+    <li class="tab-title"><a href="#panel1">Allgemein</a></li>
+    <li class="tab-title active"><a href="#panel2">Shuttlestops</a></li>
+  </ul>
+  <div class="tabs-content">
+<% end %>
+    <div class="content" id="general">
+    <h1>Neuen Auftrag erfassen</h1>
+    <%= hidden_field_tag 'main_job_id',  @job.id %>
+    <%= hidden_field_tag 'form_type', "new" %>
 
-  <%= form_for(@job) do |f| %>
-    <%= hidden_field_tag 'job_amount',  @job_amount %>
-    <div class="large-8 small-12 columns">
-      <% if @job.errors.any? %>
-        <div id="error_explanation">
-          <h2><%= pluralize(@job.errors.count, "error") %> <%= t "jobs.prevented_from_save" %></h2>
+    <%= form_for(@job) do |f| %>
+      <%= hidden_field_tag 'job_amount',  @job_amount %>
+      <div class="large-8 small-12 columns">
+        <% if @job.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@job.errors.count, "error") %> <%= t "jobs.prevented_from_save" %></h2>
 
-          <ul>
-          <% @job.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-          </ul>
-        </div>
-      <% end %>
-      <div class="field row">
-      <h3>Startpunkt</h3><br>
-        Startpunkte hier filtern <input id="from_filter" type="text">
-        <%= f.select :from_id, @addresses.collect {|a| [ "#{a.show_address}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
-      </div>
-      <div class="field row">
-        <h3>Endpunkt</h3><br>
-        Endpunkte hier filtern <input id="to_filter" type="text">
-        <%= f.select :to_id, @addresses.collect {|a| [ "#{a.show_address}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
-      </div>
-      <div class="row">
-        <% if current_user.is_intern? %>
-        <div class="field large-8 columns">
-          <h3 style="display: inline;">Fahrer&nbsp&nbsp&nbsp</h3><%= link_to fa_icon( "user-plus", text: I18n.translate("add_driver") ),
-            job_add_co_driver_path( number_of_co_drivers: 0 ), method: "post", remote: true, :id => "add_co_driver" %><br>
-          Fahrer hier filtern <input id="driver_filter" type="text">
-          <%= f.select :driver_id, @drivers.collect {|d| [ "#{d.fullname_id}", d.id ] }%>
-          <div id="co_drivers">
-            <% @co_driver_ids.each_with_index do |co_driver, index| %>
-              <%= render "co_driver", index: index + 1 %>
+            <ul>
+            <% @job.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
             <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <div class="field row">
+        <h3>Startpunkt</h3><br>
+          Startpunkte hier filtern <input id="from_filter" type="text">
+          <%= f.select :from_id, @addresses.collect {|a| [ "#{a.show_address}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
+        </div>
+        <div class="field row">
+          <h3>Endpunkt</h3><br>
+          Endpunkte hier filtern <input id="to_filter" type="text">
+          <%= f.select :to_id, @addresses.collect {|a| [ "#{a.show_address}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
+        </div>
+        <div class="row">
+          <% if current_user.is_intern? %>
+          <div class="field large-8 columns">
+            <h3 style="display: inline;">Fahrer&nbsp&nbsp&nbsp</h3><%= link_to fa_icon( "user-plus", text: I18n.translate("add_driver") ),
+              job_add_co_driver_path( number_of_co_drivers: 0 ), method: "post", remote: true, :id => "add_co_driver" %><br>
+            Fahrer hier filtern <input id="driver_filter" type="text">
+            <%= f.select :driver_id, @drivers.collect {|d| [ "#{d.fullname_id}", d.id ] }%>
+            <div id="co_drivers">
+              <% @co_driver_ids.each_with_index do |co_driver, index| %>
+                <%= render "co_driver", index: index + 1 %>
+              <% end %>
+            </div>
+          </div>
+          <% end %>
+          <div class="field large-4 columns">
+            <h3>Kostenstelle</h3><br>
+            <%= f.text_field :cost_center_id %>
           </div>
         </div>
-        <% end %>
-        <div class="field large-4 columns">
-          <h3>Kostenstelle</h3><br>
-          <%= f.text_field :cost_center_id %>
-        </div>
-      </div>
-      <div class="row lightgray">
-        <div class="field large-4 columns">
-          <h3><%= f.label :Fahrzeugmarke %></h3><br>
-          <%= f.text_field :car_brand %>
-        </div>
-        <div class="field large-4 columns">
-          <h3><%= f.label :Fahrzeugtype %></h3><br>
-          <%= f.text_field :car_type %>
-        </div>
-        <div class="field large-4 columns">
-          <h3><%= f.label :Kennzeichen %></h3><br>
-          <%= f.text_field :registration_number %>
-        </div>
-      </div>
-      <div class="row lightgray">
-        <% ( @job_amount.to_i - 1 ).times do |i| %>
+        <div class="row lightgray">
           <div class="field large-4 columns">
             <h3><%= f.label :Fahrzeugmarke %></h3><br>
-            <% if @job_values[i].is_a? Hash %>
-              <%= text_field_tag "car_brand" + "_#{i}", @job_values[i]["car_brand"] %>
-            <% else %>
-              <%= text_field_tag "car_brand" + "_#{i}" %>
-            <% end %>
+            <%= f.text_field :car_brand %>
           </div>
           <div class="field large-4 columns">
             <h3><%= f.label :Fahrzeugtype %></h3><br>
-            <% if @job_values[i].is_a? Hash %>
-              <%= text_field_tag "car_type" + "_#{i}", @job_values[i]["car_type"] %>
-            <% else %>
-              <%= text_field_tag "car_type" + "_#{i}" %>
-            <% end %>
+            <%= f.text_field :car_type %>
           </div>
           <div class="field large-4 columns">
             <h3><%= f.label :Kennzeichen %></h3><br>
-            <% if @job_values[i].is_a? Hash %>
-              <%= text_field_tag "registration_number" + "_#{i}", @job_values[i]["registration_number"] %>
-            <% else %>
-              <%= text_field_tag "registration_number" + "_#{i}" %>
-            <% end %>
+            <%= f.text_field :registration_number %>
           </div>
-        <% end %>
-      </div>
-      <% if current_user.is_intern? %>
-      <div class="row">
-        <div class="field large-6 columns">
-          <h3><%= f.label "Abholung" %></h3><br>
-          <%= f.text_field :scheduled_collection_time %>
         </div>
-        <div class="field large-6 columns">
-          <h3><%= f.label "Lieferung" %></h3><br>
-          <%= f.text_field :scheduled_delivery_time %>
-        </div>
-      </div>
-      <div class="row lightgray">
-        <div class="field large-4 columns">
-          <h3><%= f.label "chassis_number", :Fahrgestellnummer %></h3><br>
-          <%= f.text_field :chassis_number %>
-        </div>
-        <div class="field large-4 columns">
-          <h3><%= f.label "mileage_delivery", "Kilometerstand Abholung" %></h3><br>
-          <%= f.text_field :mileage_delivery %>
-        </div>
-        <div class="field large-4 columns">
-          <h3><%= f.label "mileage_collection", "Kilometerstand Lieferung" %></h3><br>
-          <%= f.text_field :mileage_collection %>
-        </div>
-      </div>
-      <div class="row">
-        <div class="field large-4 columns">
-          <h3><%= f.label :Auftragsbemerkungen %></h3><br>
-          <%= f.text_field :job_notice %>
-        </div>
-        <div class="field large-4 columns">
-          <h3><%= f.label :Transportbemerkungen %></h3><br>
-          <%= f.text_field :transport_notice %>
-        </div>
-        <div class="field large-4 columns">
-          <h3><%= f.label "Transportbemerkungen extern" %></h3><br>
-          <%= f.text_field :transport_notice_extern %>
-        </div>
-      </div>
-        <div class="field">
-          <h3><%= f.label :shuttle %></h3><br>
-          <%= f.check_box :shuttle %>
-        </div>
-        <div id="shuttle_jobs_outer_wrapper">
-          <table id="shuttle_jobs" class="display" data-source="<%= jobs_url(format: "json") %>">
-            <thead>
-              <tr>
-                <th class="dont_show">id</th>
-                <th><%= t "jobs.add" %></th>
-                <th>Auftragnummer</th>
-                <th>Name</th>
-                <th>Von</th>
-                <th>Nach</th>
-                <th>Erstellungsdatum</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
-      <% end %>
-    </div>
-    <div class="large-4 small-12 columns sidebar">
-        <%= hidden_field_tag 'co_jobs',  @co_job_ids %>
-        <h2>Auftragszusammenfassung:</h2>
-        <table>
-            <tr><td>Fahrername:</td><td><span id="drivername"></span></td></tr>
-            <tr><td>Startpunkt:</td><td><span id="from"></span></td></tr>
-            <tr><td>Endpunkt:</td><td><span id="to"></span></td></tr>
-            <tr><td>Kostenstelle:</td><td><span id="cost-center"></span></td></tr>
-            <tr><td>Fahrzeugmarke:</td><td><span id="car_brand"></span></td></tr>
-            <tr><td>Fahrzeugtype:</td><td><span id="car_type"></span></td></tr>
-            <tr><td>Kennzeichen:</td><td><span id="registration_number"></span></td></tr>
-            <tr><td>Abholdatum:</td><td><span id="scheduled_collection_time"></span></td></tr>
-            <tr><td>Lieferdatum:</td><td><span id="scheduled_delivery_time"></span></td></tr>
-          </table>
-        <div id="shuttle-co-drivers">
-          <table>
-            <thead>
-              <th>Mitfahrer</th>
-              <th>Auftragsnummer</th>
-            </thead>
-            <tbody>
-              <% @shuttles.each do |shuttle_job| %>
-                <tr><td>
-                    <%= shuttle_job[0] %>
-                  </td>
-                  <td>
-                    <%= shuttle_job[1] %>
-                  </td>
-                  <td class="remove"><%= fa_icon( "minus", text: "entfernen" ) %>
-                  </td>
-                </tr>
+        <div class="row lightgray">
+          <% ( @job_amount.to_i - 1 ).times do |i| %>
+            <div class="field large-4 columns">
+              <h3><%= f.label :Fahrzeugmarke %></h3><br>
+              <% if @job_values[i].is_a? Hash %>
+                <%= text_field_tag "car_brand" + "_#{i}", @job_values[i]["car_brand"] %>
+              <% else %>
+                <%= text_field_tag "car_brand" + "_#{i}" %>
               <% end %>
-            </tbody>
-          </table>
+            </div>
+            <div class="field large-4 columns">
+              <h3><%= f.label :Fahrzeugtype %></h3><br>
+              <% if @job_values[i].is_a? Hash %>
+                <%= text_field_tag "car_type" + "_#{i}", @job_values[i]["car_type"] %>
+              <% else %>
+                <%= text_field_tag "car_type" + "_#{i}" %>
+              <% end %>
+            </div>
+            <div class="field large-4 columns">
+              <h3><%= f.label :Kennzeichen %></h3><br>
+              <% if @job_values[i].is_a? Hash %>
+                <%= text_field_tag "registration_number" + "_#{i}", @job_values[i]["registration_number"] %>
+              <% else %>
+                <%= text_field_tag "registration_number" + "_#{i}" %>
+              <% end %>
+            </div>
+          <% end %>
         </div>
-      <div class="actions">
-        <%= f.submit %>
+        <div class="row">
+          <div class="field large-6 columns">
+            <h3><%= f.label "Abholung" %></h3><br>
+            <%= f.text_field :scheduled_collection_time %>
+          </div>
+          <div class="field large-6 columns">
+            <h3><%= f.label "Lieferung" %></h3><br>
+            <%= f.text_field :scheduled_delivery_time %>
+          </div>
+        </div>
+        <div class="row lightgray">
+          <div class="field large-4 columns">
+            <h3><%= f.label "chassis_number", :Fahrgestellnummer %></h3><br>
+            <%= f.text_field :chassis_number %>
+          </div>
+          <div class="field large-4 columns">
+            <h3><%= f.label "mileage_delivery", "Kilometerstand Abholung" %></h3><br>
+            <%= f.text_field :mileage_delivery %>
+          </div>
+          <div class="field large-4 columns">
+            <h3><%= f.label "mileage_collection", "Kilometerstand Lieferung" %></h3><br>
+            <%= f.text_field :mileage_collection %>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field large-4 columns">
+            <h3><%= f.label :Auftragsbemerkungen %></h3><br>
+            <%= f.text_field :job_notice %>
+          </div>
+          <div class="field large-4 columns">
+            <h3><%= f.label :Transportbemerkungen %></h3><br>
+            <%= f.text_field :transport_notice %>
+          </div>
+          <div class="field large-4 columns">
+            <h3><%= f.label "Transportbemerkungen extern" %></h3><br>
+            <%= f.text_field :transport_notice_extern %>
+          </div>
+        </div>
       </div>
+      <div class="large-4 small-12 columns sidebar">
+          <%= hidden_field_tag 'co_jobs',  @co_job_ids %>
+          <h2>Auftragszusammenfassung:</h2>
+          <table>
+              <tr><td>Fahrername:</td><td><span id="drivername"></span></td></tr>
+              <tr><td>Startpunkt:</td><td><span id="from"></span></td></tr>
+              <tr><td>Endpunkt:</td><td><span id="to"></span></td></tr>
+              <tr><td>Kostenstelle:</td><td><span id="cost-center"></span></td></tr>
+              <tr><td>Fahrzeugmarke:</td><td><span id="car_brand"></span></td></tr>
+              <tr><td>Fahrzeugtype:</td><td><span id="car_type"></span></td></tr>
+              <tr><td>Kennzeichen:</td><td><span id="registration_number"></span></td></tr>
+              <tr><td>Abholdatum:</td><td><span id="scheduled_collection_time"></span></td></tr>
+              <tr><td>Lieferdatum:</td><td><span id="scheduled_delivery_time"></span></td></tr>
+          </table>
+        <div class="actions">
+          <%= f.submit %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <% if @job.shuttle? %>
+    <div class="content active" id="shuttle">
+      <p>This is the second panel of the basic tab example. This is the second panel of the basic tab example.</p>
     </div>
   <% end %>
 </div>
