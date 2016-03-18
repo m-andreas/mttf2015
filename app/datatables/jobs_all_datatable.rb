@@ -26,7 +26,7 @@ private
         from_address_short = job.from.nil? ? "" : job.from.address_short
         to_address_short = job.to.nil? ? "" : job.to.address_short
         if params[ :form_type ] == "edit"
-          icon = link_to( fa_icon( "user-plus", text: I18n.translate(:add)), "/mttf2015/jobs/add_co_job/#{params[:main_job_id]}?co_job_id=#{job.id}", remote: true )
+          icon = link_to( fa_icon( "user-plus", text: I18n.translate(:add)), "#{ENV['URL_PREFIX']}jobs/add_co_job/#{params[:main_job_id]}?co_job_id=#{job.id}", remote: true )
         else
           icon = fa_icon( "user-plus", text:  I18n.translate(:add) )
         end

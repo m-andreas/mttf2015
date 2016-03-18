@@ -142,7 +142,11 @@
         });
       };
     <% end %>
-  <script> $(document).foundation();</script>
+
+  <%= javascript_tag do %>
+    $(document).foundation(); 
+    window._url_prefix = '<%= ENV['URL_PREFIX'] %>';
+  <% end %>
 
   </body>
 </html>

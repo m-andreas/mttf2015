@@ -108,7 +108,7 @@ ready = ->
     processing: true
     serverSide: true
     ajax:
-      url: '/mttf2015/jobs_ajax/show_all'
+      url: window._url_prefix + "jobs_ajax/show_all"
       data: (d) ->
         d.form_type = document.getElementById("form_type").value;
         d.main_job_id = document.getElementById("main_job_id").value;
@@ -124,7 +124,7 @@ ready = ->
     ]
     order: [ [1,'desc'] ],
     oLanguage:{
-      sUrl: "/mttf2015/datatable_i18n"
+      sUrl: window._url_prefix + "datatable_i18n"
     }
 
   $('*[data-role=activerecord_sortable]').activerecord_sortable();
@@ -137,7 +137,7 @@ ready = ->
     serverSide: true
     hover: true
     ajax:
-      url: '/mttf2015/jobs_ajax/show_regular_jobs'
+      url: window._url_prefix + "jobs_ajax/show_regular_jobs"
       data: (d) ->
         d.start_from_date = $('#start_from_date').val()
         d.end_at_date = $('#end_at_date').val()
@@ -163,7 +163,7 @@ ready = ->
     ]
     order: [ [1,'desc'] ],
     oLanguage:{
-      sUrl: "/mttf2015/datatable_i18n"
+      sUrl: window._url_prefix + "datatable_i18n"
     }
 
   $("#start_from_date").datepicker( dateFormat: "dd.mm.yy" );
