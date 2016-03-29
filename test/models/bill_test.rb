@@ -54,13 +54,11 @@ class BillTest < ActiveSupport::TestCase
   test "check shuttle values" do
     bill = Bill.get_current
     jobs(:shuttle).set_to_current_bill
-    jobs(:one).set_to_current_bill
-    jobs(:two).set_to_current_bill
     bill.pay
-    payment_sixt = 300 * 0.24 + 19
-    payment_driver1 = 5 + 100 * 0.072 + 50 * 0.072 / 3
-    payment_driver2 = 100 * 0.072 + 50 * 0.072 / 3 + 20 * 0.072 / 2
-    payment_driver3 = 50 * 0.072 / 3 + 20 * 0.072 / 2 + 30 * 0.072
+    payment_sixt = 300 * 0.24
+    payment_driver1 = 100 * 0.072 + 50 * 0.072 / 2
+    payment_driver2 = 20 * 0.072 / 2
+    payment_driver3 = 50 * 0.072 / 2 + 20 * 0.072 / 2
     assert_equal payment_sixt, bill.sixt_total
     assert_equal payment_driver1, bill.driver_total( drivers(:one) )
     assert_equal payment_driver2.to_s, bill.driver_total( drivers(:entered_today) ).to_s
@@ -76,21 +74,6 @@ class BillTest < ActiveSupport::TestCase
     assert_equal payment_sixt, bill.sixt_total
   end
 
-  test "set_current_bill_finished_after deleting job" do
-    jobs(:shuttle).set_to_current_bill
-    jobs(:one).set_to_current_bill
-    jobs(:two).delete
-    bill = Bill.get_current
-    dependencies = bill.pay
-    assert_equal 1, dependencies.length
-    assert dependencies.first.is_a? String
-    assert_not Bill.get_old.include? bill
-    assert bill.is_current?
-    bill.jobs.each do |job|
-      assert job.is_finished?
-    end
-  end
-
   test "get job price for shuttle without breakpoints" do
     jobs(:finished).shuttle = true
     jobs(:finished).save
@@ -98,19 +81,6 @@ class BillTest < ActiveSupport::TestCase
     dependencies = bill.pay
     assert_equal ( 100 * 0.072 ).round(2).to_s, bill.driver_total( drivers(:one) ).to_s
     assert dependencies
-  end
-
-  test "set_current_bill_finished_with_missing_dependencys" do
-    jobs(:shuttle).set_to_current_bill
-    bill = Bill.get_current
-    dependencies = bill.pay
-    assert_equal 2, dependencies.length
-    assert dependencies.first.is_a? String
-    assert_not Bill.get_old.include? bill
-    assert bill.is_current?
-    bill.jobs.each do |job|
-      assert job.is_finished?
-    end
   end
 
   test "get drivers when co_drivers" do
@@ -129,10 +99,10 @@ class BillTest < ActiveSupport::TestCase
     bill = Bill.get_current
     dependencies = bill.pay
     assert dependencies
-    assert_equal [jobs(:finished)], bill.get_main_drives( drivers(:one) )
-    assert_equal [jobs(:finished)], bill.get_main_drives( drivers(:two) )
-    assert_equal [jobs(:finished)], bill.get_main_drives( drivers(:three) )
-    assert_equal [jobs(:finished).id], bill.get_main_drives_array( drivers(:one) )
-    assert_equal [jobs(:finished).id], bill.get_main_drives_array( drivers(:two) )
-    assert_equal [jobs(:finished).id], bill.get_main_drives_array( drivers(:three) )  end
+    assert_equal [jobs(:finished)], bill.get_drives( drivers(:one) )
+    assert_equal [jobs(:finished)], bill.get_drives( drivers(:two) )
+    assert_equal [jobs(:finished)], bill.get_drives( drivers(:three) )
+    assert_equal [jobs(:finished).id], bill.get_drives_array( drivers(:one) )
+    assert_equal [jobs(:finished).id], bill.get_drives_array( drivers(:two) )
+    assert_equal [jobs(:finished).id], bill.get_drives_array( drivers(:three) )  end
 end

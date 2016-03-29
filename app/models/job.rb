@@ -3,9 +3,6 @@ class Job < ActiveRecord::Base
   belongs_to :from, foreign_key: :from_id, class_name: "Address"
   belongs_to :to, foreign_key: :to_id, class_name: "Address"
   belongs_to :driver
-  has_many :carriers, foreign_key: :job_id, :dependent => :destroy
-  has_many :co_jobs, through: :carriers
-  has_one :carrier, foreign_key: :co_job_id, :dependent => :destroy
   belongs_to :route
   belongs_to :created_by, class_name: "User"
   belongs_to :bill
@@ -13,8 +10,7 @@ class Job < ActiveRecord::Base
   paginates_per 10
   #validates :driver_id, presence: true
   validates :status, numericality: { only_integer: true }
-  has_many :breakpoints, -> { order(:position) }
-  accepts_nested_attributes_for :breakpoints
+  serialize :shuttle_data, JSON
   OPEN = 1
   FINISHED = 2
   CHARGED = 3
@@ -43,6 +39,89 @@ class Job < ActiveRecord::Base
     Passenger.where(job_id: self.id).delete_all
   end
 
+  def add_shuttle_breakpoint count
+    self.shuttle_data["stops"].insert( count , {:address_id => nil} )
+    self.shuttle_data["legs"].insert( count + 1, {:driver_ids => self.shuttle_data["legs"][count]["driver_ids"], :distance => "" } )
+    self.save
+  end
+
+  def remove_shuttle_breakpoint count
+    self.shuttle_data["stops"].delete_at( count )
+    self.shuttle_data["legs"].delete_at( count + 1 )
+    self.save
+  end
+
+  def change_breakpoint_distance distance, count
+    if count.is_a? Integer
+      self.shuttle_data["legs"][count]["distance"] = distance
+    elsif count == "END"
+      puts "END DISTANCE"
+      puts distance
+      puts self.shuttle_data
+      self.mileage_delivery = distance
+    elsif count == "START"
+      self.mileage_collection = distance
+    else
+      return "Nur Zahlen erlaubt"
+    end
+
+    self.save
+  end
+
+  def change_breakpoint_address address, count
+    logger.info address.inspect
+    logger.info count
+    if count == 0
+      self.from_id = address.id
+    elsif count == self.legs.length
+      self.to_id = address.id
+    else
+      self.shuttle_data["stops"][count - 1]["address_id"] = address.id
+    end
+    self.save
+    logger.info "================"
+    logger.info self.inspect
+    logger.info "================"
+  end
+
+  def add_shuttle_passenger passenger, count
+    self.shuttle_data["legs"][count]["driver_ids"] << passenger.id
+    self.shuttle_data["legs"][count]["driver_ids"].uniq!
+    Passenger.where(job:self, driver:passenger).first_or_create
+    self.save
+  end
+
+  def remove_shuttle_passenger passenger, count
+    self.shuttle_data["legs"][count]["driver_ids"].delete( passenger.id )
+    unless self.driver_in_shuttle? passenger
+      Passenger.where(job:self, driver:passenger).destroy_all
+    end
+    self.save
+  end
+
+  def driver_in_shuttle? driver
+    self.legs.each do |leg|
+      if leg.driver_ids.include? driver.id
+        return true
+      end
+    end
+    return false
+  end
+
+  def shuttle_stops_distance
+    mileage_stops = 0
+    self.shuttle_data["legs"].each do |leg|
+      mileage_stops += leg["distance"].to_i
+    end
+    return mileage_stops
+  end
+
+  def get_shuttle_milage_calculation
+    milage_complete = self.distance
+    mileage_stops = self.shuttle_stops_distance
+    return ( milage_complete - mileage_stops ).to_s
+  end
+
   def self.save_many jobs
     unless jobs.empty?
       transaction do
@@ -60,14 +139,16 @@ class Job < ActiveRecord::Base
 
   def co_drivers
     co_drivers = []
-    self.passengers.each do |passenger|
-      co_drivers << passenger.driver
+    unless self.is_shuttle?
+      self.passengers.each do |passenger|
+        co_drivers << passenger.driver
+      end
     end
     co_drivers
   end
 
   def has_co_drivers?
-    !self.passengers.empty?
+    !self.passengers.empty? && !self.is_shuttle?
   end
 
   def self.get_active
@@ -102,65 +183,42 @@ class Job < ActiveRecord::Base
     return price / self.number_of_drivers
   end
 
-  def get_shuttle_string
-    shuttle_string = ""
-    if self.is_shuttle?
-      shuttle_string = I18n.t("jobs.shuttle_for_jobs")
-      self.co_jobs.each do |co_job|
-        if co_job == self.co_jobs.last
-          shuttle_string += " #{co_job.id}"
-        else
-          shuttle_string += " #{co_job.id},"
-        end
-      end
-    end
-    return shuttle_string
+  def remove_shuttles
+    self.shuttle_data = nil
+    self.save
   end
 
   def delete
-    self.remove_shuttles
-    self.remove_in_shuttles
     self.status = DELETED
     self.save
   end
 
+  def breakpoints
+    if self.shuttle_data.is_a? Hash
+      breakpoints = self.shuttle_data["breakpoints"]
+    else
+      return []
+    end
+  end
+
+  def legs
+    get_shuttle_data.legs
+  end
+
+  def stops
+    get_shuttle_data.stops
+  end
+
   def price_driver_shuttle( driver_job, get_array = false )
-    drivers_in_car = self.co_jobs.length + 1
-    breakpoints = self.breakpoints.order( :position )
     breakpoints_array = []
     price = 0
-    breakpoints.each_with_index do |breakpoint, i|
-      part_price = (( self.bill.driver_price_per_km * breakpoint.distance )/ drivers_in_car )
+    self.legs.each_with_index do |leg, i|
+      drivers_in_car = leg.driver_ids.length
+      part_price = (( self.bill.driver_price_per_km * leg.distance )/ drivers_in_car )
       price += part_price
       if get_array
-        if breakpoint.first_position?
-          breakpoints_array << [ self.from.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
-        else
-          breakpoints_array << [ breakpoints[ i -1 ].address.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
-        end
-      end
-      if driver_job.from == breakpoint.address
-        break
-      else
-        drivers_leaving = self.co_jobs.where( from_id: breakpoint.address_id ).length
-        drivers_in_car -= drivers_leaving
-        if breakpoint == breakpoints.last
-          part_price = self.bill.driver_price_per_km * ( self.mileage_delivery - breakpoint.mileage ) / drivers_in_car
-          price += part_price
-          if get_array
-            if breakpoint.first_position?
-              breakpoints_array << [ self.from.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
-            else
-              breakpoints_array << [ breakpoints[ i -1 ].address.address_short, breakpoint.address.address_short, breakpoint.distance, drivers_in_car, part_price ]
-            end
-          end
-        end
-      end
-    end
-    if breakpoints.empty?
-      price = self.bill.driver_price_per_km * (self.distance ) / drivers_in_car
-      if get_array
-        breakpoints_array << [ self.from.address_short, self.from.address_short, self.distance, drivers_in_car, price ]
+        stops = self.stops
+        breakpoints_array << [ Address.find_by(id: stops[i].address_id).address_short, Address.find_by(id: stops[i + 1].address_id).address_short, leg.distance, drivers_in_car, part_price ]
       end
     end
 
@@ -207,40 +265,40 @@ class Job < ActiveRecord::Base
     self.save
   end
 
+
+
   def check_for_billing
-    if self.driver.nil?
+    if self.driver.nil? || self.is_shuttle?
       error = html_escape ( I18n.translate("jobs.not_billed_no_driver") + self.id.to_s ).encode("ISO-8859-1")
       return error
     end
+
+    if self.is_shuttle? && self.check_legs
+      error = html_escape ( I18n.translate("jobs.not_billed_no_driver") + self.id.to_s ).encode("ISO-8859-1")
+      return error
+    end
+
     unless self.route.is_active?
       error = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error
     end
+
     unless self.mileage_collection.to_i > 0 && self.mileage_delivery.to_i > 0
       error = "Km Stand nicht gesetz. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error
     end
+
     unless self.mileage_collection.to_i < self.mileage_delivery.to_i
       error = html_escape ( I18n.translate("jobs.not_billed_date_not_correct") + self.id.to_s ).encode("ISO-8859-1")
       return error
     end
+
     if self.is_shuttle?
-      unless self.breakpoints.empty?
-        current_mileage = self.mileage_collection
-        self.breakpoints.order( :position ).each do |breakpoint|
-          if breakpoint.mileage.nil?
-            error = I18n.t("jobs.not_billed_milage_breakpoint") + self.id.to_s
-            return error
-          end
-          if breakpoint.mileage <= current_mileage
-            error = html_escape ( I18n.t("jobs.not_billed_breakpoints_not_correct") + self.id.to_s ).encode("ISO-8859-1")
-            return error
-          end
-          current_mileage = breakpoint.mileage
-        end
+      if self.stops.empty? && self.shuttle_stops_distance != self.distance
+        error = html_escape ( I18n.t("jobs.not_billed_breakpoints_not_correct") + self.id.to_s ).encode("ISO-8859-1")
+        return error
       end
     end
-
 
     unless self.actual_collection_time.is_a?( Time ) && self.actual_delivery_time.is_a?( Time )
       error = html_escape(I18n.translate("jobs.not_billed_date_not_set") + self.id.to_s ).encode("ISO-8859-1")
@@ -253,24 +311,6 @@ class Job < ActiveRecord::Base
     end
 
     return true
-  end
-
-  def check_shuttle_dependencies
-    missing_dependencies = []
-    error = self.check_for_billing
-    missing_dependencies << error unless error == true
-    if self.is_shuttle?
-      self.co_jobs.each do |co_job|
-        unless co_job.bill == self.bill
-          missing_dependencies << "Um Shuttle #{self.id} zu verrechnen muss auch Auftrag #{co_job.id} verrechnet werden"
-        end
-      end
-    elsif self.has_shuttle?
-      unless self.carrier.job.bill == self.bill
-        missing_dependencies << "Um Auftrag #{self.id} zu verrechnen muss auch sein Shuttle #{self.carrier.job.id} verrechnet werden"
-      end
-    end
-    return missing_dependencies
   end
 
   def set_open
@@ -297,116 +337,31 @@ class Job < ActiveRecord::Base
     status == CHARGED
   end
 
-  def co_job_drivers
-    co_job_drivers = []
-    co_jobs.each do |co_job|
-      co_job_drivers << co_job.driver
-    end
-    co_job_drivers
-  end
-
-  def remove_shuttles
-    ActiveRecord::Base.connection.delete("DELETE FROM carriers WHERE job_id=#{self.id};")
-    self.reload
-    breakpoints.delete_all
-  end
-
-  def remove_in_shuttles
-    shuttle = self.shuttle_job
-    unless shuttle.nil?
-      ActiveRecord::Base.connection.delete("DELETE FROM carriers WHERE co_job_id=#{self.id};")
-      self.reload
-      shuttle.add_breakpoints
-    end
-  end
-
-  def remove_co_job co_job
-    ActiveRecord::Base.connection.delete("DELETE FROM carriers WHERE co_job_id=#{co_job.id} AND job_id=#{self.id};")
-    self.reload
-  end
-
-  def add_breakpoints
-    self.breakpoints = []
-
-    self.co_jobs.each_with_index do |co_job, index|
-      if self.breakpoints.where( address_id: co_job.from.id ).empty? && self.to_id != co_job.from_id
-        bp = self.breakpoints.build( position: index ,job_id: self.id, address_id: co_job.from.id )
-        bp.save
-      end
-    end
-  end
-
-  def check_co_job_ids( co_job_ids )
-    co_jobs = self.co_job_ids_to_co_jobs( co_job_ids )
-    return check_co_jobs(co_jobs)
-  end
-
-  def check_co_jobs( co_jobs )
-    driver_ids = self.co_jobs.pluck( :driver_id )
-    co_jobs.each do |co_job|
-      return [ "Fahrer kann nicht in eigenem Shuttel sitzen" ] if self.driver_id == co_job.driver_id
-      return [ "Fahrer kann nicht 2 Mal in Shuttle sitzen" ] if driver_ids.include? co_job.driver_id
-      return [ "Eine der Fahrten ist bereits in einem anderen Shuttle" ] if co_job.has_shuttle?
-      driver_ids << co_job.driver_id
-    end
-    return true
-  end
-
-  def co_job_ids_to_co_jobs( co_job_ids )
-    jobs = []
-    unless co_job_ids.nil? || co_job_ids.empty? || !shuttle
-      if co_job_ids.is_a? String
-        co_job_ids[0] = "" if co_job_ids[0] == ","
-        co_job_ids = co_job_ids.split ","
-      end
-      co_job_ids.each do |co_job_id|
-        unless co_job_id.to_i == self.id
-          co_job = Job.find(co_job_id)
-          jobs <<  co_job
-        end
-      end
-    end
-    return jobs
-  end
-
-  def add_co_jobs( co_job_ids )
-    self.co_jobs = []
-    jobs = co_job_ids_to_co_jobs( co_job_ids )
-    self.co_jobs = jobs
-    self.save
-  end
-
   def is_shuttle?
     return self.shuttle
   end
 
-  def shuttle_job
-    if self.carrier.present?
-      return self.carrier.job
-    else
-      return nil
-    end
+  def get_shuttle_data
+    data = self.shuttle_data.deep_dup || {:stops=>[], :legs=>[]}
+    data["stops"].unshift({:address_id=>self.from_id})
+    data["stops"] << {:address_id=>self.to_id}
+    data_struct = RecursiveOpenStruct.new(data, recurse_over_arrays: true )
+    return data_struct
   end
 
-  def has_shuttle?
-    return self.carrier.present?
-  end
-
-  def get_shuttle_array
-    shuttle = []
-    self.co_jobs.each do |job|
-      name = job.driver.nil? ? "" : job.driver.fullname
-      shuttle << [ name, job.id ]
+  def get_shuttle_string
+    shuttle_string = ""
+    if self.is_shuttle?
+      shuttle_string = I18n.t("jobs.shuttle_for_drivers")
+      self.passengers.each do |passenger|
+        if passenger == self.passengers.last
+          shuttle_string += " #{passenger.id}"
+        else
+          shuttle_string += " #{passenger.id},"
+        end
+      end
     end
-    shuttle
-  end
-
-  def get_co_jobs_string
-    co_jobs_string = ""
-    self.co_jobs.each do |job|
-      co_jobs_string += "," + job.id.to_s
-    end
-    co_jobs_string
+    return shuttle_string
   end
 
   def charged?

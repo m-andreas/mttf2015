@@ -56,14 +56,10 @@ private
           delivery_date = job.actual_delivery_time.strftime("%e.%-m.%Y")
         end
 
-        if job.has_shuttle?
-          in_shuttle = link_to job.shuttle_job.id, "#{ENV['URL_PREFIX']}jobs/#{job.shuttle_job.id}"
-        else
-          in_shuttle = "Nein"
-        end
-
         if job.is_shuttle?
           in_shuttle = "Shuttlefahrt"
+        else
+          in_shuttle = ""
         end
 
 

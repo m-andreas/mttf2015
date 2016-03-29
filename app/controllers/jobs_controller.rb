@@ -1,6 +1,7 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
-    :add_to_current_bill, :add_co_job, :remove_co_job, :print_job, :set_to_print ]
+    :add_to_current_bill, :print_job, :set_to_print, :add_shuttle_breakpoint, :remove_shuttle_breakpoint, :change_breakpoint_distance, :add_shuttle_passenger, :remove_shuttle_passenger,
+    :change_breakpoint_address ]
   before_action :check_transfair, except: [ :multible_cars, :create_sixt, :new_sixt, :index  ]
   # GET /jobs
   # GET /jobs.json
@@ -17,38 +18,68 @@ class JobsController < ApplicationController
     end
   end
 
-  def add_co_job
-    if @job.is_open?
-      @job.shuttle = true
-      @job.save
-      co_job = Job.find( params[ :co_job_id ].to_i )
-      co_job_error = @job.check_co_jobs( [co_job] )
-      if co_job_error == true
-        @job.co_jobs << co_job unless co_job.nil?
-        @job.add_breakpoints
-      else
-        flash[:error] = co_job_error
-      end
-    end
-    @shuttles = @job.get_shuttle_array
+  def add_shuttle_breakpoint
+    count = params[:count].to_i
+    @job.add_shuttle_breakpoint count
     respond_to do | format |
-      format.html { redirect_to jobs_path }
-      format.js { render 'change_co_jobs.js.erb' }
+      @shuttle_data = @job.get_shuttle_data
+      @drivers = Driver.get_active
+      @addresses = Address.get_active
+      format.js { render 'rerender_shuttle.js.erb' }
     end
   end
 
-  def remove_co_job
-    if @job.is_open?
-      co_job = Job.find( params[ :co_job_id ].to_i )
-      logger.info @job.co_jobs.length
-
-      @job.remove_co_job( co_job )
-      @job.add_breakpoints
-    end
-    @shuttles = @job.get_shuttle_array
+  def remove_shuttle_breakpoint
+    count = params[:count].to_i - 1
+    @job.remove_shuttle_breakpoint(count)
     respond_to do | format |
-      format.html { redirect_to jobs_path }
-      format.js { render 'change_co_jobs.js.erb' }
+      @shuttle_data = @job.get_shuttle_data
+      @drivers = Driver.get_active
+      @addresses = Address.get_active
+      format.js { render 'rerender_shuttle.js.erb' }
+    end
+  end
+
+  def add_shuttle_passenger
+    count = params[:count].to_i
+    passenger = Driver.find_by_id(params[:driver_id])
+    @job.add_shuttle_passenger passenger, count
+    @shuttle_data = @job.get_shuttle_data
+    respond_to do | format |
+      format.js { render '_shuttle_passengers.html.erb', :locals => {  :i => count } }
+    end
+  end
+
+  def remove_shuttle_passenger
+    count = params[:count].to_i
+    passenger = Driver.find_by_id(params[:driver_id])
+    @job.remove_shuttle_passenger passenger, count
+    @shuttle_data = @job.get_shuttle_data
+    respond_to do | format |
+      format.js { render 'remove_shuttle_passenger.js.erb', :locals => {  :i => count } }
+    end
+  end
+
+  def change_breakpoint_distance
+    if params[:count] == "START" || params[:count] == "END"
+      count = params[:count]
+    else
+      count = params[:count].to_i
+    end
+    distance = params[:distance].to_i
+    @job.change_breakpoint_distance( distance, count )
+    respond_to do | format |
+      format.json { render 'change_breakpoint_distance.js.erb' }
+    end
+  end
+
+  def change_breakpoint_address
+    count = params[:count].to_i
+    address = Address.find_by_id(params[:address_id].to_i)
+    puts address.inspect
+    @job.change_breakpoint_address( address, count )
+    respond_to do | format |
+      format.json { render 'change_breakpoint_address.js.erb' }
     end
   end
 
@@ -103,7 +134,15 @@ class JobsController < ApplicationController
     @addresses = Address.get_active.order(:address_short)
     @shuttles = []
     @co_driver_ids = []
-    @co_job_ids = ""
+  end
+
+  def new_shuttle
+    @job = Job.new
+    @job.shuttle = true
+    @drivers = Driver.get_active
+    @addresses = Address.get_active.order(:address_short)
+    @co_driver_ids = []
+    render 'edit'
   end
 
   # GET /jobs/1/edit
@@ -112,13 +151,15 @@ class JobsController < ApplicationController
     @number_of_co_drivers = @co_driver_ids.length
     @drivers = Driver.get_active
     @addresses = Address.get_active
-    @shuttles = @job.get_shuttle_array
-    @co_jobs = @job.get_co_jobs_string
+    if @job.shuttle?
+      @shuttle_data = @job.get_shuttle_data
+    end
   end
 
   # POST /jobs
   # POST /jobs.json
   def create
+      job_errors = true
     unless job_params[:scheduled_collection_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[1-9][0-9]{3}( [0-2][0-9]:[0-6][0-9])?\z/  &&
       job_params[:scheduled_delivery_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[1-9][0-9]{3}( [0-2][0-9]:[0-6][0-9])?\z/
       error = t("jobs.date_format")
@@ -135,8 +176,6 @@ class JobsController < ApplicationController
       @job.driver = driver
       @job.created_by_id = current_user.id
       @job.route_id = Route.find_or_create( params[ :job ][ :from_id ] , params[ :job ][:to_id] )
-      co_jobs = params[:co_jobs]
-      job_errors = @job.check_co_job_ids( co_jobs )
       if @job.scheduled_collection_time > @job.scheduled_delivery_time
         error = t("jobs.date_error")
         if job_errors == true
@@ -156,22 +195,15 @@ class JobsController < ApplicationController
 
 
     respond_to do |format|
-
-      if job_errors == true && @job.save && @job.add_co_jobs( co_jobs ) && @job.add_breakpoints && @job.add_co_drivers(params[:co_driver_ids])
+      if job_errors == true && @job.save
         AuftragsMailer.job_confirmation(@job,current_user).deliver
         format.html { redirect_to jobs_path, notice: t("jobs.created") }
       else
-        @co_job_ids = params[:co_jobs]
         @co_driver_ids = params[:co_driver_ids] || []
         @job = Job.new(job_params)
         @drivers = Driver.get_active
         @addresses = Address.get_active
-        @shuttles = []
-        co_jobs = @job.co_job_ids_to_co_jobs(params[:co_jobs])
-        co_jobs.each do |co_job|
-          fullname = co_job.driver.nil? ? "" : co_job.driver.fullname_id
-          @shuttles << [ fullname, co_job.id ]
-        end
+
         flash[:error] = job_errors
         format.html { render :action => 'new' }
       end
@@ -261,16 +293,12 @@ class JobsController < ApplicationController
         flash[:error] = t("jobs.date_format")
         @drivers = Driver.get_active
         @addresses = Address.get_active
-        @shuttles = @job.get_shuttle_array
-        @co_jobs = @job.get_co_jobs_string
         return redirect_to :back
       end
       if params[:co_driver_ids].present? && params[:co_driver_ids].length > 0 && job_params[:shuttle] == "1"
         flash[:error] = "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein."
             @drivers = Driver.get_active
             @addresses = Address.get_active
-            @shuttles = @job.get_shuttle_array
-            @co_jobs = @job.get_co_jobs_string
             return redirect_to :back
       end
       if @job.is_open? && @job.update(job_params) && @job.set_route && @job.add_co_drivers(params[:co_driver_ids])
@@ -287,8 +315,6 @@ class JobsController < ApplicationController
             flash[:error] = msg
             @drivers = Driver.get_active
             @addresses = Address.get_active
-            @shuttles = @job.get_shuttle_array
-            @co_jobs = @job.get_co_jobs_string
             format.html { redirect_to :back }
           end
         else
@@ -331,8 +357,9 @@ class JobsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def job_params
-    params.require(:job).permit( { :breakpoints_attributes => [ :address_id, :id, :position, :mileage ]}, :driver_id, :co_jobs, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :car_brand, :car_type, :registration_number,
-      :scheduled_collection_time, :scheduled_delivery_time, :actual_collection_time, :actual_delivery_time, :chassis_number, :mileage_delivery, :mileage_collection, :job_notice, :transport_notice, :transport_notice_extern )
+    params.require(:job).permit( :driver_id, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :car_brand, :car_type, :registration_number,
+      :scheduled_collection_time, :scheduled_delivery_time, :actual_collection_time, :actual_delivery_time, :chassis_number, :mileage_delivery, :mileage_collection,
+      :job_notice, :transport_notice, :transport_notice_extern )
   end
 
   def address_params

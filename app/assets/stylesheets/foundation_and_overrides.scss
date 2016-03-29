@@ -1627,12 +1627,72 @@ body{
 }
 
 
+#shuttle .small-12{
+  float:left;
+}
+
 .tabs li{
 	border-width: 1px;
 	border-style:solid;
 	border-color: $charcoal;
+	transition-duration: 0.4s;
 }
+
+.driver_button{
+  background-color: #57c40f;
+  border-radius:5px;
+  padding: 3px;
+}
+
+.border-top{
+  border-top: 2px solid black;
+  padding-top: 1em;
+}
+
+.shuttle_driver_row{
+  border-top: 2px solid black;
+  padding-top: 20px;
+  background-color: #d1d3d6;
+}
+
+.add_stop{
+  margin-top: 2.2em;
+}
+
 
 @import 'foundation';
 
 
+.add_shuttle_passenger{
+  margin-top:2em;
+}
+
+.shuttle_mileage{
+  margin-top:4em;
+}
+
+.shuttle_remove_stop{
+  margin-top:4em;
+}
+
+.save_shuttle{
+  margin-top:2em;
+}
+
+.remaining-mileage-container{
+  border-top: solid 2px black;
+  font-weight: bold;
+}
+
+.button.round a{
+  color:white;
+}
+
+.button.round a:hover{
+  background-color:transparent;
+}
+
+.driver-button{
+  padding: 5px;
+  margin: 0 0 0.5rem;
+}

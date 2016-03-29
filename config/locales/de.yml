@@ -64,12 +64,13 @@ de:
     actual_delivery_time: Tatsächlicher Liefertermin
     add: Auftrag hinzufügen
     prevented_from_save: "haben diesen Auftag vom Speichern zurückgehalten:"
+    not_billed_no_distance: "Es ist kein korrekte Distanz für Zwischenstrecke gesetz. Auftrag nicht verrechnet. Auftrag "
     not_billed_no_driver: "Es ist kein Fahrer gesetz. Auftrag nicht verrechnet. Auftrag "
     not_billed_breakpoints_not_correct: "Die Werte für einen Zwischenstopp sind niedriger oder gleich wie beim Stop davor. Auftrag nicht verrechnet. Auftrag "
     not_billed_date_not_set: "Die Werte für Abhol oder Lieferzeitpunkt sind nicht gesetz. Auftrag nicht verrechnet. Auftrag "
     not_billed_date_not_correct: "Kilometerstand Abholung höher als Kilometerstand Lieferung. Auftrag nicht verrechnet. Auftrag "
     not_billed_milage_breakpoint: "Kein Wert für Km Stand in Zwischenstop eingetragen. Auftrag nicht verrechnet. Auftrag "
-    shuttle_for_jobs: "Shuttle für die Jobs:"
+    shuttle_for_jobs: "Shuttle für die Fahrer:"
     really_delete: Auftrag wirklich löschen?
     billed:  Auftrag wurde verrechnet
     date_error: Abfahrtsdatum liegt nach Ankunftsdatum

@@ -133,20 +133,6 @@ class BillsControllerTest < ActionController::TestCase
     end
   end
 
-  test "should_not_set_bill_payed" do
-    sign_in @user
-    jobs( :payed_in_shuttle1 ).set_to_current_bill
-    post :pay, id: @bill
-    assert_redirected_to jobs_path
-    @bill.reload
-    assert_not Bill.get_current.jobs.empty?
-    assert assigns( :bill ).billed_at.nil?
-    assigns( :bill ).jobs.each do |job|
-      assert job.is_finished?
-    end
-    assert flash[:alert].present?
-  end
-
   test "should_not_set_bill_payed2" do
     sign_in @user
     jobs( :payed_shuttle ).set_to_current_bill

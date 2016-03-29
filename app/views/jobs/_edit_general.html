@@ -1,0 +1,130 @@
+<div class="custom-row">
+  <h1>Editieren von Auftrag <%= @job.id %></h1>
+  <%= hidden_field_tag 'form_type', "edit" %>
+  <%= form_for(@job) do |f| %>
+    <%= hidden_field_tag 'main_job_id',  @job.id %>
+    <div class="selection large-8 small-12 columns">
+      <% unless @job.shuttle? %>
+        <div class="field row">
+        <h3>Startpunkt</h3><br>
+          Startpunkte hier filtern <input id="from_filter" type="text">
+          <%= f.select :from_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
+        </div>
+        <div class="field row">
+          <h3>Endpunkt</h3><br>
+          Endpunkte hier filtern <input id="to_filter" type="text">
+          <%= f.select :to_id, @addresses.collect {|a| [ "#{a.address_short}, #{a.address} #{a.zip_code} #{a.city} #{a.country}", a.id ] }%>
+        </div>
+      <% end %>
+      <div class="row">
+        <% unless @job.shuttle? %>
+          <div class="field large-8 columns">
+            <h3 style="display: inline;">Fahrer&nbsp&nbsp&nbsp</h3><%= link_to fa_icon( "user-plus", text: I18n.translate("add_driver") ),
+              job_add_co_driver_path(number_of_co_drivers: @job.co_drivers.length ), method: "post", format: 'js', remote: true, :id => "add_co_driver" %><br>
+            Fahrer hier filtern <input id="driver_filter" type="text">
+            <%= f.select :driver_id, @drivers.collect {|d| [ "#{d.fullname_id}", d.id ] }%>
+            <div id="co_drivers">
+              <% @job.co_drivers.each_with_index do |co_driver, index| %>
+                <%= render "co_driver", index: index + 1 %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <div class="field large-4 columns">
+          <h3>Kostenstelle</h3><br>
+          <%= f.text_field :cost_center_id %>
+        </div>
+      </div>
+      <div class="row lightgray">
+        <div class="field large-4 columns">
+          <h3><%= f.label :Fahrzeugmarke %></h3><br>
+          <%= f.text_field :car_brand %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label :Fahrzeugtype %></h3><br>
+          <%= f.text_field :car_type %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label :Kennzeichen %></h3><br>
+          <%= f.text_field :registration_number %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field large-6 columns">
+          <% scheduled_collection_time = @job.scheduled_collection_time.strftime("%d.%m.%Y %H:%M") unless  @job.scheduled_collection_time.nil? %>
+          <% scheduled_delivery_time = @job.scheduled_delivery_time.strftime("%d.%m.%Y %H:%M") unless  @job.scheduled_delivery_time.nil? %>
+          <% actual_collection_time = @job.actual_collection_time.strftime("%d.%m.%Y %H:%M") unless  @job.actual_collection_time.nil? %>
+          <% actual_delivery_time = @job.actual_delivery_time.strftime("%d.%m.%Y %H:%M") unless  @job.actual_delivery_time.nil? %>
+          <h3><%= f.label "scheduled_collection_time", "Geplanter Abholtermin" %></h3><br>
+
+          <%= f.text_field :scheduled_collection_time, :value => scheduled_collection_time %>
+        </div>
+        <div class="field large-6 columns">
+          <h3><%= f.label "scheduled_delivery_time", "Geplanter Liefertermin" %></h3><br>
+          <%= f.text_field :scheduled_delivery_time, :value => scheduled_delivery_time %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field large-6 columns">
+          <h3><%= f.label "actual_collection_time", t("jobs.actual_collection_time") %></h3><br>
+          <%= f.text_field :actual_collection_time, :value => actual_collection_time %>
+        </div>
+        <div class="field large-6 columns">
+          <h3><%= f.label "actual_delivery_time", t("jobs.actual_delivery_time") %></h3><br>
+          <%= f.text_field :actual_delivery_time, :value => actual_delivery_time %>
+        </div>
+      </div>
+      <div class="row lightgray">
+        <div class="field large-4 columns">
+          <h3><%= f.label "chassis_number", :Fahrgestellnummer %></h3><br>
+          <%= f.text_field :chassis_number %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label "mileage_collection", "Kilometerstand Abholung" %></h3><br>
+          <%= f.text_field :mileage_collection %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label "mileage_delivery", "Kilometerstand Lieferung" %></h3><br>
+          <%= f.text_field :mileage_delivery %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field large-4 columns">
+          <h3><%= f.label :Auftragsbemerkungen %></h3><br>
+          <%= f.text_field :job_notice %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label :Transportbemerkungen %></h3><br>
+          <%= f.text_field :transport_notice %>
+        </div>
+        <div class="field large-4 columns">
+          <h3><%= f.label "Transportbemerkungen extern" %></h3><br>
+          <%= f.text_field :transport_notice_extern %>
+        </div>
+      </div>
+    </div>
+    <div class="large-4 small-12 columns sidebar" >
+      <div id="sidepanel-inner" ><%= render 'sidepanel' %></div>
+      <div class="actions">
+        <%= f.button  "aktualisieren" , name: "subaction",value: "update"%>
+        <%= f.button  "aktualisieren und verrechnen" , name: "subaction",value: "update_and_pay"%>
+      </div>
+      <%= link_to t(:show), @job %> |
+      <%= link_to t(:back), jobs_path %>
+    </div>
+  <% end %>
+</div>
+
+<%= javascript_tag do -%>
+  setTimeout( function(){
+    <% @number_of_co_drivers.times do |index| %>
+      $($(".select_co_drivers")[<%= index %>]).on("change", function(){
+          setTimeout(function(){
+            //$("#drivername").text( $($( ".select_co_drivers option:selected" )[<%= index  %>]).text() );
+          }, 1000)
+      })
+
+      $($(".select_co_drivers")[<%= index %>]).filterByText($($(".co_drivers_filter")[<%= index %>]), true);
+    <% end %>
+  },1000)
+<% end %>

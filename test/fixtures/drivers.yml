@@ -84,6 +84,7 @@ exit_nil:
   service_contract: false
 
 one:
+  id: 1
   first_name: one
   last_name: Tester
   entry_date: <%= 2.years.ago.to_s(:db) %>
@@ -106,6 +107,7 @@ one:
   deleted: false
 
 two:
+  id: 2
   first_name: two
   last_name: Tester
   entry_date: <%= 2.years.ago.to_s(:db) %>
@@ -128,6 +130,7 @@ two:
   deleted: false
 
 three:
+  id: 3
   first_name: three
   last_name: Tester
   entry_date: <%= 2.years.ago.to_s(:db) %>

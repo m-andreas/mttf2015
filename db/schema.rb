@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160317102052) do
+ActiveRecord::Schema.define(version: 20160325155236) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -241,20 +241,6 @@ ActiveRecord::Schema.define(version: 20160317102052) do
     t.decimal  "driver_price_flat_rate", precision: 15, scale: 4
   end
 
-  create_table "breakpoints", force: true do |t|
-    t.integer  "position"
-    t.integer  "job_id"
-    t.integer  "mileage"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "address_id"
-  end
-
-  create_table "carriers", id: false, force: true do |t|
-    t.integer "job_id"
-    t.integer "co_job_id"
-  end
-
   create_table "companies", force: true do |t|
     t.string   "name"
     t.string   "address"
@@ -331,6 +317,7 @@ ActiveRecord::Schema.define(version: 20160317102052) do
     t.datetime "actual_delivery_time"
     t.integer  "id_extern"
     t.boolean  "to_print",                             default: true
+    t.text     "shuttle_data"
   end
 
   create_table "passengers", force: true do |t|
@@ -347,6 +334,14 @@ ActiveRecord::Schema.define(version: 20160317102052) do
     t.integer  "distance"
     t.integer  "last_modified_by"
     t.integer  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "shuttle_cars", force: true do |t|
+    t.string   "car_brand"
+    t.string   "car_type"
+    t.string   "registration_number"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

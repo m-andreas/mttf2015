@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Car brand:</strong>
+  <%= @shuttle_car.car_brand %>
+</p>
+
+<p>
+  <strong>Car type:</strong>
+  <%= @shuttle_car.car_type %>
+</p>
+
+<p>
+  <strong>Registration number:</strong>
+  <%= @shuttle_car.registration_number %>
+</p>
+
+<%= link_to 'Edit', edit_shuttle_car_path(@shuttle_car) %> |
+<%= link_to 'Back', shuttle_cars_path %>

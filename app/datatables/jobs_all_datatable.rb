@@ -55,13 +55,13 @@ private
  def sort_order_filter
     if @job
       if @job.driver.nil?
-        records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( id: Carrier.all.pluck(:co_job_id) ).order("#{sort_column} #{sort_direction}")
+        records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).order("#{sort_column} #{sort_direction}")
       else
         # Alle die offen oder in aktueller Abrechnung sind, kein shuttle sind, noch nicht zu einem Shuttle gehoeren und nicht der Fahrer des Shuttels sind
-        records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( id: Carrier.all.pluck(:co_job_id), drivers: { id: @job.driver.id } ).order("#{sort_column} #{sort_direction}")
+        records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( drivers: { id: @job.driver.id } ).order("#{sort_column} #{sort_direction}")
       end
     else
-      records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( id: Carrier.all.pluck(:co_job_id)).order("#{sort_column} #{sort_direction}")
+      records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).order("#{sort_column} #{sort_direction}")
     end
 
     if params[:search][:value].present?

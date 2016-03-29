@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
+  resources :shuttle_cars
+
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
     get 'datatable_i18n', to: 'datatables#datatable_i18n'
   end
-  resources :breakpoints
 
   get 'bills/current', to: 'bills#current', as: 'current_bill'
   get 'bills/old', to: 'bills#old', as: 'old_bills'
@@ -28,10 +29,15 @@ Rails.application.routes.draw do
   post 'jobs/add_co_driver/', to:'jobs#add_co_driver', as: 'job_add_co_driver'
   get 'jobs/create_sixt/', to: 'jobs#create_sixt', as: 'job_create_sixt'
   get 'jobs/new_sixt/', to: 'jobs#new_sixt', as: 'job_new_sixt'
+  get 'jobs/new_shuttle/', to: 'jobs#new_shuttle', as: 'job_new_shuttle'
   post 'jobs/add_to_current_bill/:id', to: 'jobs#add_to_current_bill', as: 'add_job_to_current_bill'
   post 'jobs/remove_from_current_bill/:id', to: 'jobs#remove_from_current_bill', as: 'remove_job_from_current_bill'
-  get 'jobs/add_co_job/:id', to: 'jobs#add_co_job', as: 'job_add_co_job'
-  get 'jobs/remove_co_job/:id', to: 'jobs#remove_co_job', as: 'job_remove_co_job'
+  get 'jobs/add_shuttle_breakpoint/:id', to: 'jobs#add_shuttle_breakpoint', as: 'job_add_shuttle_breakpoint'
+  get 'jobs/remove_shuttle_breakpoint/:id', to: 'jobs#remove_shuttle_breakpoint', as: 'job_remove_shuttle_breakpoint'
+  get 'jobs/change_breakpoint_distance/:id', to: 'jobs#change_breakpoint_distance', as: 'job_change_breakpoint_distance'
+  get 'jobs/change_breakpoint_address/:id', to: 'jobs#change_breakpoint_address', as: 'job_change_breakpoint_address'
+  get 'jobs/add_shuttle_passenger/:id', to: 'jobs#add_shuttle_passenger', as: 'job_add_shuttle_passenger'
+  get 'jobs/remove_shuttle_passenger/:id', to: 'jobs#remove_shuttle_passenger', as: 'job_remove_shuttle_passenger'
   get 'jobs/print_job/:id', to: 'jobs#print_job', as: 'print_job'
   post 'jobs/delete/:id', to: 'jobs#destroy', as: 'job_delete'
   get 'jobs/multible_cars/:job_amount', to: 'jobs#multible_cars', as: 'job_multible_cars'

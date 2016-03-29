@@ -64,24 +64,28 @@ class Bill < ActiveRecord::Base
   def drivers
     drivers_in_bill = []
     self.jobs.each do |job|
-      drivers_in_bill << job.driver
+      drivers_in_bill << job.driver unless job.driver.nil?
       if job.has_co_drivers?
         job.co_drivers.each do |co_driver|
           drivers_in_bill << co_driver
         end
       end
+      if job.is_shuttle?
+        job.legs.each do |leg|
+          drivers_in_bill << Passenger.where(job_id: job.id).map(&:driver)
+        end
+      end
     end
-    drivers_in_bill.uniq!
-    return drivers_in_bill
+    return drivers_in_bill.flatten.uniq
   end
 
-  def get_main_drives_array( driver )
+  def get_drives_array( driver )
     jobs = self.jobs.where( driver_id: driver.id ).pluck( :id )
     jobs += Passenger.where(driver_id: driver.id, job_id: self.jobs).pluck(:job_id)
     return jobs
   end
 
-  def get_main_drives( driver )
+  def get_drives( driver )
     jobs = self.jobs.where( driver_id: driver.id )
     Passenger.where(driver_id: driver.id, job_id: self.jobs).each do |passenger|
       jobs << passenger.job
@@ -89,19 +93,9 @@ class Bill < ActiveRecord::Base
     return jobs
   end
 
-  def get_jobs_array( driver )
-    main_jobs = self.get_main_drives_array( driver )
-    return main_jobs | Carrier.where( co_job_id: main_jobs ).pluck( :job_id )
-  end
-
   def job_price( job, driver )
     if job.shuttle?
-      if job.driver != driver
-        driver_job = Carrier.find_by( co_job_id: self.get_main_drives_array( driver ), job_id: job.id ).co_job
-      else
-        driver_job = job
-      end
-      price = job.price_driver_shuttle( driver_job )
+      price = job.price_driver_shuttle( driver )
     else
       price = job.price_driver
     end
@@ -110,8 +104,7 @@ class Bill < ActiveRecord::Base
 
   def driver_total( driver )
     total = 0
-    job_ids = self.get_jobs_array( driver )
-    jobs = Job.find(job_ids)
+    jobs = self.get_drives( driver )
     jobs.each do |job|
       job_price = job_price( job, driver )
       return false unless job_price
@@ -144,22 +137,12 @@ class Bill < ActiveRecord::Base
     self.driver_price_flat_rate = Company.transfair.price_flat_rate
     self.price_per_km = Company.sixt.price_per_km
     self.driver_price_per_km = Company.transfair.price_per_km
-    missing_dependencys = []
+    self.billed_at = DateTime.now
+    self.save
     self.jobs.each do |job|
-      missing_dependencys << job.check_shuttle_dependencies
+      job.final_calculation_basis = job.route.calculation_basis
+      job.set_charged
     end
-
-    missing_dependencys.flatten!
-    if missing_dependencys.empty?
-      self.billed_at = DateTime.now
-      self.save
-      self.jobs.each do |job|
-        job.final_calculation_basis = job.route.calculation_basis
-        job.set_charged
-      end
-      return true
-    else
-      return missing_dependencys
-    end
+    return true
   end
 end

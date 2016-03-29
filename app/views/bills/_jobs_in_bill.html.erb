@@ -22,7 +22,7 @@
       <% @bill.jobs.each do |job| %>
         <tr>
           <td><%= job.id %></td>
-          <td><%= job.driver.fullname %></td>
+          <td><%= job.driver.fullname unless job.driver.nil? %></td>
           <td><%= job.from.address_short %></td>
           <td><%= job.to.address_short %></td>
           <td><%= l job.actual_collection_time.to_date unless job.actual_collection_time.nil? %></td>

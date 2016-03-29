@@ -73,3 +73,7 @@ gem 'activerecord-sortable'
 
 #email über exchange
 gem 'ruby-ntlm'
+
+
+gem 'recursive-open-struct', '~> 1.0'
+# Für Shuttle data

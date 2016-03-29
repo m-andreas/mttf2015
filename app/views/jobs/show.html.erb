@@ -1,9 +1,6 @@
 <div class="small-12 columns">
   <h1>Auftrag <%= @job.id %></h1>
 </div>
-<% if @job.has_shuttle? %>
-  <div class="small-12 columns"><h3><%= t("jobs.connected_shuttle_job") %> <%= link_to @job.shuttle_job.id, job_path(@job.shuttle_job) %></h3></div>
-<% end %>
 <div id="custom-row">
   <div class="large-6 columns">
     <p>
@@ -109,23 +106,11 @@
     <table>
       <thead>
         <th>Name</th>
-        <th>ID</th>
-        <th>Von</th>
-        <th>Nach</th>
-        <th>Datum Abholung</th>
-        <th></th>
-        <th></th>
       </thead>
       <tbody>
-        <% @job.co_jobs.each do |co_job| %>
+        <% @job.passengers.map(&:driver).each do |driver| %>
           <tr>
-            <td><%= co_job.driver.fullname unless co_job.driver.nil? %></td>
-            <td><%= co_job.id %></td>
-            <td><%= co_job.from.address_short %></td>
-            <td><%= co_job.to.address_short %></td>
-            <td><%= l co_job.scheduled_collection_time.to_date unless co_job.scheduled_collection_time.nil? %></td>
-            <td><%= link_to "zeigen", job_path( co_job ) %></td>
-            <td><%= link_to "editieren", edit_job_path( co_job ) %></td>
+            <td><%= driver.fullname %></td>
           </tr>
         <% end %>
       </tbody>

@@ -1,0 +1,11 @@
+<% if i == 0 %>
+  <h5>
+  Adresse für Startpunkt
+<% elsif i == @shuttle_data.stops.length - 1 %>
+  <h5>
+  Adresse für Endpunkt
+<% else %>
+  <h5>
+  Adresse für <%=i.to_s%>. Stop
+<%end%>
+</h5><br>

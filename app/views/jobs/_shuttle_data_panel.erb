@@ -1,0 +1,52 @@
+<div class="content active" id="shuttle">
+    <%= hidden_field_tag "id", @job.id %>
+    <% @shuttle_data.stops.each_with_index do |stop, i| %>
+      <div id="<%=i%>">
+        <% if i == 0 %>
+          <div>
+        <% else %>
+          <div class="small-12 border-top">
+        <% end %>
+          <div class="small-12 medium-6 columns">
+          <%= render "shuttle_stop_header", i: i %>
+            Adressen hier filtern <input id="from_filter_<%= i %>" type="text">
+            <%= select_tag "addresses_#{ i }", options_from_collection_for_select( @addresses, "id",  "show_address", stop.address_id ), :class => "addresses_select"%>
+            <script type="text/javascript">
+              $(function(){
+                $('#addresses_<%= i %>').filterByText($('#from_filter_<%=i%>'), true);
+                $("#from_filter_<%=i%>").keyup(function(){
+                  $("#addresses_<%= i %>").change();
+                })
+              });
+            </script>
+      	  </div>
+          <% if i == 0 %>
+            <div class="small-12 medium-2 medium-offset-2 columns shuttle_mileage">
+              Kilometerstand Start
+              <%= text_field_tag 'start_milage', @job.mileage_collection %>
+            </div>
+          <% elsif i == @shuttle_data.stops.length - 1 %>
+            <div class="small-12 medium-2 medium-offset-2 columns shuttle_mileage">
+              Kilometerstand Ende
+              <%= text_field_tag 'end_milage', @job.mileage_delivery %><br>
+              <div class="row">
+                <div class="small-12 medium-8 column">Kilometer laut Tacho: </div><div class="small-12 medium-4 column"><span id="complete-distance"><%= @job.distance %></span></div>
+              </div><div class="row">
+                <div class="small-12 medium-8 column">- Kilometer Stops:</div><div class="small-12 medium-4 column"> <span id="stops-distance"><%= @job.shuttle_stops_distance %></span></div>
+              </div><div class="row remaining-mileage-container">
+                <div class="small-12 medium-8 column">Verbleibende Km: </div><div class="small-12 medium-4 column"><span id="remaining-milage"><%= @job.get_shuttle_milage_calculation %></span></div>
+              </div>
+            </div>
+          <% else %>
+            <div class="small-12 medium-2 medium-offset-1 columns shuttle_remove_stop">
+              <span class="button round"><%= link_to fa_icon("remove") + "Stop entfernen", job_remove_shuttle_breakpoint_path(:id => @job.id, :count => i.to_s), remote: true %></span><br>
+            </div>
+          <% end %>
+        </div>
+        <% if @shuttle_data.legs.length > i %>
+          <%= render "shuttle_stop", i: i %>
+        <% end %>
+      </div>
+    <% end %>
+</div>
+
