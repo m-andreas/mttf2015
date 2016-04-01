@@ -39,7 +39,7 @@
             </div>
           <% else %>
             <div class="small-12 medium-2 medium-offset-1 columns shuttle_remove_stop">
-              <span class="button round"><%= link_to fa_icon("remove") + "Stop entfernen", job_remove_shuttle_breakpoint_path(:id => @job.id, :count => i.to_s), remote: true %></span><br>
+              <%= link_to fa_icon("remove") + "Stop entfernen", job_remove_shuttle_breakpoint_path(:id => @job.id, :count => i.to_s), remote: true, class: "button round" %><br>
             </div>
           <% end %>
         </div>
@@ -48,5 +48,9 @@
         <% end %>
       </div>
     <% end %>
+    <div class="small-12">
+      <%= link_to "In normalen Auftrag umwandeln", job_unset_shuttle_path(id: @job.id), class: "button round button-left", data: { confirm: "Shuttle wird zu normalen Auftrag umgewandelt, die Shuttle Daten gehen dadurch verloren. Fortfahren?" } %>
+      <%= link_to "Route setzen und schließen", job_set_shuttle_route_path(id: @job.id), class: "button round save-and-close" %>
+    </div>
 </div>
 

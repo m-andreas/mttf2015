@@ -27,6 +27,7 @@
           <ul class="left">
             <li><%= link_to 'Auftrag erfassen', new_job_path %></li>
             <% if current_user.is_intern? %>
+              <li><%= link_to 'Shuttle erfassen', new_shuttle_job_path %></li>
               <li><%= link_to t("jobs.all"), jobs_path %></li>
 
              <li class="has-dropdown">
@@ -73,6 +74,13 @@
                     <ul class="dropdown">
                       <li><%= link_to 'Alle Adressen', addresses_path %></li>
                       <li><%= link_to t("addresses.add"), new_address_path %></li>
+                    </ul>
+                  </li>
+                  <li class="has-dropdown">
+                    <a href="#">Shuttle Fahrzeuge</a>
+                    <ul class="dropdown">
+                      <li><%= link_to 'Neues Shuttle Fahrzeug', new_shuttle_car_path %></li>
+                      <li><%= link_to 'Alle Shuttle Fahrzeug', shuttle_cars_path %></li>
                     </ul>
                   </li>
                   <li><%= link_to 'Firmen anzeigen', companies_path %></li>
@@ -144,7 +152,7 @@
     <% end %>
 
   <%= javascript_tag do %>
-    $(document).foundation(); 
+    $(document).foundation();
     window._url_prefix = '<%= ENV['URL_PREFIX'] %>';
   <% end %>
 

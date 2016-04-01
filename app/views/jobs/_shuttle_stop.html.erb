@@ -2,10 +2,10 @@
   <div class="row">
     <% address_from = @addresses.find_by(id: @shuttle_data.stops[i].address_id ) %>
     <% address_to = @addresses.find_by(id: @shuttle_data.stops[i+1].address_id ) %>
-    <h2><%= address_from.show_address unless address_from.nil? %> - <%=address_to.show_address unless address_to.nil? %></h2>
+    <h2><span class="address_from_label"><%= address_from.show_address unless address_from.nil? %></span> - <span class="address_to_label"><%=address_to.show_address unless address_to.nil? %></span></h2>
   </div>
   <div class="small-2 column add_stop">
-    <span class="button round"><%= link_to fa_icon("map-marker") + " Stop hinzufügen", job_add_shuttle_breakpoint_path(:id => @job.id, :count => i.to_s), remote: true %></span><br>
+    <%= link_to fa_icon("map-marker") + " Stop hinzufügen", job_add_shuttle_breakpoint_path(:id => @job.id, :count => i.to_s), remote: true, class: "button round" %><br>
   </div>
   <div class="small-10 medium-2 column">
     Fahrer hier filtern <input id="driver_filter_<%=i%>" type="text">

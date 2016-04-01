@@ -1,11 +1,11 @@
-<h1>Listing shuttle_cars</h1>
+<h1>Alle Shuttle Fahrzeuge</h1>
 
 <table>
   <thead>
     <tr>
-      <th>Car brand</th>
-      <th>Car type</th>
-      <th>Registration number</th>
+      <th>Fahrzeugmarke</th>
+      <th>Fahrzeugtype</th>
+      <th>Kennzeichen</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -16,9 +16,9 @@
         <td><%= shuttle_car.car_brand %></td>
         <td><%= shuttle_car.car_type %></td>
         <td><%= shuttle_car.registration_number %></td>
-        <td><%= link_to 'Show', shuttle_car %></td>
-        <td><%= link_to 'Edit', edit_shuttle_car_path(shuttle_car) %></td>
-        <td><%= link_to 'Destroy', shuttle_car, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Anzeigen', shuttle_car %></td>
+        <td><%= link_to 'Editieren', edit_shuttle_car_path(shuttle_car) %></td>
+        <td><%= link_to 'Löschen', shuttle_car, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -26,4 +26,4 @@
 
 <br>
 
-<%= link_to 'New Shuttle car', new_shuttle_car_path %>
+<%= link_to 'Neues Shuttle Fahrzeug', new_shuttle_car_path %>

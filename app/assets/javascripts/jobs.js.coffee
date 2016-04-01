@@ -105,6 +105,29 @@ ready = ->
 
   $('#job_driver_id').filterByText($('#driver_filter'), true);
 
+  $('#shuttle_jobs').DataTable
+      processing: true
+      serverSide: true
+      ajax:
+        url: window._url_prefix + "jobs_ajax/show_all"
+        data: (d) ->
+          d.main_job_id = document.getElementById("main_job_id").value;
+          return
+      columns: [
+        { width: "0%", className: "dont_show", searchable: false, orderable: false }
+        { width: "15%", orderable: false, className: "add" }
+        { width: "35%", className: "row_config" }
+        { width: "15%", className: "row_config", searchable: false, orderable: false }
+        { width: "15%", className: "row_config", searchable: false, orderable: false }
+        { width: "5%", className: "center", searchable: false, orderable: false }
+        { width: "15%", className: "center", searchable: false, orderable: false }
+      ]
+      order: [ [1,'desc'] ],
+      oLanguage:{
+        sUrl: window._url_prefix + "datatable_i18n"
+      }
+
+
   $('*[data-role=activerecord_sortable]').activerecord_sortable();
 
 

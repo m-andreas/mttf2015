@@ -22,6 +22,33 @@ class JobsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get new shuttle" do
+    sign_in @user
+    get :new_shuttle
+    assert_response :success
+  end
+
+  test "should create shuttle" do
+    sign_in @user
+    post :create_shuttle, shuttle_car: shuttle_cars(:one)
+    assert_response :success
+    assert assigns(:job).is_shuttle?
+    assert_equal shuttle_cars(:one).car_brand assigns(:job).car_brand
+    assert_equal shuttle_cars(:one).car_type assigns(:job).car_type
+    assert_equal shuttle_cars(:one).registration_number assigns(:job).registration_number
+  end
+
+  test "should create shuttle with time" do
+    sign_in @user
+    post :create_shuttle, shuttle_car: shuttle_cars(:one)
+    assert_response :success
+    assert assigns(:job).is_shuttle?
+    assert_equal assigns(:job).actual_collection_time
+    assert_equal assigns(:job).actual_collection_time
+    assert_equal assigns(:job).actual_collection_time
+    assert_equal assigns(:job).actual_collection_time
+  end
+
   test "should create job" do
     sign_in @user
     assert_difference('Job.count') do
@@ -732,42 +759,14 @@ class JobsControllerTest < ActionController::TestCase
                     "search"=>{"value"=>"", "regex"=>"false"}}},
                 "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
                 "start"=>"0", "length"=>"10",
-                "search"=>{"value"=>"tester", "regex"=>"false"},
+                "search"=>{"value"=>jobs(:one).id.to_s, "regex"=>"false"},
                 "form_type"=>"create",
                 "main_job_id"=>""}
     sign_in @user
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 7, body["recordsFiltered"]
-  end
-
-  test "show_all_create_ajax_search2" do
-    params = {"draw"=>"1",
-              "columns"=>{"0"=>{"data"=>"0", "name"=>"", "searchable"=>"false", "orderable"=>"false",
-                    "search"=>{"value"=>"", "regex"=>"false"}},
-                  "1"=>{"data"=>"1", "name"=>"", "searchable"=>"true", "orderable"=>"false",
-                    "search"=>{"value"=>"", "regex"=>"false"}},
-                  "2"=>{"data"=>"2", "name"=>"", "searchable"=>"true", "orderable"=>"true",
-                    "search"=>{"value"=>"", "regex"=>"false"}},
-                  "3"=>{"data"=>"3", "name"=>"", "searchable"=>"false", "orderable"=>"false",
-                    "search"=>{"value"=>"", "regex"=>"false"}},
-                  "4"=>{"data"=>"4", "name"=>"", "searchable"=>"false", "orderable"=>"false",
-                    "search"=>{"value"=>"", "regex"=>"false"}},
-                  "5"=>{"data"=>"5", "name"=>"", "searchable"=>"false", "orderable"=>"false",
-                    "search"=>{"value"=>"", "regex"=>"false"}},
-                  "6"=>{"data"=>"6", "name"=>"", "searchable"=>"false", "orderable"=>"false",
-                    "search"=>{"value"=>"", "regex"=>"false"}}},
-                "order"=>{"0"=>{"column"=>"1", "dir"=>"desc"}},
-                "start"=>"0", "length"=>"10",
-                "search"=>{"value"=>"one tester", "regex"=>"false"},
-                "form_type"=>"create",
-                "main_job_id"=>""}
-    sign_in @user
-    xhr :get, :show_all, params
-    assert_response :success
-    body = JSON.parse(response.body)
-    assert_equal 5, body["recordsFiltered"]
+    assert_equal 1, body["recordsFiltered"]
   end
 
   test "show_regular_jobs_ajax" do

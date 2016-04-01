@@ -1702,3 +1702,18 @@ body{
   margin: 0 0 0.5rem;
 }
 
+.save-and-close{
+  float:right;
+  margin-right:2em;
+  margin-top:2em;
+}
+
+.button-left{
+  float:left;
+  margin-left:2em;
+  margin-top:2em;
+}
+
+a.button:visited {
+    color: white !important;
+}

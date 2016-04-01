@@ -28,8 +28,12 @@ Rails.application.routes.draw do
 
   post 'jobs/add_co_driver/', to:'jobs#add_co_driver', as: 'job_add_co_driver'
   get 'jobs/create_sixt/', to: 'jobs#create_sixt', as: 'job_create_sixt'
+  post 'jobs/create_shuttle/', to: 'jobs#create_shuttle', as: 'job_create_shuttle'
   get 'jobs/new_sixt/', to: 'jobs#new_sixt', as: 'job_new_sixt'
-  get 'jobs/new_shuttle/', to: 'jobs#new_shuttle', as: 'job_new_shuttle'
+  get 'jobs/new_shuttle/', to: 'jobs#new_shuttle', as: 'new_shuttle_job'
+  get 'jobs/change_to_shuttle/:id', to: 'jobs#change_to_shuttle', as: 'job_change_to_shuttle'
+  get 'jobs/set_shuttle_route/:id', to: 'jobs#set_shuttle_route', as: 'job_set_shuttle_route'
+  get 'jobs/unset_shuttle/:id', to: 'jobs#unset_shuttle', as: 'job_unset_shuttle'
   post 'jobs/add_to_current_bill/:id', to: 'jobs#add_to_current_bill', as: 'add_job_to_current_bill'
   post 'jobs/remove_from_current_bill/:id', to: 'jobs#remove_from_current_bill', as: 'remove_job_from_current_bill'
   get 'jobs/add_shuttle_breakpoint/:id', to: 'jobs#add_shuttle_breakpoint', as: 'job_add_shuttle_breakpoint'

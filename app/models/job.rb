@@ -66,6 +66,9 @@ class Job < ActiveRecord::Base
   end
 
   def change_breakpoint_address address, count
+    logger.info "change_breakpoint_address"
+    logger.info count
+    logger.info address
     if count == 0
       self.from_id = address.id
     elsif count == self.legs.length
@@ -73,7 +76,7 @@ class Job < ActiveRecord::Base
     else
       self.shuttle_data["stops"][count - 1]["address_id"] = address.id
     end
-    self.set_route
+    # self.set_route
     self.save
   end
 
@@ -341,13 +344,29 @@ class Job < ActiveRecord::Base
 
   def set_shuttle
     self.shuttle = true
-    if self.driver_id.nil?
-      driver_ids = []
-    else
-      driver_ids = [driver_id]
+    driver_ids = []
+    unless self.passengers.empty?
+      self.passengers.each do |passenger|
+        driver_ids << passenger.driver.id
+      end
     end
-
+    unless self.driver_id.nil?
+      driver_ids << driver_id
+      Passenger.create(job:self, driver_id:driver_id)
+    end
     self.shuttle_data = {"stops"=>[], "legs"=>[{distance: self.distance , driver_ids: driver_ids}]}
+    self.driver_id = nil
+    self.save
+  end
+
+  def unset_shuttle
+    self.shuttle = false
+    passengers = Passenger.where(job:self)
+    unless passengers.empty?
+      self.driver = passengers.first.driver
+      passengers.first.destroy
+    end
+    self.remove_shuttles
     self.save
   end
 
