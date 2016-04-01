@@ -55,9 +55,6 @@ class Job < ActiveRecord::Base
     if count.is_a? Integer
       self.shuttle_data["legs"][count]["distance"] = distance
     elsif count == "END"
-      puts "END DISTANCE"
-      puts distance
-      puts self.shuttle_data
       self.mileage_delivery = distance
     elsif count == "START"
       self.mileage_collection = distance
@@ -69,8 +66,6 @@ class Job < ActiveRecord::Base
   end
 
   def change_breakpoint_address address, count
-    logger.info address.inspect
-    logger.info count
     if count == 0
       self.from_id = address.id
     elsif count == self.legs.length
@@ -78,10 +73,8 @@ class Job < ActiveRecord::Base
     else
       self.shuttle_data["stops"][count - 1]["address_id"] = address.id
     end
+    self.set_route
     self.save
-    logger.info "================"
-    logger.info self.inspect
-    logger.info "================"
   end
 
   def add_shuttle_passenger passenger, count
@@ -202,23 +195,26 @@ class Job < ActiveRecord::Base
   end
 
   def legs
-    get_shuttle_data.legs
+    get_shuttle_data.legs if self.is_shuttle?
   end
 
   def stops
-    get_shuttle_data.stops
+    get_shuttle_data.stops if self.is_shuttle?
   end
 
-  def price_driver_shuttle( driver_job, get_array = false )
+  def price_driver_shuttle( driver, get_array = false )
     breakpoints_array = []
     price = 0
+
     self.legs.each_with_index do |leg, i|
-      drivers_in_car = leg.driver_ids.length
-      part_price = (( self.bill.driver_price_per_km * leg.distance )/ drivers_in_car )
-      price += part_price
-      if get_array
-        stops = self.stops
-        breakpoints_array << [ Address.find_by(id: stops[i].address_id).address_short, Address.find_by(id: stops[i + 1].address_id).address_short, leg.distance, drivers_in_car, part_price ]
+      if leg.driver_ids.include?(driver.id)
+        drivers_in_car = leg.driver_ids.length
+        part_price = (( self.bill.driver_price_per_km * leg.distance )/ drivers_in_car )
+        price += part_price
+        if get_array
+          stops = self.stops
+          breakpoints_array << [ Address.find_by(id: stops[i].address_id).address_short, Address.find_by(id: stops[i + 1].address_id).address_short, leg.distance, drivers_in_car, part_price ]
+        end
       end
     end
 
@@ -265,16 +261,18 @@ class Job < ActiveRecord::Base
     self.save
   end
 
-
+  def check_legs
+    return self.get_shuttle_milage_calculation.to_i == 0
+  end
 
   def check_for_billing
-    if self.driver.nil? || self.is_shuttle?
+    if self.driver.nil? && !self.is_shuttle?
       error = html_escape ( I18n.translate("jobs.not_billed_no_driver") + self.id.to_s ).encode("ISO-8859-1")
       return error
     end
 
-    if self.is_shuttle? && self.check_legs
-      error = html_escape ( I18n.translate("jobs.not_billed_no_driver") + self.id.to_s ).encode("ISO-8859-1")
+    if self.is_shuttle? && !self.check_legs
+      error = html_escape ( I18n.translate("jobs.not_billed_wrong_distance") + self.id.to_s ).encode("ISO-8859-1")
       return error
     end
 
@@ -341,8 +339,21 @@ class Job < ActiveRecord::Base
     return self.shuttle
   end
 
+  def set_shuttle
+    self.shuttle = true
+    if self.driver_id.nil?
+      driver_ids = []
+    else
+      driver_ids = [driver_id]
+    end
+
+    self.shuttle_data = {"stops"=>[], "legs"=>[{distance: self.distance , driver_ids: driver_ids}]}
+    self.save
+  end
+
   def get_shuttle_data
-    data = self.shuttle_data.deep_dup || {:stops=>[], :legs=>[]}
+    return nil unless self.is_shuttle?
+    data = self.shuttle_data.deep_dup || {"stops"=>[], "legs"=>[{distance:0, driver_ids:[]}]}
     data["stops"].unshift({:address_id=>self.from_id})
     data["stops"] << {:address_id=>self.to_id}
     data_struct = RecursiveOpenStruct.new(data, recurse_over_arrays: true )
