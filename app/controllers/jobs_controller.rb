@@ -76,8 +76,9 @@ class JobsController < ApplicationController
   def change_breakpoint_address
     count = params[:count].to_i
     address = Address.find_by_id(params[:address_id].to_i)
-    puts address.inspect
-    @job.change_breakpoint_address( address, count )
+    unless address.nil?
+      @job.change_breakpoint_address( address, count )
+    end
     respond_to do | format |
       format.json { render 'change_breakpoint_address.js.erb' }
     end
@@ -193,6 +194,11 @@ class JobsController < ApplicationController
       end
     end
 
+    if params[:co_driver_ids].present? && params[:co_driver_ids].length > 0
+      params[:co_driver_ids].each do |co_driver_id|
+        Passenger.create(driver_id: co_driver_id, job: @job)
+      end
+    end
 
     respond_to do |format|
       if job_errors == true && @job.save

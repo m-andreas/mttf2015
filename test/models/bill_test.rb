@@ -55,14 +55,14 @@ class BillTest < ActiveSupport::TestCase
     bill = Bill.get_current
     jobs(:shuttle).set_to_current_bill
     bill.pay
-    payment_sixt = 300 * 0.24
-    payment_driver1 = 100 * 0.072 + 50 * 0.072 / 2
-    payment_driver2 = 20 * 0.072 / 2
-    payment_driver3 = 50 * 0.072 / 2 + 20 * 0.072 / 2
+    payment_sixt = ( 300 + 100 )* 0.24
+    payment_driver1 = 100 * 0.072 + 100 * 0.072 + 50 * 0.072 / 2
+    payment_driver2 = 150 * 0.072 / 2
+    payment_driver3 = 50 * 0.072 / 2 + 150 * 0.072 / 2
     assert_equal payment_sixt, bill.sixt_total
     assert_equal payment_driver1, bill.driver_total( drivers(:one) )
-    assert_equal payment_driver2.to_s, bill.driver_total( drivers(:entered_today) ).to_s
-    assert_equal payment_driver3, bill.driver_total( drivers(:three) )
+    assert_equal payment_driver2.round(2), bill.driver_total( drivers(:two) ).round(2)
+    assert_equal payment_driver3.round(2), bill.driver_total( drivers(:three) ).round(2)
   end
 
   test "get_sixt_price_for_current" do
@@ -70,12 +70,13 @@ class BillTest < ActiveSupport::TestCase
     jobs(:shuttle).set_to_current_bill
     jobs(:one).set_to_current_bill
     jobs(:two).set_to_current_bill
-    payment_sixt = 300 * 0.24 + 19
-    assert_equal payment_sixt, bill.sixt_total
+    bill.reload
+    payment_sixt = 500 * 0.24 + 19
+    assert_equal payment_sixt.round(2), bill.sixt_total.round(2)
   end
 
   test "get job price for shuttle without breakpoints" do
-    jobs(:finished).shuttle = true
+    jobs(:finished).set_shuttle
     jobs(:finished).save
     bill = Bill.get_current
     dependencies = bill.pay

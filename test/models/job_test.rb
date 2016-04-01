@@ -21,9 +21,9 @@ class JobTest < ActiveSupport::TestCase
   end
 
   test "remove_shuttles" do
-    assert_equal 2, jobs(:shuttle).stops.length
+    assert_equal 4, jobs(:shuttle).stops.length
     jobs(:shuttle).remove_shuttles
     jobs(:shuttle).reload
-    assert jobs(:shuttle).stops.empty?
+    assert jobs(:shuttle)[:shuttle_data].nil?
   end
 end

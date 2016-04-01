@@ -356,7 +356,6 @@ class JobsControllerTest < ActionController::TestCase
     stops_after = jobs(:shuttle).stops.length
     assert_equal legs_before, legs_after
     assert_equal stops_before, stops_after
-    puts jobs(:shuttle).legs
     assert_not_equal 666, jobs(:shuttle).legs.last.distance
     assert_equal 666, jobs(:shuttle).mileage_delivery
     assert_equal jobs(:shuttle).stops.length - 1, jobs(:shuttle).legs.length
@@ -410,12 +409,12 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal passengers_before, passengers_after
   end
 
-  test "should remove shuttle passanger to shuttle stop" do
+  test "should remove shuttle passenger to shuttle stop" do
     sign_in @user
     legs_before = jobs(:shuttle).legs.length
     stops_before = jobs(:shuttle).stops.length
     passengers_before = jobs(:shuttle).legs.first.driver_ids.length
-    xhr :post, :remove_shuttle_passenger, id: jobs(:shuttle), count: 0, driver_id: drivers(:entered_today).id
+    xhr :post, :remove_shuttle_passenger, id: jobs(:shuttle), count: 0, driver_id: drivers(:one).id
     assert_response :success
     jobs(:shuttle).reload
     legs_after = jobs(:shuttle).legs.length
@@ -428,18 +427,54 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should change shuttle start address" do
     sign_in @user
-
+    legs_before = jobs(:shuttle).legs.length
+    stops_before = jobs(:shuttle).stops.length
+    passengers_before = jobs(:shuttle).legs.first.driver_ids.length
+    xhr :post, :change_breakpoint_address, id: jobs(:shuttle), count: 0, driver_id: drivers(:one).id, address_id: addresses(:four).id
+    assert_response :success
+    jobs(:shuttle).reload
+    legs_after = jobs(:shuttle).legs.length
+    stops_after = jobs(:shuttle).stops.length
+    passengers_after = jobs(:shuttle).legs.first.driver_ids.length
+    assert_equal legs_before, legs_after
+    assert_equal stops_before, stops_after
+    assert_equal passengers_before, passengers_after
+    assert_equal addresses(:four), jobs(:shuttle).from
   end
 
   test "should change shuttle end address" do
     sign_in @user
-
+    legs_before = jobs(:shuttle).legs.length
+    stops_before = jobs(:shuttle).stops.length
+    passengers_before = jobs(:shuttle).legs.first.driver_ids.length
+    xhr :post, :change_breakpoint_address, id: jobs(:shuttle), count: legs_before, address_id: addresses(:three).id
+    assert_response :success
+    jobs(:shuttle).reload
+    legs_after = jobs(:shuttle).legs.length
+    stops_after = jobs(:shuttle).stops.length
+    passengers_after = jobs(:shuttle).legs.first.driver_ids.length
+    assert_equal legs_before, legs_after
+    assert_equal stops_before, stops_after
+    assert_equal passengers_before, passengers_after
+    assert_equal addresses(:three), jobs(:shuttle).from
   end
 
 
   test "should change shuttle stop address" do
     sign_in @user
-
+    legs_before = jobs(:shuttle).legs.length
+    stops_before = jobs(:shuttle).stops.length
+    passengers_before = jobs(:shuttle).legs.first.driver_ids.length
+    xhr :post, :change_breakpoint_address, id: jobs(:shuttle), count: 1, address_id: addresses(:three).id
+    assert_response :success
+    jobs(:shuttle).reload
+    legs_after = jobs(:shuttle).legs.length
+    stops_after = jobs(:shuttle).stops.length
+    passengers_after = jobs(:shuttle).legs.first.driver_ids.length
+    assert_equal legs_before, legs_after
+    assert_equal stops_before, stops_after
+    assert_equal passengers_before, passengers_after
+    assert_equal addresses(:three).id, jobs(:shuttle).get_shuttle_data.stops.second.address_id
   end
 
   test "should get edit" do
@@ -528,7 +563,7 @@ class JobsControllerTest < ActionController::TestCase
     sign_in @user
     post :add_to_current_bill, id: jobs(:one)
     jobs(:one).reload
-    assert jobs(:one).is_finished?
+    assert jobs(:one).is_finished?, flash[:error]
     assert_equal Bill.get_current, jobs(:one).bill
     assert_redirected_to jobs_path
   end
@@ -562,25 +597,25 @@ class JobsControllerTest < ActionController::TestCase
   test "should_not_set_to_current_bill_if_breakpoints_not_correct" do
     sign_in @user
     leg = jobs(:shuttle)["shuttle_data"]["legs"].first
-    leg["distance"] = nil
+    jobs(:shuttle)["shuttle_data"]["legs"][0]["distance"] = nil
     jobs(:shuttle).save
     post :add_to_current_bill, id: jobs(:shuttle)
     jobs(:shuttle).reload
     assert_not jobs(:shuttle).is_finished?
     assert_redirected_to jobs_path
 
-    leg["distance"] = 1000
+    jobs(:shuttle)["shuttle_data"]["legs"][0]["distance"] = 1000
     jobs(:shuttle).save
     post :add_to_current_bill, id: jobs(:shuttle)
     jobs(:shuttle).reload
     assert_not jobs(:shuttle).is_finished?
     assert_redirected_to jobs_path
 
-    leg["distance"] = 150
+    jobs(:shuttle)["shuttle_data"]["legs"][0]["distance"] = 100
     jobs(:shuttle).save
     post :add_to_current_bill, id: jobs(:shuttle)
     jobs(:shuttle).reload
-    assert jobs(:shuttle).is_finished?
+    assert jobs(:shuttle).is_finished?, flash[:error]
     assert_equal Bill.get_current, jobs(:shuttle).bill
     assert_redirected_to jobs_path
   end
@@ -620,7 +655,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 6, body["recordsFiltered"]
+    assert_equal 10, body["recordsFiltered"]
   end
 
   test "show_all_edit_ajax_no_driver" do
@@ -648,7 +683,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 8, body["recordsFiltered"]
+    assert_equal 10, body["recordsFiltered"]
   end
 
   test "show_all_create_ajax" do
@@ -676,7 +711,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 8, body["recordsFiltered"]
+    assert_equal 10, body["recordsFiltered"]
   end
 
   test "show_all_create_ajax_search1" do
@@ -704,7 +739,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 6, body["recordsFiltered"]
+    assert_equal 7, body["recordsFiltered"]
   end
 
   test "show_all_create_ajax_search2" do
@@ -732,7 +767,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_all, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 4, body["recordsFiltered"]
+    assert_equal 5, body["recordsFiltered"]
   end
 
   test "show_regular_jobs_ajax" do
@@ -1086,7 +1121,7 @@ class JobsControllerTest < ActionController::TestCase
     xhr :get, :show_regular_jobs, params
     assert_response :success
     body = JSON.parse(response.body)
-    assert_equal 3, body["recordsFiltered"]
+    assert_equal 1, body["recordsFiltered"]
   end
 
   test "show_regular_jobs_ajax_all_in_date_with_licence" do

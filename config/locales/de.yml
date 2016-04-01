@@ -64,6 +64,7 @@ de:
     actual_delivery_time: Tatsächlicher Liefertermin
     add: Auftrag hinzufügen
     prevented_from_save: "haben diesen Auftag vom Speichern zurückgehalten:"
+    not_billed_wrong_distance: "Die Gesamtdistanz und die Teilstrecken stimmen nicht überein. Auftrag nicht verrechnet. Auftrag "
     not_billed_no_distance: "Es ist kein korrekte Distanz für Zwischenstrecke gesetz. Auftrag nicht verrechnet. Auftrag "
     not_billed_no_driver: "Es ist kein Fahrer gesetz. Auftrag nicht verrechnet. Auftrag "
     not_billed_breakpoints_not_correct: "Die Werte für einen Zwischenstopp sind niedriger oder gleich wie beim Stop davor. Auftrag nicht verrechnet. Auftrag "
