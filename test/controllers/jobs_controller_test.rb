@@ -33,20 +33,20 @@ class JobsControllerTest < ActionController::TestCase
     post :create_shuttle, shuttle_car: shuttle_cars(:one)
     assert_response :success
     assert assigns(:job).is_shuttle?
-    assert_equal shuttle_cars(:one).car_brand assigns(:job).car_brand
-    assert_equal shuttle_cars(:one).car_type assigns(:job).car_type
-    assert_equal shuttle_cars(:one).registration_number assigns(:job).registration_number
+    assert_equal shuttle_cars(:one).car_brand, assigns(:job).car_brand
+    assert_equal shuttle_cars(:one).car_type, assigns(:job).car_type
+    assert_equal shuttle_cars(:one).registration_number, assigns(:job).registration_number
   end
 
   test "should create shuttle with time" do
     sign_in @user
-    post :create_shuttle, shuttle_car: shuttle_cars(:one)
+    post :create_shuttle, shuttle_car: shuttle_cars(:one), job:{ scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "03.04.2015 00:00"}
     assert_response :success
     assert assigns(:job).is_shuttle?
-    assert_equal assigns(:job).actual_collection_time
-    assert_equal assigns(:job).actual_collection_time
-    assert_equal assigns(:job).actual_collection_time
-    assert_equal assigns(:job).actual_collection_time
+    assert_equal "02.04.2015 00:00".to_date, assigns(:job).actual_collection_time
+    assert_equal "02.04.2015 00:00".to_date, assigns(:job).scheduled_collection_time
+    assert_equal "03.04.2015 00:00".to_date, assigns(:job).scheduled_delivery_time
+    assert_equal "03.04.2015 00:00".to_date, assigns(:job).actual_delivery_time
   end
 
   test "should create job" do
@@ -162,6 +162,19 @@ class JobsControllerTest < ActionController::TestCase
     assert job.co_drivers.include? drivers(:two)
     assert job.co_drivers.include? drivers(:three)
     assert_equal 2, job.co_drivers.length
+  end
+
+  test "should edit shuttle job allgemein" do
+    sign_in @user
+    patch :update, job: { cost_center_id: "234", driver_id: drivers(:one).id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123", actual_collection_time: "", actual_delivery_time: "",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", job_notice: "job_notice",
+      transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"}, id: jobs(:shuttle)
+    assert_redirected_to jobs_path
+    job = Job.find(assigns(:job).id)
+    assert job.car_brand, "BMW"
+    assert job.car_type, "Z4"
+    assert job.cost_center_id, "234"
   end
 
   test "should remove co drivers on edit" do
@@ -304,6 +317,15 @@ class JobsControllerTest < ActionController::TestCase
   test "should show job without driver" do
     sign_in @user
     get :show, id: jobs(:one_no_driver)
+    assert_response :success
+  end
+
+  test "should show job without addresses" do
+    sign_in @user
+    @job.from_id = nil
+    @job.to_id = nil
+    @job.save
+    get :show, id: @job
     assert_response :success
   end
 
@@ -1179,4 +1201,116 @@ class JobsControllerTest < ActionController::TestCase
     assert_response :success, flash[:error]
   end
 
+  test "should set shuttle route and set to bill" do
+    sign_in @user
+    jobs(:shuttle).from_id = 4
+    jobs(:shuttle).to_id = 3
+    jobs(:shuttle).save
+    post :set_shuttle_route_and_pay, id: jobs(:shuttle)
+
+    jobs(:shuttle).reload
+    assert jobs(:shuttle).is_finished?
+    assert_equal routes(:four), jobs(:shuttle).route
+  end
+
+  test "should set shuttle route and not set to bill" do
+    sign_in @user
+    jobs(:shuttle).from_id = 6
+    jobs(:shuttle).to_id = 1
+    jobs(:shuttle).save
+    post :set_shuttle_route_and_pay, id: jobs(:shuttle)
+
+    jobs(:shuttle).reload
+    assert jobs(:shuttle).is_open?
+    assert_equal Route::NEW, jobs(:shuttle).route.status
+  end
+
+  test "should set to shuttle" do
+
+  end
+
+  test "should make shuttle and bill correct" do
+    sign_in @user
+    post :create_shuttle, shuttle_car: shuttle_cars(:one), job:{ scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "03.04.2015 00:00"}
+    assert_response :success
+    assert assigns(:job).is_shuttle?
+    job = assigns(:job)
+    assert_equal "02.04.2015 00:00".to_date, assigns(:job).actual_collection_time
+    assert_equal "02.04.2015 00:00".to_date, assigns(:job).scheduled_collection_time
+    assert_equal "03.04.2015 00:00".to_date, assigns(:job).scheduled_delivery_time
+    assert_equal "03.04.2015 00:00".to_date, assigns(:job).actual_delivery_time
+
+    old_bill = Bill.get_current
+    old_bill.jobs.each do |bill_job|
+      bill_job.set_open
+    end
+    old_bill.destroy
+    xhr :post, :change_breakpoint_address, id: job, count: 0, address_id: addresses(:two).id
+    assert_response :success
+
+    xhr :post, :change_breakpoint_address, id: job, count: 1, address_id: addresses(:one).id
+    assert_response :success
+
+    xhr :post, :add_shuttle_passenger, id: job, count: 0, driver_id: drivers(:one).id
+    assert_response :success
+
+    xhr :post, :add_shuttle_passenger, id: job, count: 0, driver_id: drivers(:two).id
+    assert_response :success
+
+    xhr :post, :add_shuttle_passenger, id: job, count: 0, driver_id: drivers(:three).id
+    assert_response :success
+
+    xhr :post, :add_shuttle_breakpoint, id: job, count: 0
+    assert_response :success
+
+    xhr :post, :change_breakpoint_address, id: job, count: 1, address_id: addresses(:three).id
+    assert_response :success
+
+    xhr :post, :add_shuttle_breakpoint, id: job, count: 1
+    assert_response :success
+
+    xhr :post, :remove_shuttle_passenger, id: job, count: 1, driver_id: drivers(:three).id
+    assert_response :success
+
+    xhr :post, :change_breakpoint_address, id: job, count: 1, address_id: addresses(:four).id
+    assert_response :success
+
+    xhr :post, :remove_shuttle_passenger, id: job, count: 2, driver_id: drivers(:two).id
+    assert_response :success
+
+    xhr :post, :change_breakpoint_distance, id: job, count: "START", distance: 100
+    assert_response :success
+
+    xhr :post, :change_breakpoint_distance, id: job, count: "0", distance: 300
+    assert_response :success
+
+    xhr :post, :change_breakpoint_distance, id: job, count: "1", distance: 200
+    assert_response :success
+
+    xhr :post, :change_breakpoint_distance, id: job, count: "2", distance: 100
+    assert_response :success
+
+    xhr :post, :change_breakpoint_distance, id: job, count: "END", distance: 700
+    assert_response :success
+
+    post :set_shuttle_route_and_pay, id: job
+    assert_redirected_to root_path
+
+    job.reload
+    assert job.is_shuttle?
+    assert 3, job.passengers.length
+
+    bill = Bill.get_current
+    bill.pay
+
+    job.reload
+    assert job.is_shuttle?
+    assert 3, job.passengers.length
+
+    assert 3, bill.drivers.length
+    assert bill.driver_total(drivers(:one)) > 0
+    assert bill.driver_total(drivers(:two)) > 0
+    assert bill.driver_total(drivers(:three)) > 0
+    assert bill.sixt_total > 0
+  end
 end

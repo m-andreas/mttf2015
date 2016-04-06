@@ -95,6 +95,23 @@ class Job < ActiveRecord::Base
     self.save
   end
 
+  def drivers_in_shuttle
+    driver_ids = []
+    drivers = []
+    if self.is_shuttle?
+      self.legs.each do |leg|
+        driver_ids << leg.driver_ids
+      end
+      driver_ids.flatten
+      driver_ids.each do |driver_id|
+        driver = Driver.where( id: driver_id )
+        drivers << driver unless driver.nil?
+      end
+      return drivers.uniq
+    end
+    return drivers
+  end
+
   def driver_in_shuttle? driver
     self.legs.each do |leg|
       if leg.driver_ids.include? driver.id
@@ -105,17 +122,27 @@ class Job < ActiveRecord::Base
   end
 
   def shuttle_stops_distance
-    mileage_stops = 0
-    self.shuttle_data["legs"].each do |leg|
-      mileage_stops += leg["distance"].to_i
+    if self.is_shuttle?
+      mileage_stops = 0
+      if self.shuttle_data.is_a?( Hash ) && self.shuttle_data["legs"].is_a?( Array )
+        self.shuttle_data["legs"].each do |leg|
+          mileage_stops += leg["distance"].to_i
+        end
+      end
+      return mileage_stops
+    else
+      return 0
     end
-    return mileage_stops
   end
 
   def get_shuttle_milage_calculation
-    milage_complete = self.distance
-    mileage_stops = self.shuttle_stops_distance
-    return ( milage_complete - mileage_stops ).to_s
+    if self.is_shuttle?
+      milage_complete = self.distance
+      mileage_stops = self.shuttle_stops_distance
+      return ( milage_complete - mileage_stops ).to_s
+    else
+      return 0
+    end
   end
 
   def self.save_many jobs
@@ -156,8 +183,12 @@ class Job < ActiveRecord::Base
   end
 
   def set_route
-    self.route_id = Route.find_or_create( self.from_id , self.to_id )
-    self.save
+    unless self.from_id.nil? || self.to_id.nil?
+      self.route_id = Route.find_or_create( self.from_id , self.to_id )
+      self.save
+    else
+      return false
+    end
   end
 
   def distance
@@ -228,6 +259,14 @@ class Job < ActiveRecord::Base
     end
   end
 
+  def driver_legs driver
+    legs_driver_in_shuttle = []
+    self.legs.each_with_index do |leg, i|
+      legs_driver_in_shuttle << i + 1 if leg.driver_ids.include? driver.id
+    end
+    return legs_driver_in_shuttle
+  end
+
   def price_sixt_current( sixt = Company.sixt )
     if self.route.calculation_basis == Route::FLAT_RATE
       price = sixt.price_flat_rate
@@ -278,6 +317,9 @@ class Job < ActiveRecord::Base
       error = html_escape ( I18n.translate("jobs.not_billed_wrong_distance") + self.id.to_s ).encode("ISO-8859-1")
       return error
     end
+
+    ret = self.set_route if self.route.nil?
+    return "Addressen nicht korrekt gesetzt. Auftrag nicht verrechnet Auftrag #{self.id}"  if ret == false
 
     unless self.route.is_active?
       error = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet. Auftrag #{self.id}"
@@ -370,6 +412,13 @@ class Job < ActiveRecord::Base
     self.save
   end
 
+  def set_passengers
+    self.drivers_in_shuttle.each do |driver|
+      Passenger.first_or_create( job: self, driver: driver )
+    end
+    return true
+  end
+
   def get_shuttle_data
     return nil unless self.is_shuttle?
     data = self.shuttle_data.deep_dup || {"stops"=>[], "legs"=>[{distance:0, driver_ids:[]}]}
@@ -385,9 +434,9 @@ class Job < ActiveRecord::Base
       shuttle_string = I18n.t("jobs.shuttle_for_drivers")
       self.passengers.each do |passenger|
         if passenger == self.passengers.last
-          shuttle_string += " #{passenger.id}"
+          shuttle_string += " #{passenger.driver.id}"
         else
-          shuttle_string += " #{passenger.id},"
+          shuttle_string += " #{passenger.driver.id},"
         end
       end
     end
@@ -396,6 +445,13 @@ class Job < ActiveRecord::Base
 
   def charged?
     self.status == CHARGED
+  end
+
+  def apply_shuttle_car_data shuttle_car
+    self.registration_number = shuttle_car.registration_number
+    self.car_type = shuttle_car.car_type
+    self.car_brand = shuttle_car.car_brand
+    self.save
   end
 
   def get_status

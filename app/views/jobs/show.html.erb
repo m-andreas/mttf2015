@@ -3,11 +3,12 @@
 </div>
 <div id="custom-row">
   <div class="large-6 columns">
-    <p>
-      <strong>Fahrer:</strong>
-      <%= @job.driver.fullname_id unless @job.driver.nil? %>
-    </p>
-
+    <% unless @job.is_shuttle? %>
+      <p>
+        <strong>Fahrer:</strong>
+        <%= @job.driver.fullname_id unless @job.driver.nil? %>
+      </p>
+    <% end %>
     <% if @job.has_co_drivers? %>
       <% @job.co_drivers.each_with_index do |co_driver, i| %>
         <p>
@@ -33,12 +34,12 @@
 
     <p>
       <strong>Von:</strong>
-      <%= @job.from.complete_address %>
+      <%= @job.from.complete_address if @job.from.is_a? Address %>
     </p>
 
     <p>
       <strong>Nach:</strong>
-      <%= @job.to.complete_address %>
+      <%= @job.to.complete_address if @job.to.is_a? Address%>
     </p>
     <p>
       <strong>Geplanter Abholtermin:</strong>
@@ -102,19 +103,46 @@
   </div>
 
   <% if @job.is_shuttle? %>
-    <div class="small-12 columns"><h2>Details zum Schuttelauftrag</h2></div>
-    <table>
-      <thead>
-        <th>Name</th>
-      </thead>
-      <tbody>
-        <% @job.passengers.map(&:driver).each do |driver| %>
-          <tr>
-            <td><%= driver.fullname %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <div class="small-12 columns">
+      <h2>Shuttledaten</h2>
+      <div class="small-12 medium-6 columns">
+      <h2>Fahrer</h2>
+      <table>
+        <thead>
+          <th>Name</th>
+          <th>Teilstrecken</th>
+        </thead>
+        <tbody>
+          <% @job.passengers.map(&:driver).each do |driver| %>
+            <tr>
+              <td><%= driver.fullname %></td>
+              <td><%= @job.driver_legs(driver).join(", ") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      </div>
+      <div class="small-12 medium-6 columns">
+        <h2>Teilstrecken</h2>
+        <table>
+          <thead>
+            <th>Nr.</th>
+            <th>Strecke</th>
+            <th>Distanz</th>
+          </thead>
+          <tbody>
+            <% stops = @job.stops %>
+            <% @job.legs.each_with_index do |leg, i| %>
+              <tr>
+                <td><%= i + 1 %></td>
+                <td><%= Address.find(stops[i].address_id).show_address + " - " + Address.find(stops[i+1].address_id).show_address %></td>
+                <td><%= leg.distance %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   <% end %>
   <div class="small-12 column">
     <% if @job.is_open? %>

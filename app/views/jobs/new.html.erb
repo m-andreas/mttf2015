@@ -1,4 +1,4 @@
-<% if @job.shuttle? %> 
+<% if @job.shuttle? %>
   <ul class="tabs" data-tab>
     <li class="tab-title"><a href="#general">Allgemein</a></li>
     <li class="tab-title active"><a href="#shuttle">Shuttlestops</a></li>
@@ -6,7 +6,4 @@
   <div class="tabs-content">
 <% end %>
   <%=render "new_general" %>
-  <% if @job.shuttle? %>
-    <%= render "new_shuttle" %>
-  <% end %>
 </div>

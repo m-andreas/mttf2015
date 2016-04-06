@@ -1650,9 +1650,10 @@ body{
 }
 
 .shuttle_driver_row{
-  border-top: 2px solid black;
+  border: 2px solid black;
   padding-top: 20px;
   background-color: #d1d3d6;
+  margin-bottom: 1em;
 }
 
 .shuttle_driver_row h2{
@@ -1716,4 +1717,12 @@ body{
 
 a.button:visited {
     color: white !important;
+}
+
+.main-wrapper{
+  padding: 2em;
+}
+
+.row{
+  max-width: 80%;
 }

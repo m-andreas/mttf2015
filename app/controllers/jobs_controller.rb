@@ -1,7 +1,7 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
     :add_to_current_bill, :print_job, :set_to_print, :add_shuttle_breakpoint, :remove_shuttle_breakpoint, :change_breakpoint_distance, :add_shuttle_passenger, :remove_shuttle_passenger,
-    :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route, :unset_shuttle ]
+    :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route_and_pay, :unset_shuttle ]
   before_action :check_transfair, except: [ :multible_cars, :create_sixt, :new_sixt, :index  ]
   # GET /jobs
   # GET /jobs.json
@@ -44,6 +44,7 @@ class JobsController < ApplicationController
     count = params[:count].to_i
     passenger = Driver.find_by_id(params[:driver_id])
     @job.add_shuttle_passenger passenger, count
+    @job.set_passengers
     @shuttle_data = @job.get_shuttle_data
     respond_to do | format |
       format.js { render '_shuttle_passengers.html.erb', :locals => {  :i => count } }
@@ -54,6 +55,7 @@ class JobsController < ApplicationController
     count = params[:count].to_i
     passenger = Driver.find_by_id(params[:driver_id])
     @job.remove_shuttle_passenger passenger, count
+    @job.set_passengers
     @shuttle_data = @job.get_shuttle_data
     respond_to do | format |
       format.js { render 'remove_shuttle_passenger.js.erb', :locals => {  :i => count } }
@@ -174,8 +176,14 @@ class JobsController < ApplicationController
     render "edit"
   end
 
-  def set_shuttle_route
+  def set_shuttle_route_and_pay
     @job.set_route
+    msg = @job.check_for_billing
+    if msg == true
+      @job.set_to_current_bill
+    else
+      flash[:error] = msg
+    end
     redirect_to root_path
   end
 
@@ -183,7 +191,15 @@ class JobsController < ApplicationController
     logger.info params.inspect
     @job = Job.new
     @job.status = Job::OPEN
-    logger.info params.inspect
+    @job.created_by_id = current_user.id
+
+    if params.has_key?(:shuttle_car)
+      shuttle_car = ShuttleCar.where( id: params[:shuttle_car] ).first
+      unless shuttle_car.nil?
+        @job.apply_shuttle_car_data( shuttle_car )
+      end
+    end
+
     if !params[:job].nil? && job_params[:scheduled_collection_time] =~ /\A[0-9][0-9]?\.[0-9][0-9]?\.[1-9][0-9]{3}( [0-2][0-9]:[0-6][0-9])?\z/
       @job.scheduled_collection_time = job_params[:scheduled_collection_time]
       @job.actual_collection_time = @job.scheduled_collection_time
@@ -361,9 +377,9 @@ class JobsController < ApplicationController
             @addresses = Address.get_active
             return redirect_to :back
       end
-      if @job.is_open? && @job.update(job_params) && @job.set_route && @job.add_co_drivers(params[:co_driver_ids])
-        if job_params["shuttle"] == "0"
-          @job.remove_shuttles
+      if @job.is_open? && @job.update(job_params) && @job.add_co_drivers(params[:co_driver_ids])
+        unless @job.is_shuttle?
+          @job.set_route
         end
         if params[:subaction] == "update_and_pay"
           msg = @job.check_for_billing

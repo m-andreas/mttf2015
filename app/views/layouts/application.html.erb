@@ -119,7 +119,9 @@
         <% end %>
       <% end %>
     </div>
-    <%= yield %>
+    <div class="main-wrapper">
+      <%= yield %>
+    </div>
     <%= javascript_tag do %>
       jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
         return this.each(function() {

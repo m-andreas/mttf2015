@@ -8,7 +8,7 @@
     <%= link_to fa_icon("map-marker") + " Stop hinzufügen", job_add_shuttle_breakpoint_path(:id => @job.id, :count => i.to_s), remote: true, class: "button round" %><br>
   </div>
   <div class="small-10 medium-2 column">
-    Fahrer hier filtern <input id="driver_filter_<%=i%>" type="text">
+    Fahrer hier filtern <input id="driver_filter_<%=i%>" class="driver_filter" type="text">
     <%= select_tag "driver_ids_#{i}", options_from_collection_for_select( @drivers, "id",  "fullname_id" ), :class => "driver_ids" %>
   </div>
   <div class="small-2 columns">
@@ -23,5 +23,10 @@
 <script type="text/javascript">
   $(function(){
     $('#driver_ids_<%=i%>').filterByText($('#driver_filter_<%=i%>'), true);
+  });
+  $('.driver_filter').keypress(function(e) {
+    if(e.which == 13) {
+        $(this).parent().parent().find(".add_shuttle_passenger").click();
+    }
   });
 </script>

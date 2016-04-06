@@ -35,7 +35,7 @@ private
           add_to_current = ""
           delete = ""
         end
-        show = link_to 'Anzeigen', "/mttf2015/jobs/#{job.id}"
+        show = link_to 'Anzeigen', "#{ENV['URL_PREFIX']}jobs/#{job.id}"
         if job.actual_collection_time.nil?
           if job.scheduled_collection_time.nil?
             collection_date = ""

@@ -54,4 +54,21 @@ class JobTest < ActiveSupport::TestCase
     jobs(:shuttle).reload
     assert jobs(:shuttle)[:shuttle_data].nil?
   end
+
+  test "check for billing no route" do
+    jobs(:one).route_id = nil
+    jobs(:one).save
+    jobs(:one).check_for_billing
+    assert !jobs(:one).route_id.nil?
+    assert jobs(:one).is_open?
+  end
+
+  test "check for billing no addresses" do
+    jobs(:one).route_id = nil
+    jobs(:one).from_id = nil
+    jobs(:one).to_id = nil
+    jobs(:one).save
+    jobs(:one).check_for_billing
+    assert jobs(:one).is_open?
+  end
 end
