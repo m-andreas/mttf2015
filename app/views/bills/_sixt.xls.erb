@@ -26,7 +26,8 @@
         <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">Verrechungsart</Data></Cell>
         <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String"></Data></Cell>
         <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">EUR</Data></Cell>
-        <Cell ss:StyleID="borderrechtsobenuntendick"><Data ss:Type="String">KSt</Data></Cell>
+        <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">KSt</Data></Cell>
+        <Cell ss:StyleID="borderrechtsobenuntendick"><Data ss:Type="String">Bemerkung</Data></Cell>
       </Row>
         <% @bill.jobs.where( shuttle: false ).each do |job| %>
             <Row ss:Height="47">
@@ -43,7 +44,7 @@
                 <Cell><Data ss:Type="String"></Data></Cell>
                 <Cell ss:StyleID="price"><Data ss:Type="Number"><%= job.price_sixt.to_s %></Data></Cell>
                 <Cell><Data ss:Type="Number"><%= job.cost_center_id %></Data></Cell>
-                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.get_shuttle_string %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"></Data></Cell>
             </Row>
         <% end %>
         <% @bill.jobs.where( shuttle: true ).each do |job| %>
@@ -61,7 +62,7 @@
                 <Cell><Data ss:Type="String"></Data></Cell>
                 <Cell ss:StyleID="price"><Data ss:Type="Number"><%= job.price_sixt.to_s %></Data></Cell>
                 <Cell><Data ss:Type="Number"><%= job.cost_center_id %></Data></Cell>
-                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.get_shuttle_string %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.transport_notice.to_s %></Data></Cell>
             </Row>
         <% end %>
        <Row/>
