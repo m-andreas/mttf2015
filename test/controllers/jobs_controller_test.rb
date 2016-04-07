@@ -1424,4 +1424,23 @@ class JobsControllerTest < ActionController::TestCase
     assert bill.driver_total(drivers(:three)) > 0
     assert bill.sixt_total > 0
   end
+
+  test "should bill shuttle with 0 as start mileage" do
+    sign_in @user
+    xhr :post, :change_breakpoint_distance, id: jobs(:shuttle), count: "START", distance: 0
+    assert_response :success, response.inspect
+
+    xhr :post, :change_breakpoint_distance, id: jobs(:shuttle), count: "END", distance: 300
+    assert_response :success
+
+    post :set_shuttle_route_and_pay, id: jobs(:shuttle)
+    assert_redirected_to root_path
+
+    bill = Bill.get_current
+
+    jobs(:shuttle).reload
+    assert jobs(:shuttle).is_shuttle?
+    assert 3, jobs(:shuttle).passengers.length
+    assert_equal bill, jobs(:shuttle).bill, flash.inspect
+  end
 end

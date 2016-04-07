@@ -328,7 +328,7 @@ class Job < ActiveRecord::Base
       return error
     end
 
-    unless self.mileage_collection.to_i > 0 && self.mileage_delivery.to_i > 0
+    if !self.is_shuttle? && ( self.mileage_collection.to_i <= 0 || self.mileage_delivery.to_i <= 0 )
       error = "Km Stand nicht gesetz. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error
     end

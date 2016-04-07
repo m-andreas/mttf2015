@@ -15,8 +15,8 @@
   <tbody>
     <% @routes.each do |route| %>
       <tr>
-        <td><%= route.from.complete_address + " | " + route.from.address_short unless route.from.nil?%></td>
-        <td><%= route.to.complete_address + " | " + route.to.address_short unless route.to.nil?%></td>
+        <td><%= route.from.complete_address.to_s + " | " + route.from.address_short.to_s unless route.from.nil?%></td>
+        <td><%= route.to.complete_address.to_s + " | " + route.to.address_short.to_s unless route.to.nil?%></td>
         <td><%= route.get_calculation_basis %></td>
         <td><%= route.distance %></td>
         <td><%= route.get_status %></td>
