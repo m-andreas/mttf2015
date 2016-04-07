@@ -1,5 +1,11 @@
 <div class="content active" id="shuttle">
     <%= hidden_field_tag "id", @job.id %>
+    <div class="small-12 column no-padding">
+      <div class="small-12 medium-3 column">
+        <%= label_tag "tourname", "Name der Tour (optional)" %>
+        <%= text_field_tag 'tourname', @job.tourname %>
+      </div>
+    </div>
     <% @shuttle_data.stops.each_with_index do |stop, i| %>
       <div id="<%=i%>">
         <% if i == 0 %>

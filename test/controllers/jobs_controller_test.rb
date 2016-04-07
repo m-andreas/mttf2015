@@ -1264,6 +1264,7 @@ class JobsControllerTest < ActionController::TestCase
     old_bill.jobs.each do |bill_job|
       bill_job.set_open
     end
+
     old_bill.destroy
     xhr :post, :change_breakpoint_address, id: job, count: 0, address_id: addresses(:two).id
     assert_response :success

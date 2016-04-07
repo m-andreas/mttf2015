@@ -1,7 +1,7 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
     :add_to_current_bill, :print_job, :set_to_print, :add_shuttle_breakpoint, :remove_shuttle_breakpoint, :change_breakpoint_distance, :add_shuttle_passenger, :remove_shuttle_passenger,
-    :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route_and_pay, :unset_shuttle ]
+    :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route_and_pay, :unset_shuttle, :change_tourname ]
   before_action :check_transfair, except: [ :multible_cars, :create_sixt, :new_sixt, :index  ]
   # GET /jobs
   # GET /jobs.json
@@ -83,6 +83,14 @@ class JobsController < ApplicationController
     end
     respond_to do | format |
       format.json { render 'change_breakpoint_address.js.erb' }
+    end
+  end
+
+  def change_tourname
+    @job.tourname = params[:tourname]
+    @job.save
+    respond_to do | format |
+      format.json { render 'change_tourname.js.erb' }
     end
   end
 
