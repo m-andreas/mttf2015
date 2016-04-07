@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 20160325155236) do
     t.string   "TaetigkeitsType",         limit: 1,                            default: "A"
     t.decimal  "KundenauftragID",                     precision: 18, scale: 0
     t.decimal  "KostenstelleID",                      precision: 18, scale: 0,                 null: false
-    t.decimal  "ArbeitsKosten",                       precision: 18, scale: 0
+    t.decimal  "ArbeitsKosten",                       precision: 10, scale: 0
     t.string   "ArbeitsBemerkung",        limit: 250,                                          null: false
     t.string   "SekKontrollBemerkungen",  limit: 250
     t.boolean  "SekKontroll",                                                  default: false, null: false
@@ -67,6 +67,33 @@ ActiveRecord::Schema.define(version: 20160325155236) do
     t.string   "TelNr",                   limit: 3
   end
 
+  create_table "Betriebsmittel", primary_key: "ID", force: true do |t|
+    t.string  "Typ",                limit: 50,                          null: false
+    t.string  "Währung",            limit: 5,                           null: false
+    t.decimal "Betrag",                        precision: 10, scale: 0, null: false
+    t.string  "Bemerkungen"
+    t.integer "FrFahrtauftragID"
+    t.integer "FrShuttleAuftragID"
+    t.integer "TankkartenNummer"
+    t.boolean "Bar"
+  end
+
+  create_table "FahrerAbrechnung", primary_key: "FahrerAbrechnung", force: true do |t|
+    t.string  "TaetigkeitsType",  limit: 1
+    t.decimal "KundenaufrtagID",            precision: 18, scale: 0
+    t.decimal "BuchungsZeilenID",           precision: 18, scale: 0
+    t.decimal "Betrag",                     precision: 10, scale: 0
+  end
+
+  create_table "FahrerJounal", primary_key: "FahrerJournalID", force: true do |t|
+    t.decimal  "FahrerID",                        precision: 18, scale: 0,                 null: false
+    t.decimal  "FahrerJournalLaufnummer",         precision: 18, scale: 0
+    t.datetime "JournalAusdruck"
+    t.datetime "JournalAusdruckstorno"
+    t.boolean  "JournalStorno",                                            default: false
+    t.decimal  "FahrerJournalLaufnummer_History", precision: 18, scale: 0, default: 0
+  end
+
   create_table "Fahrtauftrag", primary_key: "FahrtAuftragID", force: true do |t|
     t.string   "TaetigkeitsType",                 limit: 1,                            default: "F"
     t.decimal  "KundenauftragID",                             precision: 18, scale: 0
@@ -80,12 +107,12 @@ ActiveRecord::Schema.define(version: 20160325155236) do
     t.string   "AuftragsBemerkungen",             limit: 500
     t.decimal  "FahrerID",                                    precision: 18, scale: 0
     t.decimal  "AbrechnungsModusID",                          precision: 18, scale: 0
-    t.decimal  "ArbeitzeitKostenExt",                         precision: 18, scale: 0
-    t.decimal  "ArbeitzeitKostenInt",                         precision: 18, scale: 0
-    t.decimal  "TransportKostExt",                            precision: 18, scale: 0
+    t.decimal  "ArbeitzeitKostenExt",                         precision: 10, scale: 0
+    t.decimal  "ArbeitzeitKostenInt",                         precision: 10, scale: 0
+    t.decimal  "TransportKostExt",                            precision: 10, scale: 0
     t.string   "TransportKostInt",                limit: 10
-    t.decimal  "UebertellungsbetragExt",                      precision: 18, scale: 0
-    t.decimal  "UebertellungsbetragInt",                      precision: 18, scale: 0
+    t.decimal  "UebertellungsbetragExt",                      precision: 10, scale: 0
+    t.decimal  "UebertellungsbetragInt",                      precision: 10, scale: 0
     t.string   "TransportBemerkungen",            limit: 500
     t.datetime "GeplantesTransportDatumAbholung"
     t.datetime "RealesAbholDatum"
@@ -119,14 +146,14 @@ ActiveRecord::Schema.define(version: 20160325155236) do
     t.decimal  "BFahrerID7",                                  precision: 18, scale: 0, default: 0
     t.decimal  "BFahrerID8",                                  precision: 18, scale: 0, default: 0
     t.decimal  "Stehzeit",                                    precision: 19, scale: 2, default: 0.0
-    t.decimal  "Treibstoff",                                  precision: 18, scale: 0, default: 0
-    t.decimal  "Betriebsmittel",                              precision: 18, scale: 0, default: 0
-    t.decimal  "Maut",                                        precision: 18, scale: 0, default: 0
+    t.decimal  "Treibstoff",                                  precision: 10, scale: 0, default: 0
+    t.decimal  "Betriebsmittel",                              precision: 10, scale: 0, default: 0
+    t.decimal  "Maut",                                        precision: 10, scale: 0, default: 0
     t.integer  "Tankkartennummer",                                                     default: 0
     t.boolean  "Shuttelfahrt",                                                         default: false
     t.string   "SekKontrolleMemo",                limit: 200
     t.datetime "Druckdatum_Orginal"
-    t.integer  "Anzahl_Ausdrucke",                                                     default: 0
+    t.integer  "Anzahl_Ausdrücke",                                                     default: 0
     t.string   "KnotenpunktVon",                  limit: 40
     t.string   "KnotenpunktNach",                 limit: 40
     t.datetime "BuchungsFreigabe"
@@ -145,10 +172,142 @@ ActiveRecord::Schema.define(version: 20160325155236) do
   create_table "Kundenauftrag", primary_key: "KundenauftragID", force: true do |t|
     t.decimal  "LaufnummerJeKostenstelle",            precision: 18, scale: 0
     t.decimal  "KostenstelleID",                      precision: 18, scale: 0,                 null: false
-    t.datetime "Auftragseroeffnung",                                                           null: false
+    t.datetime "Auftragseröffnung",                                                            null: false
     t.boolean  "AuftragAbschluss",                                             default: false
     t.datetime "AufAbTimestemp"
     t.string   "AuftragsNummerExtern",     limit: 20
+  end
+
+  create_table "Login_Archive_LOGFILE", primary_key: "LoginTurnID", force: true do |t|
+    t.integer  "LoginReturn"
+    t.decimal  "LoginID",                               precision: 18, scale: 0
+    t.decimal  "FirmaID",                               precision: 10, scale: 0
+    t.string   "Login",                      limit: 10
+    t.string   "Passwort",                   limit: 10
+    t.string   "Vorname",                    limit: 20
+    t.string   "Nachname",                   limit: 20
+    t.string   "TelNR",                      limit: 20
+    t.string   "FaxNR",                      limit: 20
+    t.string   "EMail",                      limit: 30
+    t.decimal  "BerchtigungID",                         precision: 18, scale: 0
+    t.decimal  "UserGruppeID",                          precision: 18, scale: 0
+    t.decimal  "KostenstelleID_Berecht",                precision: 18, scale: 0
+    t.decimal  "KostenstelleID",                        precision: 18, scale: 0
+    t.integer  "MinVorlaufzeitFahrtAuftrag"
+    t.integer  "MinVorlaufzeitStorno"
+    t.string   "Aktion",                     limit: 10
+    t.datetime "Zeitstempel"
+  end
+
+  create_table "MailImport_Log", primary_key: "MIL_Id", force: true do |t|
+    t.string   "Betreff",        limit: 256
+    t.text     "Body"
+    t.datetime "AuftragsDatum"
+    t.integer  "AuftragsNummer"
+    t.text     "Bemerkung"
+    t.datetime "timestamp",                  null: false
+  end
+
+  create_table "MailImport_Queue", primary_key: "MIQ_Id", force: true do |t|
+    t.string   "Betreff",        limit: 256
+    t.text     "Body"
+    t.datetime "AuftragsDatum"
+    t.integer  "AuftragsNummer"
+    t.datetime "timestamp",                  null: false
+  end
+
+  create_table "MailImport_Settings", id: false, force: true do |t|
+    t.boolean "isStarted", default: false, null: false
+  end
+
+  create_table "Schaden", primary_key: "SchadenId", force: true do |t|
+    t.integer  "SchadenStatusId",           null: false
+    t.text     "Kennzeichen"
+    t.datetime "SchadenDatum"
+    t.text     "SixtSchadenNummer"
+    t.text     "VersicherungSchadenNummer"
+    t.text     "Notizen"
+    t.datetime "CreateDateTime",            null: false
+  end
+
+  create_table "SchadenFiles", primary_key: "SchadenFileId", force: true do |t|
+    t.integer "SchadenId", null: false
+    t.text    "FileName",  null: false
+  end
+
+  create_table "SchadenStatus", primary_key: "SchadenStatusId", force: true do |t|
+    t.text "Bezeichnung"
+  end
+
+  create_table "ShuttelAuftrag", primary_key: "ShuttelAuftragID", force: true do |t|
+    t.decimal  "KostenstelleID",                       precision: 18, scale: 0, default: 0
+    t.decimal  "KundenauftragID",                      precision: 18, scale: 0
+    t.decimal  "FahrtauftragID",                       precision: 18, scale: 0, default: 0
+    t.datetime "AbFahrtdatum"
+    t.datetime "Ankunftdatum"
+    t.integer  "VonId"
+    t.string   "Von",                      limit: 40
+    t.integer  "NachId"
+    t.string   "Nach",                     limit: 40
+    t.decimal  "RealKM",                               precision: 18, scale: 0, default: 0
+    t.string   "Bemerkung",                limit: 250
+    t.string   "Abrechnungsmodus",         limit: 10
+    t.string   "Kennzeichen",              limit: 10
+    t.decimal  "Treibstoff",                           precision: 10, scale: 0, default: 0
+    t.decimal  "Betriebsmittel",                       precision: 10, scale: 0, default: 0
+    t.decimal  "Maut",                                 precision: 10, scale: 0, default: 0
+    t.integer  "Tankkartennummer",                                              default: 0
+    t.decimal  "FahrerID",                             precision: 18, scale: 0, default: 0
+    t.decimal  "BeiFahrer1",                           precision: 18, scale: 0, default: 0
+    t.decimal  "BeiFahrer2",                           precision: 18, scale: 0, default: 0
+    t.decimal  "BeiFahrer3",                           precision: 18, scale: 0, default: 0
+    t.decimal  "BeiFahrer4",                           precision: 18, scale: 0, default: 0
+    t.decimal  "BeiFahrer5",                           precision: 18, scale: 0, default: 0
+    t.decimal  "BeiFahrer6",                           precision: 18, scale: 0, default: 0
+    t.decimal  "BeiFahrer7",                           precision: 18, scale: 0, default: 0
+    t.decimal  "BeiFahrer8",                           precision: 18, scale: 0, default: 0
+    t.boolean  "BuchungsKontroll",                                              default: false
+    t.boolean  "Storno",                                                        default: false
+    t.decimal  "ShuttelFahrtKostenIntern",             precision: 10, scale: 0
+    t.decimal  "ShuttelFahrtKostenExtern",             precision: 10, scale: 0
+    t.datetime "RechnungslegungEXT"
+    t.datetime "Buchungsdatum"
+    t.float    "Arbeitszeit",              limit: 53,                           default: 0.0
+    t.string   "KennzeichenAuftrag",       limit: 25
+    t.string   "TelNr",                    limit: 3
+    t.boolean  "NichtZugewiesen"
+    t.boolean  "IsDuplicate"
+  end
+
+  create_table "ShuttelFahrerEntlohnung", primary_key: "ShuttelFahrerEntlohnung", force: true do |t|
+    t.decimal  "ShuttelAuftragID",                   precision: 18, scale: 0
+    t.decimal  "FahrtAuftragID",                     precision: 18, scale: 0
+    t.decimal  "ArbeitsauftragID",                   precision: 18, scale: 0
+    t.decimal  "FahrerID",                           precision: 18, scale: 0,             null: false
+    t.boolean  "NWAufbereitung"
+    t.decimal  "Entlohnung",                         precision: 10, scale: 0
+    t.datetime "BuchungsfreigabeDatum"
+    t.datetime "FahrerAuszahlungDatum"
+    t.decimal  "FahrerJournalLaufnummer",            precision: 18, scale: 0, default: 0
+    t.string   "Kurzadresse_VON_SH",      limit: 40
+    t.string   "Kurzadresse_NACH_SH",     limit: 40
+    t.integer  "VonId"
+    t.integer  "NachId"
+  end
+
+  create_table "ShuttelFahrtDetails", primary_key: "ShuttelAuftragDetailID", force: true do |t|
+    t.decimal "ShuttelAuftragID", precision: 18, scale: 0
+    t.decimal "FahrtAuftragID",   precision: 18, scale: 0
+    t.boolean "Storno",                                    default: false
+  end
+
+  create_table "StAbrechnunsModus", primary_key: "AbrechnungsModusID", force: true do |t|
+    t.string  "AbrechnungsModus",       limit: 10
+    t.integer "AbrechnungsModusNummer"
+  end
+
+  create_table "StBerechtigung", primary_key: "BerechtigungID", force: true do |t|
+    t.string "BerechtigungsBeschreibung", limit: 25
   end
 
   create_table "StFahrer", primary_key: "FahrerID", force: true do |t|
@@ -171,16 +330,38 @@ ActiveRecord::Schema.define(version: 20160325155236) do
     t.boolean  "FSKopie"
     t.boolean  "MeldzettelKopie"
     t.boolean  "Werkvertrag"
-    t.decimal  "KostenPerRealKM",                   precision: 18, scale: 0,             null: false
-    t.decimal  "Fahrkostenpauschale",               precision: 18, scale: 0,             null: false
-    t.decimal  "AbzugFahrer",                       precision: 18, scale: 0
+    t.decimal  "KostenPerRealKM",                   precision: 10, scale: 0,             null: false
+    t.decimal  "Fahrkostenpauschale",               precision: 10, scale: 0,             null: false
+    t.decimal  "AbzugFahrer",                       precision: 10, scale: 0
     t.string   "AbzugBemerkung",        limit: 500
     t.string   "UID",                   limit: 15
     t.string   "Steuernummer",          limit: 20
-    t.decimal  "StundenLohnAA",                     precision: 18, scale: 0, default: 0, null: false
-    t.decimal  "PauschalLohnNWAuf",                 precision: 18, scale: 0, default: 0, null: false
-    t.decimal  "KostenPerRealKM35",                 precision: 18, scale: 0
-    t.decimal  "Fahrkostenpauschale35",             precision: 18, scale: 0
+    t.decimal  "StundenLohnAA",                     precision: 10, scale: 0, default: 0, null: false
+    t.decimal  "PauschalLohnNWAuf",                 precision: 10, scale: 0, default: 0, null: false
+    t.decimal  "KostenPerRealKM35",                 precision: 10, scale: 0
+    t.decimal  "Fahrkostenpauschale35",             precision: 10, scale: 0
+  end
+
+  create_table "StFirma", primary_key: "FirmaID", force: true do |t|
+    t.string  "Firma",                      limit: 30,                                       null: false
+    t.string  "Adresse",                    limit: 30,                                       null: false
+    t.string  "Ort",                        limit: 25
+    t.string  "PLZ",                        limit: 10,                                       null: false
+    t.string  "Land",                       limit: 30,                                       null: false
+    t.string  "TelNR",                      limit: 20
+    t.string  "FaxNR",                      limit: 20
+    t.string  "EMail",                      limit: 40
+    t.decimal "KostenPerRealKM",                       precision: 10, scale: 0
+    t.decimal "Fahrkostenpauschale",                   precision: 10, scale: 0
+    t.decimal "StundensatzArbeitsauftrag",             precision: 10, scale: 0
+    t.decimal "PauschaleNWAufbereitung",               precision: 10, scale: 0
+    t.integer "MinVorlaufzeitFahrtAuftrag",                                     default: 24
+    t.integer "MinVorlaufzeitStorno"
+    t.decimal "KostenPerRealKM35",                     precision: 10, scale: 0
+    t.decimal "Fahrkostenpauschale35",                 precision: 10, scale: 0
+    t.decimal "RealKMShuttelfahrt",                    precision: 10, scale: 0
+    t.decimal "ShuttelPauschale",                      precision: 10, scale: 0
+    t.integer "AbrechnungsModi"
   end
 
   create_table "StKMTabelle", primary_key: "KMTabelleID", force: true do |t|
@@ -193,11 +374,31 @@ ActiveRecord::Schema.define(version: 20160325155236) do
   create_table "StKMTabelleNeu", primary_key: "ID", force: true do |t|
     t.integer  "VonID",                default: 0, null: false
     t.integer  "NachID",               default: 0, null: false
-    t.integer  "FaStatus",   limit: 2, default: 0
-    t.integer  "SHStatus",   limit: 2, default: 0
+    t.integer  "FaStatus",   limit: 1, default: 0
+    t.integer  "SHStatus",   limit: 1, default: 0
     t.integer  "KM",                   default: 0
-    t.integer  "Edit",       limit: 2, default: 0
+    t.integer  "Edit",       limit: 1, default: 0
     t.datetime "InsertDate"
+  end
+
+  create_table "StKostenstelle", primary_key: "KostenstelleID", force: true do |t|
+    t.string  "Kostenstelle",               limit: 10,                                          null: false
+    t.decimal "FirmaID",                               precision: 10, scale: 0,                 null: false
+    t.string  "Bemerkungen",                limit: 40
+    t.string  "Stationsname",               limit: 30,                                          null: false
+    t.string  "Adresse",                    limit: 20
+    t.string  "Ort",                        limit: 20
+    t.string  "Land",                       limit: 10
+    t.string  "PLZ",                        limit: 10
+    t.string  "Ansprechperson",             limit: 20
+    t.string  "Tel1",                       limit: 20
+    t.string  "Tel2",                       limit: 20
+    t.string  "Fax",                        limit: 20
+    t.string  "Email1",                     limit: 30
+    t.string  "Email2",                     limit: 30
+    t.string  "KostenStelleKontrollerCODE", limit: 6
+    t.boolean "deaktiviert",                                                    default: false
+    t.boolean "duplikat"
   end
 
   create_table "StLogin", primary_key: "LoginID", force: true do |t|
@@ -214,6 +415,10 @@ ActiveRecord::Schema.define(version: 20160325155236) do
     t.decimal "KostenstelleID_Berecht",            precision: 18, scale: 0
     t.decimal "KostenstelleID",                    precision: 18, scale: 0
     t.boolean "deaktiviert",                                                default: false
+  end
+
+  create_table "StUsergruppen", primary_key: "UserGruppenID", force: true do |t|
+    t.string "GruppenBezeichnng", limit: 25
   end
 
   create_table "addresses", force: true do |t|
@@ -346,6 +551,25 @@ ActiveRecord::Schema.define(version: 20160325155236) do
     t.datetime "updated_at"
   end
 
+  create_table "stWaehrung", primary_key: "ID", force: true do |t|
+    t.string "Name", limit: 5, null: false
+  end
+
+  create_table "sysdiagrams", primary_key: "diagram_id", force: true do |t|
+    t.string  "name",         limit: 128, null: false
+    t.integer "principal_id",             null: false
+    t.integer "version"
+    t.binary  "definition"
+  end
+
+  add_index "sysdiagrams", ["principal_id", "name"], name: "UK_principal_name", unique: true, using: :btree
+
+  create_table "tabMobileRsAUserLogin", id: false, force: true do |t|
+    t.integer  "UserID",                     null: false
+    t.datetime "Datum",                      null: false
+    t.string   "ShortPhoneNumber", limit: 3
+  end
+
   create_table "users", force: true do |t|
     t.string   "email",                  default: "",    null: false
     t.string   "encrypted_password",     default: "",    null: false
@@ -374,9 +598,7 @@ ActiveRecord::Schema.define(version: 20160325155236) do
     t.boolean  "deleted",                default: false
   end
 
-  add_index "users", ["invitation_token"], name: "index_users_on_tokenname", unique: true
-  add_index "users", ["invitations_count"], name: "index_users_on_invitations_count"
-  add_index "users", ["invited_by_id"], name: "index_users_on_invited_by_id"
-  add_index "users", ["username"], name: "index_users_on_username", unique: true
+  add_index "users", ["invitations_count"], name: "index_users_on_invitations_count", using: :btree
+  add_index "users", ["invited_by_id"], name: "index_users_on_invited_by_id", using: :btree
 
 end

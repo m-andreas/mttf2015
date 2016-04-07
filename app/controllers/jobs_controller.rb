@@ -371,7 +371,7 @@ class JobsController < ApplicationController
         @addresses = Address.get_active
         return redirect_to :back
       end
-      if params[:co_driver_ids].present? && params[:co_driver_ids].length > 0 && job_params[:shuttle] == "1"
+      if params[:co_driver_ids].present? && params[:co_driver_ids].length > 0 && @job.shuttle?
         flash[:error] = "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein."
             @drivers = Driver.get_active
             @addresses = Address.get_active

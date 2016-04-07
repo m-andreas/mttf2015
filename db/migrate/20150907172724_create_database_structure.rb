@@ -409,9 +409,6 @@ class CreateDatabaseStructure < ActiveRecord::Migration
         t.string "GruppenBezeichnng", limit: 25
       end
 
-      create_table "dtproperties", id: false, force: true do |t|
-      end
-
       create_table "stWaehrung", primary_key: "ID", force: true do |t|
         t.string "Name", limit: 5, null: false
       end

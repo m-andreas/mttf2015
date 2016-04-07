@@ -25,11 +25,13 @@ class Job < ActiveRecord::Base
   end
 
   def add_co_drivers co_driver_ids
-    self.remove_co_drivers
-    if !co_driver_ids.nil? && co_driver_ids.is_a?( Array )
-      co_driver_ids.each do |co_driver_id|
-        driver = Driver.find_by(id: co_driver_id)
-        self.add_co_driver driver
+    unless self.is_shuttle?
+      self.remove_co_drivers
+      if !co_driver_ids.nil? && co_driver_ids.is_a?( Array )
+        co_driver_ids.each do |co_driver_id|
+          driver = Driver.find_by(id: co_driver_id)
+          self.add_co_driver driver
+        end
       end
     end
     return true
@@ -53,7 +55,7 @@ class Job < ActiveRecord::Base
 
   def change_breakpoint_distance distance, count
     if count.is_a? Integer
-      self.shuttle_data["legs"][count]["distance"] = distance
+      self.shuttle_data["legs"][count]["distance"] = distance unless self.shuttle_data["legs"][count].nil?
     elsif count == "END"
       self.mileage_delivery = distance
     elsif count == "START"
