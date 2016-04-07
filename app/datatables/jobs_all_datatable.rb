@@ -53,8 +53,7 @@ private
 
     if params[:search][:value].present?
       search = params[:search][:value].strip
-      records = records.where("id like :search", search: "%#{search}%")
-
+      records = records.where("id like :search or registration_number like :search", search: "%#{search}%")
     end
     records
   end
