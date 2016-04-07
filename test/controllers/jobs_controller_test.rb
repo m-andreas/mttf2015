@@ -31,7 +31,7 @@ class JobsControllerTest < ActionController::TestCase
   test "should create shuttle" do
     sign_in @user
     post :create_shuttle, shuttle_car: shuttle_cars(:one)
-    assert_response :success
+    assert_redirected_to edit_job_path(assigns(:job))
     assert assigns(:job).is_shuttle?
     assert_equal shuttle_cars(:one).car_brand, assigns(:job).car_brand
     assert_equal shuttle_cars(:one).car_type, assigns(:job).car_type
@@ -41,7 +41,7 @@ class JobsControllerTest < ActionController::TestCase
   test "should create shuttle with time" do
     sign_in @user
     post :create_shuttle, shuttle_car: shuttle_cars(:one), job:{ scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "03.04.2015 00:00"}
-    assert_response :success
+    assert_redirected_to edit_job_path(assigns(:job))
     assert assigns(:job).is_shuttle?
     assert_equal "02.04.2015 00:00".to_date, assigns(:job).actual_collection_time
     assert_equal "02.04.2015 00:00".to_date, assigns(:job).scheduled_collection_time
@@ -1252,7 +1252,7 @@ class JobsControllerTest < ActionController::TestCase
   test "should make shuttle and bill correct" do
     sign_in @user
     post :create_shuttle, shuttle_car: shuttle_cars(:one), job:{ scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "03.04.2015 00:00"}
-    assert_response :success
+    assert_redirected_to edit_job_path(assigns(:job))
     assert assigns(:job).is_shuttle?
     job = assigns(:job)
     assert_equal "02.04.2015 00:00".to_date, assigns(:job).actual_collection_time
@@ -1337,7 +1337,7 @@ class JobsControllerTest < ActionController::TestCase
   test "should update shuttle in tab general" do
     sign_in @user
     post :create_shuttle, shuttle_car: shuttle_cars(:one), job:{ scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "03.04.2015 00:00"}
-    assert_response :success
+    assert_redirected_to edit_job_path(assigns(:job))
     assert assigns(:job).is_shuttle?
     job = assigns(:job)
     assert_equal "02.04.2015 00:00".to_date, assigns(:job).actual_collection_time

@@ -181,7 +181,7 @@ class JobsController < ApplicationController
     @job = Job.new
     @job.status = Job::OPEN
     @job.created_by_id = current_user.id
-
+    @job.to_print = false
     if params.has_key?(:shuttle_car)
       shuttle_car = ShuttleCar.where( id: params[:shuttle_car] ).first
       unless shuttle_car.nil?
@@ -209,7 +209,7 @@ class JobsController < ApplicationController
     end
     respond_to do |format|
       if @job.save
-        format.html { render 'edit', notice: t("jobs.created") }
+        format.html { redirect_to edit_job_path(@job), notice: t("jobs.created") }
       else
         format.html { redirect_to :back }
       end
