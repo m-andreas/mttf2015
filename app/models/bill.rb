@@ -140,7 +140,11 @@ class Bill < ActiveRecord::Base
     self.billed_at = DateTime.now
     self.save
     self.jobs.each do |job|
-      job.final_calculation_basis = job.route.calculation_basis
+      if job.is_shuttle?
+        job.final_calculation_basis = Route::PAY_PER_KM
+      else
+        job.final_calculation_basis = job.route.calculation_basis
+      end
       job.set_charged
     end
     return true

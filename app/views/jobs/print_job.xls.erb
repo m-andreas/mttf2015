@@ -86,29 +86,29 @@
    </Row>
    <Row ss:Index="14">
     <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Überstellung von:</Data></Cell>
-    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address_short %></Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address_short.to_s %></Data></Cell>
    </Row>
    <Row>
     <Cell ss:StyleID="s18"></Cell>
-    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address %></Data></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address.to_s %></Data></Cell>
    </Row>
    <Row>
-    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.zip_code + " " + @job.from.city %></Data></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.zip_code.to_s + " " + @job.from.city.to_s %></Data></Cell>
    </Row>
    <Row>
     <Cell ss:StyleID="s18"></Cell>
    </Row>
    <Row ss:Index="18">
     <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Überstellung nach:</Data></Cell>
-    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address_short %></Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address_short.to_s %></Data></Cell>
    </Row>
    <Row>
     <Cell ss:StyleID="s18"></Cell>
-    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address %></Data></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address.to_s %></Data></Cell>
    </Row>
    <Row>
     <Cell ss:StyleID="s18"></Cell>
-    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.zip_code + " " + @job.to.city %></Data></Cell>
+    <Cell ss:Index="4" ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.zip_code.to_s + " " + @job.to.city.to_s %></Data></Cell>
    </Row>
    <Row>
     <Cell ss:StyleID="s18"></Cell>

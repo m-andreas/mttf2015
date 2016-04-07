@@ -176,17 +176,6 @@ class JobsController < ApplicationController
     render "edit"
   end
 
-  def set_shuttle_route_and_pay
-    @job.set_route
-    msg = @job.check_for_billing
-    if msg == true
-      @job.set_to_current_bill
-    else
-      flash[:error] = msg
-    end
-    redirect_to root_path
-  end
-
   def create_shuttle
     logger.info params.inspect
     @job = Job.new
@@ -377,10 +366,7 @@ class JobsController < ApplicationController
             @addresses = Address.get_active
             return redirect_to :back
       end
-      if @job.is_open? && @job.update(job_params) && @job.add_co_drivers(params[:co_driver_ids])
-        unless @job.is_shuttle?
-          @job.set_route
-        end
+      if @job.is_open? && @job.update(job_params) && @job.add_co_drivers(params[:co_driver_ids]) && @job.set_route
         if params[:subaction] == "update_and_pay"
           msg = @job.check_for_billing
           if msg == true

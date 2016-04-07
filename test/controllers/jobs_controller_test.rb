@@ -1221,26 +1221,28 @@ class JobsControllerTest < ActionController::TestCase
 
   test "should set shuttle route and set to bill" do
     sign_in @user
-    jobs(:shuttle).from_id = 4
+    jobs(:shuttle).from_id = 1
     jobs(:shuttle).to_id = 3
+    jobs(:shuttle).route_id = 1
     jobs(:shuttle).save
-    post :set_shuttle_route_and_pay, id: jobs(:shuttle)
-
+    post :add_to_current_bill, id: jobs(:shuttle)
+    bill = Bill.get_current
+    bill.pay
     jobs(:shuttle).reload
-    assert jobs(:shuttle).is_finished?
-    assert_equal routes(:four), jobs(:shuttle).route
+    assert jobs(:shuttle).is_charged?
+    assert_equal Route::PAY_PER_KM, jobs(:shuttle).final_calculation_basis
   end
 
   test "should set shuttle route and not set to bill" do
     sign_in @user
-    jobs(:shuttle).from_id = 6
-    jobs(:shuttle).to_id = 1
+    jobs(:shuttle).mileage_collection = 0
+    jobs(:shuttle).mileage_delivery = 10
     jobs(:shuttle).save
-    post :set_shuttle_route_and_pay, id: jobs(:shuttle)
+    post :add_to_current_bill, id: jobs(:shuttle)
 
     jobs(:shuttle).reload
     assert jobs(:shuttle).is_open?
-    assert_equal Route::NEW, jobs(:shuttle).route.status
+    assert_nil jobs(:shuttle).route
   end
 
   test "should set to shuttle" do
@@ -1311,8 +1313,8 @@ class JobsControllerTest < ActionController::TestCase
     xhr :post, :change_breakpoint_distance, id: job, count: "END", distance: 700
     assert_response :success
 
-    post :set_shuttle_route_and_pay, id: job
-    assert_redirected_to root_path
+    post :add_to_current_bill, id: job
+    assert_redirected_to jobs_path
 
     job.reload
     assert job.is_shuttle?
@@ -1433,8 +1435,27 @@ class JobsControllerTest < ActionController::TestCase
     xhr :post, :change_breakpoint_distance, id: jobs(:shuttle), count: "END", distance: 300
     assert_response :success
 
-    post :set_shuttle_route_and_pay, id: jobs(:shuttle)
-    assert_redirected_to root_path
+    post :add_to_current_bill, id: jobs(:shuttle)
+    assert_redirected_to jobs_path
+
+    bill = Bill.get_current
+
+    jobs(:shuttle).reload
+    assert jobs(:shuttle).is_shuttle?
+    assert 3, jobs(:shuttle).passengers.length
+    assert_equal bill, jobs(:shuttle).bill, flash.inspect
+  end
+
+  test "should not set route at shuttle" do
+    sign_in @user
+    xhr :post, :change_breakpoint_distance, id: jobs(:shuttle), count: "START", distance: 0
+    assert_response :success, response.inspect
+
+    xhr :post, :change_breakpoint_distance, id: jobs(:shuttle), count: "END", distance: 300
+    assert_response :success
+
+    post :add_to_current_bill, id: jobs(:shuttle)
+    assert_redirected_to jobs_path
 
     bill = Bill.get_current
 

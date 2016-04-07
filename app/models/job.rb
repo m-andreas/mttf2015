@@ -185,11 +185,16 @@ class Job < ActiveRecord::Base
   end
 
   def set_route
-    unless self.from_id.nil? || self.to_id.nil?
-      self.route_id = Route.find_or_create( self.from_id , self.to_id )
+    if self.is_shuttle?
+      self.route = nil
       self.save
     else
-      return false
+      unless self.from_id.nil? || self.to_id.nil?
+        self.route_id = Route.find_or_create( self.from_id , self.to_id )
+        self.save
+      else
+        return false
+      end
     end
   end
 
@@ -270,9 +275,15 @@ class Job < ActiveRecord::Base
   end
 
   def price_sixt_current( sixt = Company.sixt )
-    if self.route.calculation_basis == Route::FLAT_RATE
+    if self.is_shuttle?
+      calculation_basis = Route::PAY_PER_KM
+    else
+      calculation_basis = self.route.calculation_basis
+    end
+
+    if calculation_basis == Route::FLAT_RATE
       price = sixt.price_flat_rate
-    elsif self.route.calculation_basis == Route::PAY_PER_KM
+    elsif calculation_basis == Route::PAY_PER_KM
       price = self.distance * sixt.price_per_km
     else
       return false
@@ -323,7 +334,7 @@ class Job < ActiveRecord::Base
     ret = self.set_route if self.route.nil?
     return "Addressen nicht korrekt gesetzt. Auftrag nicht verrechnet Auftrag #{self.id}"  if ret == false
 
-    unless self.route.is_active?
+    if !self.is_shuttle? && !self.route.is_active?
       error = "Route ist noch nicht gesetzt. Auftrag nicht verrechnet. Auftrag #{self.id}"
       return error
     end
@@ -443,6 +454,14 @@ class Job < ActiveRecord::Base
       end
     end
     return shuttle_string
+  end
+
+  def distance_string
+    if self.is_shuttle?
+      return "Shuttle"
+    else
+      return self.route.is_flat_rate? ? "Pauschale" : self.route.distance.to_s
+    end
   end
 
   def charged?

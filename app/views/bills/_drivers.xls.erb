@@ -10,7 +10,7 @@
      <Column ss:Index="10" ss:AutoFitWidth="0" ss:Width="150"/>
      <Column ss:Index="11" ss:AutoFitWidth="0" ss:Width="150"/>
         <Row ss:Height="20" >
-            <Cell ss:StyleID="heading"><Data ss:Type="String">Abrechnung <%= @bill.print_date %> <%= I18n.t( :for ) %> <%= driver.last_name %></Data></Cell>
+            <Cell ss:StyleID="heading"><Data ss:Type="String">Abrechnung <%= @bill.print_date %> <%= I18n.t( :for ) %> <%= driver.fullname_id %></Data></Cell>
         </Row>
         <Row/>
         <Row>
@@ -35,10 +35,10 @@
           <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
           <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%=raw job.from.complete_address %></Data></Cell>
           <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%= job.registration_number %></Data></Cell>
-          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="Number"><%= job.route.distance %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="Number"><%= job.route.distance unless job.route.nil? %></Data></Cell>
           <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="Number"><%= job.distance %></Data></Cell>
           <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="Number"><%= %></Data></Cell>
-          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%= job.route.get_calculation_basis %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%= job.route.get_calculation_basis unless job.route.nil?%></Data></Cell>
           <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%= job.shuttle? ? "Ja" : "" %></Data></Cell>
           <Cell ss:StyleID="<%= "preis" %>"><Data ss:Type="Number"><%= @bill.job_price( job, driver ).to_s %></Data></Cell>
         </Row>

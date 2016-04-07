@@ -23,13 +23,13 @@
         <tr>
           <td><%= job.id %></td>
           <td><%= job.driver.fullname unless job.driver.nil? %></td>
-          <td><%= job.from.address_short %></td>
-          <td><%= job.to.address_short %></td>
+          <td><%= job.from.show_address %></td>
+          <td><%= job.to.show_address %></td>
           <td><%= l job.actual_collection_time.to_date unless job.actual_collection_time.nil? %></td>
           <td><%= l job.actual_delivery_time.to_date unless job.actual_collection_time.nil? %></td>
-          <td><%= job.route.is_flat_rate? ? "Pauschale" : job.route.distance %></td>
+          <td><%= job.distance_string %></td>
           <td><%= job.distance %></td>
-          <td><%= ( job.distance - job.route.distance.to_i ).abs %></td>
+          <td><%= ( job.distance - job.route.distance.to_i ).abs unless job.is_shuttle? %></td>
           <td><%= job.is_shuttle? ? "Ja" : "Nein" %></td>
           <td><%= link_to "anzeigen", job%>
           <% if @bill.is_current? %>

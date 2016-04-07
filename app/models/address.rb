@@ -39,9 +39,13 @@ class Address < ActiveRecord::Base
 
   def show_address
     if self.display_name.to_s.empty?
-      return self.address_short
+      address = self.address_short.to_s
     else
-      return self.display_name.to_s
+      address = self.display_name.to_s
     end
+    if address.empty?
+      address = self.city.to_s
+    end
+    return address
   end
 end

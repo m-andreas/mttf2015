@@ -17,6 +17,7 @@ class BillsControllerTest < ActionController::TestCase
 
   test "should get current" do
     sign_in @user
+    jobs(:shuttle).set_to_current_bill
     get :current
     assert_response :success
     assert_not_nil assigns(:bill)

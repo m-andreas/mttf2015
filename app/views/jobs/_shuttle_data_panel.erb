@@ -50,7 +50,7 @@
     <% end %>
     <div class="small-12">
       <%= link_to "In normalen Auftrag umwandeln", job_unset_shuttle_path(id: @job.id), class: "button round button-left", data: { confirm: "Shuttle wird zu normalen Auftrag umgewandelt, die Shuttle Daten gehen dadurch verloren. Fortfahren?" } %>
-      <%= link_to "Route setzen und verrechnen", job_set_shuttle_route_path(id: @job.id), class: "button round save-and-close" %>
+      <%= link_to "Shuttle Auftrag verrechnen", add_job_to_current_bill_path(id: @job.id), method: :post, class: "button round save-and-close" %>
     </div>
 </div>
 

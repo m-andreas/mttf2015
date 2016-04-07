@@ -137,8 +137,8 @@
                 <td><%= i + 1 %></td>
                 <% from_address = Address.where(id:stops[i].address_id).first %>
                 <% to_address = Address.where(id:stops[i+1].address_id).first %>
-                <% from_show_address = from_address.nil? ? "" : from_address.show_address %>
-                <% to_show_address = to_address.nil? ? "" : to_address.show_address %>
+                <% from_show_address = from_address.nil? ? "" : from_address.show_address.to_s %>
+                <% to_show_address = to_address.nil? ? "" : to_address.show_address.to_s %>
                 <td><%= from_show_address + " - " + to_show_address %></td>
                 <td><%= leg.distance %></td>
               </tr>
