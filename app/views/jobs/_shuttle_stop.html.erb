@@ -27,6 +27,7 @@
   $('.driver_filter').keypress(function(e) {
     if(e.which == 13) {
         $(this).parent().parent().find(".add_shuttle_passenger").click();
+        $(this).val("")
     }
   });
 </script>
