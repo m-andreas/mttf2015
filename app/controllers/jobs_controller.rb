@@ -106,8 +106,6 @@ class JobsController < ApplicationController
     end
   end
 
-
-
   def show_all
     render json: JobsAllDatatable.new(view_context)
   end

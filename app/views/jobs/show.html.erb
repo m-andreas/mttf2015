@@ -129,6 +129,8 @@
             <th>Nr.</th>
             <th>Strecke</th>
             <th>Distanz</th>
+            <th>Anzahl</th>
+            <th>Fahrer</th>
           </thead>
           <tbody>
             <% stops = @job.stops %>
@@ -141,6 +143,8 @@
                 <% to_show_address = to_address.nil? ? "" : to_address.show_address.to_s %>
                 <td><%= from_show_address + " - " + to_show_address %></td>
                 <td><%= leg.distance %></td>
+                <td><%= leg.driver_ids.length %></td>
+                <td><%= leg.driver_ids.join(', ') %></td>
               </tr>
             <% end %>
           </tbody>
