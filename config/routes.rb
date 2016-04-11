@@ -39,7 +39,6 @@ Rails.application.routes.draw do
   get 'jobs/remove_shuttle_breakpoint/:id', to: 'jobs#remove_shuttle_breakpoint', as: 'job_remove_shuttle_breakpoint'
   get 'jobs/change_breakpoint_distance/:id', to: 'jobs#change_breakpoint_distance', as: 'job_change_breakpoint_distance'
   get 'jobs/change_breakpoint_address/:id', to: 'jobs#change_breakpoint_address', as: 'job_change_breakpoint_address'
-  get 'jobs/change_tourname/:id', to: 'jobs#change_tourname', as: 'job_change_tourname'
   get 'jobs/add_shuttle_passenger/:id', to: 'jobs#add_shuttle_passenger', as: 'job_add_shuttle_passenger'
   get 'jobs/remove_shuttle_passenger/:id', to: 'jobs#remove_shuttle_passenger', as: 'job_remove_shuttle_passenger'
   get 'jobs/print_job/:id', to: 'jobs#print_job', as: 'print_job'

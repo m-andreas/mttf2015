@@ -229,9 +229,6 @@ ready = ->
       a = $(this).parent().parent().parent().attr("id")
       url = window._url_prefix + "jobs/change_breakpoint_address/" + $("#id").val() + "?count=" + a + "&address_id=" + $(this).val()
       $.ajax(url: url, dataType: 'script' ).done (html) ->
-    $('#tourname').change ->
-      url = window._url_prefix + "jobs/change_tourname/" + $("#id").val() + "?tourname=" + $(this).val()
-      $.ajax(url: url, dataType: 'script' ).done (html) ->
 
   window.attach_shuttle_functions()
 

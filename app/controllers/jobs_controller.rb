@@ -86,14 +86,6 @@ class JobsController < ApplicationController
     end
   end
 
-  def change_tourname
-    @job.tourname = params[:tourname]
-    @job.save
-    respond_to do | format |
-      format.json { render 'change_tourname.js.erb' }
-    end
-  end
-
   def remove_from_current_bill
     @job.set_open
     redirect_to jobs_path
