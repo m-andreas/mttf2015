@@ -551,6 +551,25 @@ ActiveRecord::Schema.define(version: 20160411205201) do
     t.datetime "updated_at"
   end
 
+  create_table "stWaehrung", primary_key: "ID", force: true do |t|
+    t.string "Name", limit: 5, null: false
+  end
+
+  create_table "sysdiagrams", primary_key: "diagram_id", force: true do |t|
+    t.string  "name",         limit: 128, null: false
+    t.integer "principal_id",             null: false
+    t.integer "version"
+    t.binary  "definition"
+  end
+
+  add_index "sysdiagrams", ["principal_id", "name"], name: "UK_principal_name", unique: true, using: :btree
+
+  create_table "tabMobileRsAUserLogin", id: false, force: true do |t|
+    t.integer  "UserID",                     null: false
+    t.datetime "Datum",                      null: false
+    t.string   "ShortPhoneNumber", limit: 3
+  end
+
   create_table "users", force: true do |t|
     t.string   "email",                  default: "",    null: false
     t.string   "encrypted_password",     default: "",    null: false

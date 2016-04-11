@@ -33,7 +33,7 @@
   </div>
   <div class="field">
     <%= f.label :address_short, "Adresse kurz" %><br>
-    <%= f.text_field :address_short, disabled: true %>
+    <%= f.text_field :address_short, disabled: current_user.is_sixt? %>
   </div>
   <div class="field">
     <%= f.label :opening_hours, t("addresses.opening_hours") %><br>

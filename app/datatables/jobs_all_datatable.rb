@@ -23,8 +23,8 @@ private
     display_on_page.map do |job|
       unless job.nil?
         fullname = job.driver.nil? ? "" : job.driver.fullname_id
-        from_address_short = job.from.nil? ? "" : job.from.address_short
-        to_address_short = job.to.nil? ? "" : job.to.address_short
+        from_address_short = job.from.nil? ? "" : job.from.show_address
+        to_address_short = job.to.nil? ? "" : job.to.show_address
         icon = link_to( fa_icon( "bus", text:  "Shuttle erzeugen" ),  "#{ENV['URL_PREFIX']}jobs/change_to_shuttle/#{job.id}")
 
         created_at = job.created_at.nil? ? "" : job.created_at.strftime("%e.%-m.%Y")

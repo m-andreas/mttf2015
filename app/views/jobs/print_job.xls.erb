@@ -86,7 +86,7 @@
    </Row>
    <Row ss:Index="14">
     <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Überstellung von:</Data></Cell>
-    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.address_short.to_s %></Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.from.show_address.to_s %></Data></Cell>
    </Row>
    <Row>
     <Cell ss:StyleID="s18"></Cell>
@@ -100,7 +100,7 @@
    </Row>
    <Row ss:Index="18">
     <Cell ss:MergeAcross="2" ss:StyleID="s18"><Data ss:Type="String">Überstellung nach:</Data></Cell>
-    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.address_short.to_s %></Data></Cell>
+    <Cell ss:MergeAcross="1" ss:StyleID="s18"><Data ss:Type="String"><%= @job.to.show_address.to_s %></Data></Cell>
    </Row>
    <Row>
     <Cell ss:StyleID="s18"></Cell>

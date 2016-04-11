@@ -22,8 +22,8 @@ private
       unless job.nil?
         fullname = job.driver.nil? ? "" : link_to( job.driver.fullname_id, "#{ENV['URL_PREFIX']}drivers/#{job.driver.id}")
 
-        from_address_short = job.from.nil? ? "" : ('<span data-tooltip aria-haspopup="true" class="has-tip" title="' + job.from.opening_hours.to_s + '">' + job.from.address_short.to_s + '</span>')
-        to_address_short = job.to.nil? ? "" : ('<span data-tooltip aria-haspopup="true" class="has-tip" title="' + job.to.opening_hours.to_s + '">' + job.to.address_short.to_s + '</span>')
+        from_address_short = job.from.nil? ? "" : ('<span data-tooltip aria-haspopup="true" class="has-tip" title="' + job.from.opening_hours.to_s + '">' + job.from.show_address.to_s + '</span>')
+        to_address_short = job.to.nil? ? "" : ('<span data-tooltip aria-haspopup="true" class="has-tip" title="' + job.to.opening_hours.to_s + '">' + job.to.show_address.to_s + '</span>')
         icon = fa_icon "user-plus", text: I18n.translate("add")
         shuttle = job.is_shuttle? ? "Ja" : "Nein"
         if job.is_open?

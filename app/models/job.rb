@@ -254,7 +254,7 @@ class Job < ActiveRecord::Base
         price += part_price
         if get_array
           stops = self.stops
-          breakpoints_array << [ Address.find_by(id: stops[i].address_id).address_short, Address.find_by(id: stops[i + 1].address_id).address_short, leg.distance, drivers_in_car, part_price ]
+          breakpoints_array << [ Address.find_by(id: stops[i].address_id).show_address, Address.find_by(id: stops[i + 1].address_id).show_address, leg.distance, drivers_in_car, part_price ]
         end
       end
     end
