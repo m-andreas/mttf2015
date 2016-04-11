@@ -378,7 +378,11 @@ class JobsController < ApplicationController
             format.html { redirect_to :back }
           end
         else
-          format.html { redirect_to jobs_path, notice: t('jobs.updated') }
+          if params[:subaction] == "update_and_edit"
+            format.html { redirect_to edit_job_path(@job), notice: t('jobs.updated') }
+          else
+            format.html { redirect_to jobs_path, notice: t('jobs.updated') }
+          end
         end
       else
         flash[:error] = "Editieren fehlgeschlagen"

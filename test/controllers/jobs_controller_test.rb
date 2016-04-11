@@ -1428,6 +1428,25 @@ class JobsControllerTest < ActionController::TestCase
     assert bill.sixt_total > 0
   end
 
+  test "should update shuttle general and render edit" do
+    sign_in @user
+    job = jobs(:shuttle)
+    patch :update, id: job.id, subaction: "update_and_edit", job: { cost_center_id: 666,
+      car_brand: "Tesla", car_type: "30", registration_number: "W123Y",
+      scheduled_collection_time: "01.01.2015 00:00", scheduled_delivery_time: "01.01.2015 00:01", chassis_number: "abc",
+      job_notice: "job_notice2", transport_notice: "transport_notice2", transport_notice_extern: "transport_notice_extern2"}
+    assert_redirected_to edit_job_path(job)
+    job.reload
+
+    assert_equal "Tesla", job.car_brand
+    assert_equal "30", job.car_type
+    assert_equal "W123Y", job.registration_number
+    assert_equal "abc", job.chassis_number
+    assert_equal "job_notice2", job.job_notice
+    assert_equal "transport_notice2", job.transport_notice
+    assert_equal "transport_notice_extern2", job.transport_notice_extern
+  end
+
   test "should bill shuttle with 0 as start mileage" do
     sign_in @user
     xhr :post, :change_breakpoint_distance, id: jobs(:shuttle), count: "START", distance: 0
