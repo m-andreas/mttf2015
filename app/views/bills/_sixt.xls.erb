@@ -9,6 +9,7 @@
     <Column ss:Index="10" ss:AutoFitWidth="0" ss:Width="150"/>
     <Column ss:Index="11" ss:AutoFitWidth="0" ss:Width="150"/>
     <Column ss:Index="14" ss:AutoFitWidth="0" ss:Width="200"/>
+    <Column ss:Index="15" ss:AutoFitWidth="0" ss:Width="200"/>
       <Row ss:Height="20">
           <Cell ss:StyleID="heading"><Data ss:Type="String">Abrechnung <%= @bill.print_date %></Data></Cell>
       </Row>
@@ -17,8 +18,8 @@
         <Cell ss:StyleID="borderlinksobenuntendick"><Data ss:Type="String">ID</Data></Cell>
         <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">ABHOLUNG</Data></Cell>
         <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">LIEFERUNG</Data></Cell>
-        <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">NACH</Data></Cell>
         <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">VON</Data></Cell>
+        <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">NACH</Data></Cell>
         <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">KZ</Data></Cell>
         <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">Plan Km</Data></Cell>
         <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String"><%= I18n.translate( "jobs.actual_distance" )%></Data></Cell>
@@ -34,8 +35,8 @@
                 <Cell><Data ss:Type="Number"><%= job.id %></Data></Cell>
                 <Cell ss:StyleID="wrap"><Data ss:Type="String"><%=l job.actual_collection_time unless job.actual_collection_time.nil? %></Data></Cell>
                 <Cell ss:StyleID="wrap"><Data ss:Type="String"><%=l job.actual_delivery_time unless job.actual_delivery_time.nil? %></Data></Cell>
-                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
                 <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.from.complete_address %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
                 <Cell><Data ss:Type="String"><%= job.registration_number %></Data></Cell>
                 <Cell><Data ss:Type="Number"><%= job.route.distance %></Data></Cell>
                 <Cell><Data ss:Type="Number"><%= job.distance %></Data></Cell>
@@ -52,8 +53,8 @@
                 <Cell><Data ss:Type="Number"><%= job.id %></Data></Cell>
                 <Cell ss:StyleID="wrap"><Data ss:Type="String"><%=l job.actual_collection_time unless job.actual_collection_time.nil? %></Data></Cell>
                 <Cell ss:StyleID="wrap"><Data ss:Type="String"><%=l job.actual_delivery_time unless job.actual_delivery_time.nil? %></Data></Cell>
-                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
                 <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.from.complete_address %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
                 <Cell><Data ss:Type="String"><%= job.registration_number %></Data></Cell>
                 <Cell><Data ss:Type="Number"><%= job.route.distance unless job.route.nil? %></Data></Cell>
                 <Cell><Data ss:Type="Number"><%= job.distance %></Data></Cell>
@@ -63,6 +64,7 @@
                 <Cell ss:StyleID="price"><Data ss:Type="Number"><%= job.price_sixt.to_s %></Data></Cell>
                 <Cell><Data ss:Type="Number"><%= job.cost_center_id %></Data></Cell>
                 <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.transport_notice.to_s %></Data></Cell>
+                <Cell ss:StyleID="wrap"><Data ss:Type="String"><%= job.get_route_string.to_s %></Data></Cell>
             </Row>
         <% end %>
        <Row/>

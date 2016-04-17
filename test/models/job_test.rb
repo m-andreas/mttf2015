@@ -71,4 +71,8 @@ class JobTest < ActiveSupport::TestCase
     jobs(:one).check_for_billing
     assert jobs(:one).is_open?
   end
+
+  test "get_route_string" do
+    assert_equal "Graz -  - Graz - Graz", jobs(:shuttle).get_route_string
+  end
 end

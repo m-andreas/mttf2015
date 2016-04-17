@@ -147,6 +147,18 @@ class Job < ActiveRecord::Base
     end
   end
 
+  def get_route_string
+    route_string = ""
+    self.stops.each_with_index do |stop, i|
+      stop_address = Address.where( id: stop.address_id ).first
+      route_string += stop_address.city.to_s
+      unless i + 1 == self.stops.length
+        route_string += " - "
+      end
+    end
+    return route_string
+  end
+
   def self.save_many jobs
     unless jobs.empty?
       transaction do
