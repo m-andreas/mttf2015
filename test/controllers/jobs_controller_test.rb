@@ -483,6 +483,12 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal addresses(:four), jobs(:shuttle).from
   end
 
+  test "should not throw error with niull address" do
+    sign_in @user
+    xhr :post, :change_breakpoint_address, id: jobs(:shuttle), count: 0, address_id: "null"
+    assert_response :success
+  end
+
   test "should change shuttle end address" do
     sign_in @user
     legs_before = jobs(:shuttle).legs.length
