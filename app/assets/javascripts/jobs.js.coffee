@@ -35,19 +35,23 @@ ready = ->
     .change ->
       $("#scheduled_delivery_time").text($("#job_scheduled_delivery_time").val());
 
-    $('#job_actual_delivery_time').fdatepicker({
-      format: 'dd.mm.yyyy hh:ii',
-      disableDblClickSelection: true,
-      language: 'de',
-      pickTime: true
-    })
+    now = new Date();
 
-    $('#job_actual_collection_time').fdatepicker({
+    job_actual_delivery_time = $('#job_actual_delivery_time').fdatepicker
       format: 'dd.mm.yyyy hh:ii',
       disableDblClickSelection: true,
       language: 'de',
-      pickTime: true
-    })
+      pickTime: true,
+      onRender: (date) ->
+        if date.valueOf() > now.valueOf() then 'disabled' else ''
+
+    job_actual_collection_time = $('#job_actual_collection_time').fdatepicker
+      format: 'dd.mm.yyyy hh:ii',
+      disableDblClickSelection: true,
+      language: 'de',
+      pickTime: true,
+      onRender: (date) ->
+        if date.valueOf() > now.valueOf() then 'disabled' else ''
   ,1000
 
   $('#jobs-in-bill-table').DataTable({
