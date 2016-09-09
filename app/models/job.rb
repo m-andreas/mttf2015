@@ -343,6 +343,11 @@ class Job < ActiveRecord::Base
       return error
     end
 
+    if self.from.nil? || self.to.nil?
+      error = html_escape ( I18n.translate("jobs.not_billed_no_addresss") + self.id.to_s ).encode("ISO-8859-1")
+      return error
+    end
+
     ret = self.set_route if self.route.nil?
     return "Addressen nicht korrekt gesetzt. Auftrag nicht verrechnet Auftrag #{self.id}"  if ret == false
 

@@ -99,6 +99,15 @@ ready = ->
   $("#from_filter").keyup ->
     $("#job_from_id").change();
 
+  calculate_distance = () ->
+    $("#distance").text(parseInt($("#job_mileage_delivery").val()) - parseInt($("#job_mileage_collection").val()));
+
+  $("#job_mileage_delivery").keyup ->
+    calculate_distance();
+
+  $("#job_mileage_collection").keyup ->
+    calculate_distance();
+
   $('#job_from_id').filterByText($('#from_filter'), true);
 
   $('#job_to_id').filterByText($('#to_filter'), true);
@@ -241,7 +250,7 @@ ready = ->
 
 #  $(".remove_breakpoint").click ->
 #    remove_breakpoint(this)
-
+  calculate_distance();
   $("#job_driver_id").change();
   $("#job_to_id").change();
   $("#job_from_id").change();
