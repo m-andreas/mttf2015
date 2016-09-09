@@ -4,8 +4,8 @@ Auftragsnummer: <%= @job.id %> Auftraggeber: <%= @user.company.name %> - <%= @us
 
 Fahrzeugdaten: <%= @job.car_brand %> / <%= @job.car_type %> / <%= @job.registration_number %>
 <%= t("auftragsmail.date") %>: <%= @job.scheduled_collection_time.strftime("%d.%m.%Y") %>
-<%= t("auftragsmail.from") %>: <%= @job.from.address_short unless @job.from.nil? %>
-<%= t("auftragsmail.to") %>: <%= @job.to.address_short unless @job.to.nil? %>
+<%= t("auftragsmail.from") %>: <%= @job.from.show_address unless @job.from.nil? %>
+<%= t("auftragsmail.to") %>: <%= @job.to.show_address unless @job.to.nil? %>
 Bemerkungen: <%= @job.job_notice %>
 <%= t("opening_times") %>:
 <%= @job.from.opening_hours unless @job.from.nil? %>

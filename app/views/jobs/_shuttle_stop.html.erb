@@ -1,0 +1,33 @@
+<div class="small-12 column shuttle_driver_row">
+  <div class="row">
+    <% address_from = @addresses.find_by(id: @shuttle_data.stops[i].address_id ) %>
+    <% address_to = @addresses.find_by(id: @shuttle_data.stops[i+1].address_id ) %>
+    <h2><span class="address_from_label"><%= address_from.show_address unless address_from.nil? %></span> - <span class="address_to_label"><%=address_to.show_address unless address_to.nil? %></span></h2>
+  </div>
+  <div class="small-2 column add_stop">
+    <%= link_to fa_icon("map-marker") + " Stop hinzufügen", job_add_shuttle_breakpoint_path(:id => @job.id, :count => i.to_s), remote: true, class: "button round" %><br>
+  </div>
+  <div class="small-10 medium-2 column">
+    Fahrer hier filtern <input id="driver_filter_<%=i%>" class="driver_filter" type="text">
+    <%= select_tag "driver_ids_#{i}", options_from_collection_for_select( @drivers, "id",  "fullname_id" ), :class => "driver_ids" %>
+  </div>
+  <div class="small-2 columns">
+    <span class="button round add_shuttle_passenger">hinzufügen</span>
+  </div>
+  <%= render "shuttle_passengers", i: i %>
+  <div class="small-1 column">
+    Distanz
+    <%= text_field_tag "leg[#{i}]distance", @shuttle_data.legs[i].distance, :class => "leg_distance" %>
+  </div>
+</div>
+<script type="text/javascript">
+  $(function(){
+    $('#driver_ids_<%=i%>').filterByText($('#driver_filter_<%=i%>'), true);
+  });
+  $('.driver_filter').keypress(function(e) {
+    if(e.which == 13) {
+        $(this).parent().parent().find(".add_shuttle_passenger").click();
+        $(this).val("")
+    }
+  });
+</script>

@@ -5,7 +5,7 @@ class Address < ActiveRecord::Base
   end
 
   def complete_address
-    complete_address = self.address_short
+    complete_address = self.show_address.to_s
     complete_address = complete_address + ", " + self.address.to_s unless self.address.to_s.gsub(",","").gsub(".","").strip.empty?
     add_info =  self.zip_code.to_s + " " + self.city.to_s + " " + self.country.to_s
     complete_address = complete_address + " " + add_info unless add_info.gsub(",","").gsub(".","").strip.empty?
@@ -39,9 +39,13 @@ class Address < ActiveRecord::Base
 
   def show_address
     if self.display_name.to_s.empty?
-      return self.address_short
+      address = self.address_short.to_s
     else
-      return self.display_name.to_s
+      address = self.display_name.to_s
     end
+    if address.empty?
+      address = self.city.to_s
+    end
+    return address
   end
 end

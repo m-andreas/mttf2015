@@ -17,6 +17,7 @@ class BillsControllerTest < ActionController::TestCase
 
   test "should get current" do
     sign_in @user
+    jobs(:shuttle).set_to_current_bill
     get :current
     assert_response :success
     assert_not_nil assigns(:bill)
@@ -46,6 +47,7 @@ class BillsControllerTest < ActionController::TestCase
     post "add_jobs"
     assert_redirected_to current_bill_path
     assert assigns(:current_bill).is_current?
+    assigns(:current_bill).jobs.inspect
     assert_equal open_jobs_count, assigns(:current_bill).jobs.length
   end
 
@@ -131,33 +133,5 @@ class BillsControllerTest < ActionController::TestCase
     assigns( :bill ).jobs.each do |job|
       assert job.is_charged?
     end
-  end
-
-  test "should_not_set_bill_payed" do
-    sign_in @user
-    jobs( :payed_in_shuttle1 ).set_to_current_bill
-    post :pay, id: @bill
-    assert_redirected_to jobs_path
-    @bill.reload
-    assert_not Bill.get_current.jobs.empty?
-    assert assigns( :bill ).billed_at.nil?
-    assigns( :bill ).jobs.each do |job|
-      assert job.is_finished?
-    end
-    assert flash[:alert].present?
-  end
-
-  test "should_not_set_bill_payed2" do
-    sign_in @user
-    jobs( :payed_shuttle ).set_to_current_bill
-    post :pay, id: @bill
-    assert_redirected_to jobs_path
-    @bill.reload
-    assert_not Bill.get_current.jobs.empty?
-    assert assigns( :bill ).billed_at.nil?
-    assigns( :bill ).jobs.each do |job|
-      assert job.is_finished?
-    end
-    assert flash[:alert].present?
   end
 end

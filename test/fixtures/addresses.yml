@@ -13,11 +13,11 @@ one:
 two:
   id: 2
   created_by: 1
-  country: Frankreich
-  city: Paris
-  zip_code: 123456
-  address: LeMond 2
-  address_short: LeMond Paris
+  country:
+  city:
+  zip_code:
+  address:
+  address_short:
   inactive: false
 
 three:
@@ -32,6 +32,16 @@ three:
 
 four:
   id: 4
+  created_by: 1
+  country: Österreich
+  city: Graz
+  zip_code: 1340
+  address: Hauptplatz 2
+  address_short: Hauptplatz Graz
+  inactive: false
+
+six:
+  id: 6
   created_by: 1
   country: Österreich
   city: Graz

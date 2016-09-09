@@ -19,6 +19,7 @@ ready = ->
     }
     $(".remove-co_driver").click ->
       $(this.parentElement).remove()
+
     $('#job_scheduled_collection_time').fdatepicker
       format: 'dd.mm.yyyy hh:ii',
       disableDblClickSelection: true,
@@ -34,19 +35,23 @@ ready = ->
     .change ->
       $("#scheduled_delivery_time").text($("#job_scheduled_delivery_time").val());
 
-    $('#job_actual_delivery_time').fdatepicker({
-      format: 'dd.mm.yyyy hh:ii',
-      disableDblClickSelection: true,
-      language: 'de',
-      pickTime: true
-    })
+    now = new Date();
 
-    $('#job_actual_collection_time').fdatepicker({
+    job_actual_delivery_time = $('#job_actual_delivery_time').fdatepicker
       format: 'dd.mm.yyyy hh:ii',
       disableDblClickSelection: true,
       language: 'de',
-      pickTime: true
-    })
+      pickTime: true,
+      onRender: (date) ->
+        if date.valueOf() > now.valueOf() then 'disabled' else ''
+
+    job_actual_collection_time = $('#job_actual_collection_time').fdatepicker
+      format: 'dd.mm.yyyy hh:ii',
+      disableDblClickSelection: true,
+      language: 'de',
+      pickTime: true,
+      onRender: (date) ->
+        if date.valueOf() > now.valueOf() then 'disabled' else ''
   ,1000
 
   $('#jobs-in-bill-table').DataTable({
@@ -98,6 +103,15 @@ ready = ->
   $("#from_filter").keyup ->
     $("#job_from_id").change();
 
+  calculate_distance = () ->
+    $("#distance").text(parseInt($("#job_mileage_delivery").val()) - parseInt($("#job_mileage_collection").val()));
+
+  $("#job_mileage_delivery").keyup ->
+    calculate_distance();
+
+  $("#job_mileage_collection").keyup ->
+    calculate_distance();
+
   $('#job_from_id').filterByText($('#from_filter'), true);
 
   $('#job_to_id').filterByText($('#to_filter'), true);
@@ -105,27 +119,27 @@ ready = ->
   $('#job_driver_id').filterByText($('#driver_filter'), true);
 
   $('#shuttle_jobs').DataTable
-    processing: true
-    serverSide: true
-    ajax:
-      url: window._url_prefix + "jobs_ajax/show_all"
-      data: (d) ->
-        d.form_type = document.getElementById("form_type").value;
-        d.main_job_id = document.getElementById("main_job_id").value;
-        return
-    columns: [
-      { width: "0%", className: "dont_show", searchable: false, orderable: false }
-      { width: "15%", orderable: false, className: "add" }
-      { width: "35%", className: "row_config" }
-      { width: "15%", className: "row_config", searchable: false, orderable: false }
-      { width: "15%", className: "row_config", searchable: false, orderable: false }
-      { width: "5%", className: "center", searchable: false, orderable: false }
-      { width: "15%", className: "center", searchable: false, orderable: false }
-    ]
-    order: [ [1,'desc'] ],
-    oLanguage:{
-      sUrl: window._url_prefix + "datatable_i18n"
-    }
+      processing: true
+      serverSide: true
+      ajax:
+        url: window._url_prefix + "jobs_ajax/show_all"
+        data: (d) ->
+          d.main_job_id = document.getElementById("main_job_id").value;
+          return
+      columns: [
+        { width: "0%", className: "dont_show", searchable: false, orderable: false }
+        { width: "15%", orderable: false, className: "add" }
+        { width: "35%", className: "row_config" }
+        { width: "15%", className: "row_config", searchable: false, orderable: false }
+        { width: "15%", className: "row_config", searchable: false, orderable: false }
+        { width: "5%", className: "center", searchable: false, orderable: false }
+        { width: "15%", className: "center", searchable: false, orderable: false }
+      ]
+      order: [ [1,'desc'] ],
+      oLanguage:{
+        sUrl: window._url_prefix + "datatable_i18n"
+      }
+
 
   $('*[data-role=activerecord_sortable]').activerecord_sortable();
 
@@ -192,47 +206,55 @@ ready = ->
     $('#show_jobs').dataTable().fnFilter();
 
 
-# Shuttle verwaltung für create
+# Shuttle verwaltung für edit
 
-  shuttle_to_sidebar = ( name, id ) ->
-    $('#co_jobs').val($('#co_jobs').val() + "," + id )
-    $("#shuttle-co-drivers table tbody").append("<tr><td>" + name + "</td><td>" + id + "</td><td class='remove'><i class='fa fa-minus'></i> entfernen</td></tr>")
+  window.attach_shuttle_functions = (elem) ->
+    $('#start_milage').change ->
+      url = window._url_prefix + "jobs/change_breakpoint_distance/" + $("#id").val() + "?count=START" + "&distance=" + $(this).val()
+      $.ajax(url: url, dataType: 'script' ).done (html) ->
 
-  $("#shuttle_jobs").on "click", ".add", ->
-    if document.getElementById("form_type").value == "new"
-      pos = $('#shuttle_jobs').dataTable().fnGetPosition(this)
-      id = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[0];
-      name = $('#shuttle_jobs').dataTable().fnGetData(pos[0])[3]
-      shuttle_to_sidebar( name, id )
+    $('#end_milage').change ->
+      url = window._url_prefix + "jobs/change_breakpoint_distance/" + $("#id").val() + "?count=END" + "&distance=" + $(this).val()
+      $.ajax(url: url, dataType: 'script' ).done (html) ->
 
-  $("#shuttle-summary").on "click", ".remove", ->
-    if document.getElementById("form_type").value == "new"
-      id = $(this).parent().children()[1].innerText;
-      $('#co_jobs').val($('#co_jobs').val().replace("," + id, ''))
-      $(this).parent().remove();
+    $('.leg_distance').change ->
+      a = $(this).parent().parent().parent().attr("id")
+      url = window._url_prefix + "jobs/change_breakpoint_distance/" + $("#id").val() + "?count=" + a + "&distance=" + $(this).val()
+      $.ajax(url: url, dataType: 'script' ).done (html) ->
 
-  $("#shuttle-co-drivers").on "click", ".remove", ->
-    if document.getElementById("form_type").value == "new"
-      id = $(this).parent().children()[1].innerText;
-      $('#co_jobs').val($('#co_jobs').val().replace("," + id, ''))
-      $(this).parent().remove();
+    $('.add_shuttle_passenger').click ->
+      a = $(this).parent().parent().parent().attr("id")
 
-  displayshuttle = ->
-    if $('#job_shuttle').prop('checked')
-      $("#shuttle_jobs_outer_wrapper").show();
-      $("#shuttle-co-drivers").show();
-      $("#job_details").hide()
-      $("#breakpoints").show()
-    else
-      $("#shuttle_jobs_outer_wrapper").hide();
-      $("#shuttle-co-drivers").hide();
-      $("#job_details").show()
-      $("#breakpoints").hide()
+      url = window._url_prefix + "jobs/add_shuttle_passenger/" + $("#id").val() + "?count=" + a + "&driver_id=" + $(this).parent().parent().find(".driver_ids").val()
+      $.ajax(url: url, dataType: 'html', context: this )
+      .done (html) ->
+        console.log("done")
+        console.log($($(this).parent().parent()))
+        $(this).parent().parent().find(".shuttle_passengers").replaceWith(html)
+        console.log(html)
+        true
+      .fail (html) ->
+        console.log("fail")
+        console.log(this)
+        console.log(html)
+        true
+    $('.addresses_select').change ->
+      a = $(this).parent().parent().parent().attr("id")
+      url = window._url_prefix + "jobs/change_breakpoint_address/" + $("#id").val() + "?count=" + a + "&address_id=" + $(this).val()
+      $.ajax(url: url, dataType: 'script' ).done (html) ->
 
-  $("#job_shuttle").click ->
-    displayshuttle();
+  window.attach_shuttle_functions()
 
-  displayshuttle();
+#  remove_breakpoint = (elem) ->
+#    $(elem).parent().parent().next().remove()
+#    $(elem).parent().parent().remove()
+
+#  add_breakpoint = (count) ->
+
+
+#  $(".remove_breakpoint").click ->
+#    remove_breakpoint(this)
+  calculate_distance();
   $("#job_driver_id").change();
   $("#job_to_id").change();
   $("#job_from_id").change();

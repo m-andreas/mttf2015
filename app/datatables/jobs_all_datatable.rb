@@ -23,13 +23,9 @@ private
     display_on_page.map do |job|
       unless job.nil?
         fullname = job.driver.nil? ? "" : job.driver.fullname_id
-        from_address_short = job.from.nil? ? "" : job.from.address_short
-        to_address_short = job.to.nil? ? "" : job.to.address_short
-        if params[ :form_type ] == "edit"
-          icon = link_to( fa_icon( "user-plus", text: I18n.translate(:add)), "#{ENV['URL_PREFIX']}jobs/add_co_job/#{params[:main_job_id]}?co_job_id=#{job.id}", remote: true )
-        else
-          icon = fa_icon( "user-plus", text:  I18n.translate(:add) )
-        end
+        from_address_short = job.from.nil? ? "" : job.from.show_address
+        to_address_short = job.to.nil? ? "" : job.to.show_address
+        icon = link_to( fa_icon( "bus", text:  "Shuttle erzeugen" ),  "#{ENV['URL_PREFIX']}jobs/change_to_shuttle/#{job.id}")
 
         created_at = job.created_at.nil? ? "" : job.created_at.strftime("%e.%-m.%Y")
 
@@ -53,26 +49,11 @@ private
   end
 
  def sort_order_filter
-    if @job
-      if @job.driver.nil?
-        records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( id: Carrier.all.pluck(:co_job_id) ).order("#{sort_column} #{sort_direction}")
-      else
-        # Alle die offen oder in aktueller Abrechnung sind, kein shuttle sind, noch nicht zu einem Shuttle gehoeren und nicht der Fahrer des Shuttels sind
-        records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( id: Carrier.all.pluck(:co_job_id), drivers: { id: @job.driver.id } ).order("#{sort_column} #{sort_direction}")
-      end
-    else
-      records = Job.includes( :driver ).where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).where.not( id: Carrier.all.pluck(:co_job_id)).order("#{sort_column} #{sort_direction}")
-    end
+    records = Job.where( status: [Job::OPEN, Job::FINISHED], shuttle: false ).order("#{sort_column} #{sort_direction}")
 
     if params[:search][:value].present?
       search = params[:search][:value].strip
-      if search.include?( " " ) && search.split( " " ).length <= 2
-        search_spitted = search.split( " " )
-
-        records = records.where("lower(last_name) like :search1 and lower(first_name) like :search2 or lower(first_name) like :search1 and lower(last_name) like :search2", search1: "%#{search_spitted[0]}%", search2: "%#{search_spitted[1]}%")
-      else
-        records = records.where("lower(last_name) like :search or lower(first_name) like :search or lower(first_name) like :search", search: "%#{search}%")
-      end
+      records = records.where("id like :search or registration_number like :search", search: "%#{search}%")
     end
     records
   end

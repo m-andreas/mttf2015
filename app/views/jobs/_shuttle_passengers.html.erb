@@ -1,0 +1,16 @@
+<div class="small-10 medium-5 small-offset-2 medium-offset-0 columns shuttle_passengers">
+  <div class="small-12 medium-6 column">
+  <% @shuttle_data.legs[ i ].driver_ids.each_with_index do |driver_id, j| %>
+    <span class="button round success driver-button"><%= link_to fa_icon("remove") + " " + Driver.find_by_id(driver_id).fullname_id, job_remove_shuttle_passenger_path(:id => @job.id, :count => i.to_s, :driver_id => driver_id), remote: true %></span><br>
+    <% break if j >= 3 %>
+  <% end %>
+  </div>
+  <div class="small-12 medium-6 column">
+  <% if @shuttle_data.legs[ i ].driver_ids.length > 4 %>
+      <% @shuttle_data.legs[ i ].driver_ids.each_with_index do |driver_id, j| %>
+        <% next if j <= 3 %>
+        <span class="button round success driver-button"><%= link_to fa_icon("remove") + " " + Driver.find_by_id(driver_id).fullname_id, job_remove_shuttle_passenger_path(:id => @job.id, :count => i.to_s, :driver_id => driver_id), remote: true %></span><br>
+      <% end %>
+  <% end %>
+  </div>
+</div>

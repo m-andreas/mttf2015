@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  car_brand: Ford
+  car_type: Transit
+  registration_number: W123456
+
+two:
+  car_brand: Merzedes
+  car_type: Sprinter
+  registration_number: WU123456

@@ -10,41 +10,6 @@
     <tr><td>Kennzeichen:</td><td><span id="registration_number"></span></td></tr>
     <tr><td>Abholdatum:</td><td><span id="scheduled_collection_time"></span></td></tr>
     <tr><td>Lieferdatum:</td><td><span id="scheduled_delivery_time"></span></td></tr>
+    <tr><td>Gefahrene Km:</td><td><span id="distance"></span></td></tr>
   </table>
-</div>
-<div id="shuttle-co-drivers">
-  <table id="shuttle-summary">
-    <thead>
-      <th>Mitfahrer</th>
-      <th>Auftragsnummer</th>
-      <th> </th>
-    </thead>
-    <tbody>
-      <% @shuttles.each do |shuttle_job| %>
-        <tr><td><%= shuttle_job[0] %></td><td><%= shuttle_job[1] %></td><td class="remove">
-        <%= link_to( fa_icon( "minus", text: "entfernen" ), job_remove_co_job_path( id: @job.id, co_job_id: shuttle_job[ 1 ] ), remote: true )
- %></td></tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
-<div id="breakpoints">
-  <%= form_for(@job) do |f| %>
-
-    <% unless @job.breakpoints.empty? %>
-      <h3>Zwischenstopps</h3>
-      <ol data-role="activerecord_sortable">
-        <%= f.fields_for :breakpoints do |ff| %>
-          <!-- both data-* attributes required -->
-          <li class="ui-state-default ui-sortable-handle" data-role="breakpoint<%= ff.object.id.to_s %>" data-position="<%= ff.object.position %>">
-            <%= ff.object.address.address_short %>
-            <%= ff.text_field :mileage %>
-            <!-- to pass position into controller's code -->
-            <%= ff.hidden_field :position, :data => { :role => 'position' } %>
-          </li>
-        <% end %>
-      </ol>
-    <% end %>
-
-  <% end %>
 </div>
