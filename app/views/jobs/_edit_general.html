@@ -21,7 +21,7 @@
           <div class="field large-8 columns">
             <h3 style="display: inline;">Fahrer&nbsp&nbsp&nbsp</h3><%= link_to fa_icon( "user-plus", text: I18n.translate("add_driver") ),
               job_add_co_driver_path(number_of_co_drivers: @job.co_drivers.length ), method: "post", format: 'js', remote: true, :id => "add_co_driver" %><br>
-            Fahrer hier filtern <input id="driver_filter" type="text">
+            Fahrer hier filtern <input id="driver_filter" type="text", autofocus>
             <%= f.select :driver_id, @drivers.collect {|d| [ "#{d.fullname_id}", d.id ] }%>
             <div id="co_drivers">
               <% @job.co_drivers.each_with_index do |co_driver, index| %>
@@ -57,21 +57,21 @@
           <% actual_delivery_time = @job.actual_delivery_time.strftime("%d.%m.%Y %H:%M") unless  @job.actual_delivery_time.nil? %>
           <h3><%= f.label "scheduled_collection_time", "Geplanter Abholtermin" %></h3><br>
 
-          <%= f.text_field :scheduled_collection_time, :value => scheduled_collection_time %>
+          <%= f.text_field :scheduled_collection_time, :value => scheduled_collection_time, autocomplete: "off" %>
         </div>
         <div class="field large-6 columns">
           <h3><%= f.label "scheduled_delivery_time", "Geplanter Liefertermin" %></h3><br>
-          <%= f.text_field :scheduled_delivery_time, :value => scheduled_delivery_time %>
+          <%= f.text_field :scheduled_delivery_time, :value => scheduled_delivery_time, autocomplete: "off" %>
         </div>
       </div>
       <div class="row">
-        <div class="field large-6 columns">
+        <div class="field large-6 columns" id="actual_collection_time_container">
           <h3><%= f.label "actual_collection_time", t("jobs.actual_collection_time") %></h3><br>
-          <%= f.text_field :actual_collection_time, :value => actual_collection_time %>
+          <%= f.text_field :actual_collection_time, :value => actual_collection_time, autocomplete: "off" %>
         </div>
         <div class="field large-6 columns">
           <h3><%= f.label "actual_delivery_time", t("jobs.actual_delivery_time") %></h3><br>
-          <%= f.text_field :actual_delivery_time, :value => actual_delivery_time %>
+          <%= f.text_field :actual_delivery_time, :value => actual_delivery_time, autocomplete: "off" %>
         </div>
       </div>
       <div class="row lightgray">
@@ -81,12 +81,12 @@
         </div>
         <% unless @job.shuttle? %>
           <div class="field large-4 columns">
-            <h3><%= f.label "mileage_collection", "Kilometerstand Abholung" %></h3><br>
-            <%= f.text_field :mileage_collection %>
+            <h3><%= f.label "mileage_collection", "Kilometerstand Abholung", id: "mileage_collection_label" %><span id="distance"></span></h3><br>
+            <%= f.text_field :mileage_collection, autocomplete: "off" %>
           </div>
           <div class="field large-4 columns">
             <h3><%= f.label "mileage_delivery", "Kilometerstand Lieferung" %></h3><br>
-            <%= f.text_field :mileage_delivery %>
+            <%= f.text_field :mileage_delivery, autocomplete: "off" %>
           </div>
         <% end %>
       </div>
@@ -109,10 +109,10 @@
       <div id="sidepanel-inner" ><%= render 'sidepanel' %></div>
       <div class="actions">
         <% if @job.is_shuttle? %>
-          <%= f.button  "aktualisieren und zu Shuttlestops wechseln" , name: "subaction",value: "update_and_edit"%><br>
+          <%= f.button  "aktualisieren und zu Shuttlestops wechseln" , name: "subaction", value: "update_and_edit"%><br>
         <% end %>
-        <%= f.button  "aktualisieren" , name: "subaction",value: "update"%>
-        <%= f.button  "aktualisieren und verrechnen" , name: "subaction",value: "update_and_pay"%>
+        <%= f.button  "aktualisieren" , name: "subaction",value: "update" %>
+        <%= f.button  "aktualisieren und verrechnen" , name: "subaction",value: "update_and_pay", id: "update_and_pay"%>
       </div>
       <%= link_to t(:show), @job %> |
       <%= link_to t(:back), jobs_path %>

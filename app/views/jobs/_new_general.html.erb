@@ -91,11 +91,11 @@
         <div class="row">
           <div class="field large-6 columns">
             <h3><%= f.label "Abholung" %></h3><br>
-            <%= f.text_field :scheduled_collection_time %>
+            <%= f.text_field :scheduled_collection_time, autocomplete: "off" %>
           </div>
           <div class="field large-6 columns">
             <h3><%= f.label "Lieferung" %></h3><br>
-            <%= f.text_field :scheduled_delivery_time %>
+            <%= f.text_field :scheduled_delivery_time, autocomplete: "off" %>
           </div>
         </div>
         <div class="row lightgray">
@@ -104,7 +104,7 @@
             <%= f.text_field :chassis_number %>
           </div>
           <div class="field large-4 columns">
-            <h3><%= f.label "mileage_collection", "Kilometerstand Abholung" %></h3><br>
+            <h3><%= f.label "mileage_collection", "Kilometerstand Abholung", id: "mileage_collection_label" %><span id="distance"></span></h3><br>
             <%= f.text_field :mileage_collection, autocomplete: "off" %>
           </div>
           <div class="field large-4 columns">
@@ -140,7 +140,6 @@
               <tr><td>Kennzeichen:</td><td><span id="registration_number"></span></td></tr>
               <tr><td>Abholdatum:</td><td><span id="scheduled_collection_time"></span></td></tr>
               <tr><td>Lieferdatum:</td><td><span id="scheduled_delivery_time"></span></td></tr>
-              <tr><td>Gefahrene Km:</td><td><span id="distance"></span></td></tr>
           </table>
         <div class="actions">
           <%= f.submit %>
