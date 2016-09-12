@@ -2,8 +2,20 @@
 
 one:
   job: with_co_drivers
-  driver: two
+  driver_id: 2
 
 two:
   job: with_co_drivers
-  driver: three
+  driver_id: 3
+
+shuttle1:
+  job: shuttle
+  driver_id: 1
+
+shuttle2:
+  job: shuttle
+  driver_id: 2
+
+shuttle3:
+  job: shuttle
+  driver_id: 3

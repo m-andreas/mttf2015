@@ -1,5 +1,5 @@
   <%= @bill.drivers.each do |driver| %>
-    <Worksheet ss:Name="<%= driver.fullname + "(" + driver.id.to_s + ")" %>">
+    <Worksheet ss:Name="<%= driver.last_name + "(" + driver.id.to_s + ")" %>">
       <Table x:FullColumns="1" x:FullRows="1" ss:DefaultColumnWidth="60" ss:DefaultRowHeight="15">
       <Column ss:Index="2" ss:AutoFitWidth="0" ss:Width="76.5"/>
      <Column ss:AutoFitWidth="0" ss:Width="70"/>
@@ -10,7 +10,7 @@
      <Column ss:Index="10" ss:AutoFitWidth="0" ss:Width="150"/>
      <Column ss:Index="11" ss:AutoFitWidth="0" ss:Width="150"/>
         <Row ss:Height="20" >
-            <Cell ss:StyleID="heading"><Data ss:Type="String">Abrechnung <%= @bill.print_date %> <%= I18n.t( :for ) %> <%= driver.fullname %></Data></Cell>
+            <Cell ss:StyleID="heading"><Data ss:Type="String">Abrechnung <%= @bill.print_date %> <%= I18n.t( :for ) %> <%= driver.fullname_id %></Data></Cell>
         </Row>
         <Row/>
         <Row>
@@ -27,27 +27,26 @@
           <Cell ss:StyleID="borderobenuntendick"><Data ss:Type="String">Shuttlefahrt</Data></Cell>
           <Cell ss:StyleID="borderrechtsobenuntendick"><Data ss:Type="String">EUR</Data></Cell>
         </Row>
-      <% @bill.get_main_drives( driver ).each do |job| %>
+      <% @bill.get_drives( driver ).each do |job| %>
         <Row ss:Height="47">
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderlinksoben" : "borderlinksobenunten"%>"><Data ss:Type="Number"><%= job.id %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%=l job.actual_collection_time unless job.actual_collection_time.nil? %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%=l job.actual_delivery_time unless job.actual_delivery_time.nil? %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%=raw job.from.complete_address %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%= job.registration_number %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="Number"><%= job.route.distance %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="Number"><%= job.distance %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="Number"><%= %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%= job.route.get_calculation_basis %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "borderoben" : "borderobenunten" %>"><Data ss:Type="String"><%= job.shuttle? ? "Ja" : "" %></Data></Cell>
-          <Cell ss:StyleID="<%= job.has_shuttle? ? "preisnotend" : "preis" %>"><Data ss:Type="Number"><%= @bill.job_price( job, driver ).to_s %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderlinksobenunten"%>"><Data ss:Type="Number"><%= job.id %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%=l job.actual_collection_time unless job.actual_collection_time.nil? %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%=l job.actual_delivery_time unless job.actual_delivery_time.nil? %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%= job.to.complete_address %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%=raw job.from.complete_address %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%= job.registration_number %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="Number"><%= job.route.distance unless job.route.nil? %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="Number"><%= job.distance %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="Number"><%= %></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%= job.route.get_calculation_basis unless job.route.nil?%></Data></Cell>
+          <Cell ss:StyleID="<%= "borderobenunten" %>"><Data ss:Type="String"><%= job.shuttle? ? "Ja" : "" %></Data></Cell>
+          <Cell ss:StyleID="<%= "preis" %>"><Data ss:Type="Number"><%= @bill.job_price( job, driver ).to_s %></Data></Cell>
         </Row>
-        <% if job.has_shuttle? %>
+        <% if job.is_shuttle? %>
           <Row><Cell ss:Index="12" ss:StyleID="borderrechts"/></Row>
-          <Row><Cell ss:StyleID="borderlinks"/><Cell/><Cell/><Cell/><Cell/><Cell/><Cell/><Cell><Data ss:Type="String"><%= I18n.translate( "jobs.connected_shuttle_job" ) %>: <%= job.shuttle_job.id %></Data></Cell><Cell/><Cell/><Cell/><Cell ss:StyleID="borderrechts"/></Row>
+          <Row><Cell ss:StyleID="borderlinks"/><Cell/><Cell/><Cell/><Cell/><Cell/><Cell/><Cell><Data ss:Type="String"></Data></Cell><Cell/><Cell/><Cell/><Cell ss:StyleID="borderrechts"/></Row>
           <Row>
             <Cell ss:StyleID="borderlinks"/>
-            <Cell/>
             <Cell/>
             <Cell/>
             <Cell/>
@@ -58,22 +57,25 @@
             <Cell ss:StyleID="borderobenunten"><Data ss:Type="String">Distanz</Data></Cell>
             <Cell ss:StyleID="borderobenunten"><Data ss:Type="String">Personen im Wagen</Data></Cell>
             <Cell ss:StyleID="borderrechtsobenunten"><Data ss:Type="String">EUR</Data></Cell>
+            <Cell ss:StyleID="borderrechts"/>
           </Row>
-          <%= job.shuttle_job.price_driver_shuttle( job, true ).each do |breakpoint| %>
-            <Row>
-              <Cell ss:StyleID="borderlinks"/>
-              <Cell/>
-              <Cell/>
-              <Cell/>
-              <Cell/>
-              <Cell/>
-              <Cell/>
-              <Cell><Data ss:Type="String"><%= breakpoint[0] %></Data></Cell>
-              <Cell><Data ss:Type="String"><%= breakpoint[1] %></Data></Cell>
-              <Cell><Data ss:Type="Number"><%= breakpoint[2] unless breakpoint[2] == "" %></Data></Cell>
-              <Cell><Data ss:Type="Number"><%= breakpoint[3] unless breakpoint[3] == "" %></Data></Cell>
-              <Cell ss:StyleID="shuttlezwischenpreis"><Data ss:Type="Number"><%= breakpoint[4] %></Data></Cell>
-            </Row>
+          <%= job.legs.each_with_index do |leg, i| %>
+            <% if leg.driver_ids.include? driver.id %>
+              <Row>
+                <Cell ss:StyleID="borderlinks"/>
+                <Cell/>
+                <Cell/>
+                <Cell/>
+                <Cell/>
+                <Cell/>
+                <Cell ss:StyleID="borderlinks"><Data ss:Type="String"><%= Address.where(id: job.stops[i]["address_id"]).first.show_address %></Data></Cell>
+                <Cell><Data ss:Type="String"><%= Address.where(id: job.stops[i + 1]["address_id"]).first.show_address %></Data></Cell>
+                <Cell><Data ss:Type="Number"><%= leg["distance"] %></Data></Cell>
+                <Cell><Data ss:Type="Number"><%= leg["driver_ids"].length %></Data></Cell>
+                <Cell ss:StyleID="shuttlezwischenpreis"><Data ss:Type="Number"><%= leg["distance"] * @bill.driver_price_per_km / leg["driver_ids"].length %></Data></Cell>
+                <Cell ss:StyleID="borderrechts"/>
+              </Row>
+            <% end %>
           <% end %>
           <Row>
             <Cell ss:StyleID="borderlinksunten"/>
@@ -82,12 +84,12 @@
             <Cell ss:StyleID="borderunten"/>
             <Cell ss:StyleID="borderunten"/>
             <Cell ss:StyleID="borderunten"/>
-            <Cell ss:StyleID="borderunten"/>
-            <Cell ss:StyleID="borderunten"/>
+            <Cell ss:StyleID="borderlinksunten"/>
             <Cell ss:StyleID="borderunten"/>
             <Cell ss:StyleID="borderunten"><Data ss:Type="String">Gesamtpreis Fahrt</Data></Cell>
             <Cell ss:StyleID="borderunten"/>
-            <Cell ss:StyleID="shuttlepreis"><Data ss:Type="Number"><%= job.shuttle_job.price_driver_shuttle( job ) + job.price_driver %></Data></Cell>
+            <Cell ss:StyleID="shuttlepreis"><Data ss:Type="Number"><%= job.price_driver_shuttle( driver ) %></Data></Cell>
+            <Cell ss:StyleID="borderrechtsunten"/>
           </Row>
         <% end %>
       <% end %>

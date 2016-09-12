@@ -41,7 +41,7 @@ class AddressesController < ApplicationController
   # PATCH/PUT /addresses/1.json
   def update
     respond_to do |format|
-      if @address.update(address_params.except(:address_short))
+      if @address.update(address_params)
         format.html { redirect_to @address, notice: 'Adresse aktualisiert.' }
         format.json { render :show, status: :ok, location: @address }
       else

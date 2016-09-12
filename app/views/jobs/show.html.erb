@@ -1,16 +1,14 @@
 <div class="small-12 columns">
   <h1>Auftrag <%= @job.id %></h1>
 </div>
-<% if @job.has_shuttle? %>
-  <div class="small-12 columns"><h3><%= t("jobs.connected_shuttle_job") %> <%= link_to @job.shuttle_job.id, job_path(@job.shuttle_job) %></h3></div>
-<% end %>
 <div id="custom-row">
   <div class="large-6 columns">
-    <p>
-      <strong>Fahrer:</strong>
-      <%= @job.driver.fullname_id unless @job.driver.nil? %>
-    </p>
-
+    <% unless @job.is_shuttle? %>
+      <p>
+        <strong>Fahrer:</strong>
+        <%= @job.driver.fullname_id unless @job.driver.nil? %>
+      </p>
+    <% end %>
     <% if @job.has_co_drivers? %>
       <% @job.co_drivers.each_with_index do |co_driver, i| %>
         <p>
@@ -36,12 +34,12 @@
 
     <p>
       <strong>Von:</strong>
-      <%= @job.from.complete_address %>
+      <%= @job.from.complete_address if @job.from.is_a? Address %>
     </p>
 
     <p>
       <strong>Nach:</strong>
-      <%= @job.to.complete_address %>
+      <%= @job.to.complete_address if @job.to.is_a? Address%>
     </p>
     <p>
       <strong>Geplanter Abholtermin:</strong>
@@ -94,7 +92,7 @@
       <strong>Notiz:</strong>
       <%= @job.job_notice %>
     </p>
-    <p>
+    <p class="break-all">
       <strong>Transport Notiz:</strong>
       <%= @job.transport_notice %>
     </p>
@@ -105,31 +103,54 @@
   </div>
 
   <% if @job.is_shuttle? %>
-    <div class="small-12 columns"><h2>Details zum Schuttelauftrag</h2></div>
-    <table>
-      <thead>
-        <th>Name</th>
-        <th>ID</th>
-        <th>Von</th>
-        <th>Nach</th>
-        <th>Datum Abholung</th>
-        <th></th>
-        <th></th>
-      </thead>
-      <tbody>
-        <% @job.co_jobs.each do |co_job| %>
-          <tr>
-            <td><%= co_job.driver.fullname unless co_job.driver.nil? %></td>
-            <td><%= co_job.id %></td>
-            <td><%= co_job.from.address_short %></td>
-            <td><%= co_job.to.address_short %></td>
-            <td><%= l co_job.scheduled_collection_time.to_date unless co_job.scheduled_collection_time.nil? %></td>
-            <td><%= link_to "zeigen", job_path( co_job ) %></td>
-            <td><%= link_to "editieren", edit_job_path( co_job ) %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <div class="small-12 columns">
+      <h2>Shuttledaten</h2>
+      <div class="small-12 medium-6 columns">
+      <h2>Fahrer</h2>
+      <table>
+        <thead>
+          <th>Name</th>
+          <th>Teilstrecken</th>
+        </thead>
+        <tbody>
+          <% @job.passengers.map(&:driver).each do |driver| %>
+            <tr>
+              <td><%= driver.fullname %></td>
+              <td><%= @job.driver_legs(driver).join(", ") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      </div>
+      <div class="small-12 medium-6 columns">
+        <h2>Teilstrecken</h2>
+        <table>
+          <thead>
+            <th>Nr.</th>
+            <th>Strecke</th>
+            <th>Distanz</th>
+            <th>Anzahl</th>
+            <th>Fahrer</th>
+          </thead>
+          <tbody>
+            <% stops = @job.stops %>
+            <% @job.legs.each_with_index do |leg, i| %>
+              <tr>
+                <td><%= i + 1 %></td>
+                <% from_address = Address.where(id:stops[i].address_id).first %>
+                <% to_address = Address.where(id:stops[i+1].address_id).first %>
+                <% from_show_address = from_address.nil? ? "" : from_address.show_address.to_s %>
+                <% to_show_address = to_address.nil? ? "" : to_address.show_address.to_s %>
+                <td><%= from_show_address + " - " + to_show_address %></td>
+                <td><%= leg.distance %></td>
+                <td><%= leg.driver_ids.length %></td>
+                <td><%= leg.driver_ids.join(', ') %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   <% end %>
   <div class="small-12 column">
     <% if @job.is_open? %>

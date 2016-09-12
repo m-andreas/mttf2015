@@ -1627,12 +1627,110 @@ body{
 }
 
 
+#shuttle .small-12{
+  float:left;
+}
+
 .tabs li{
 	border-width: 1px;
 	border-style:solid;
 	border-color: $charcoal;
+	transition-duration: 0.4s;
 }
+
+.driver_button{
+  background-color: #57c40f;
+  border-radius:5px;
+  padding: 3px;
+}
+
+.border-top{
+  border-top: 2px solid black;
+  padding-top: 1em;
+}
+
+.shuttle_driver_row{
+  border: 2px solid black;
+  padding-top: 20px;
+  background-color: #d1d3d6;
+  margin-bottom: 1em;
+}
+
+.shuttle_driver_row h2{
+  text-align:center;
+  margin-bottom: 1em;
+}
+
+.add_stop{
+  margin-top: 2.2em;
+}
+
 
 @import 'foundation';
 
 
+.add_shuttle_passenger{
+  margin-top:2em;
+}
+
+.shuttle_mileage{
+  margin-top:4em;
+}
+
+.shuttle_remove_stop{
+  margin-top:4em;
+}
+
+.save_shuttle{
+  margin-top:2em;
+}
+
+.remaining-mileage-container{
+  border-top: solid 2px black;
+  font-weight: bold;
+}
+
+.button.round a{
+  color:white;
+}
+
+.button.round a:hover{
+  background-color:transparent;
+}
+
+.driver-button{
+  padding: 5px;
+  margin: 0 0 0.5rem;
+}
+
+.save-and-close{
+  float:right;
+  margin-right:2em;
+  margin-top:2em;
+}
+
+.button-left{
+  float:left;
+  margin-left:2em;
+  margin-top:2em;
+}
+
+a.button:visited {
+    color: white !important;
+}
+
+.main-wrapper{
+  padding: 0 2em 2em 2em;
+}
+
+.row{
+  max-width: 80%;
+}
+
+.no-padding{
+  padding: 0;
+}
+
+.break-all{
+  word-break: break-all;
+}

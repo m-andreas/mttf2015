@@ -1,0 +1,17 @@
+<p>
+  <strong>Fahrzeug Marke:</strong>
+  <%= @shuttle_car.car_brand %>
+</p>
+
+<p>
+  <strong>Fahrzeugtype:</strong>
+  <%= @shuttle_car.car_type %>
+</p>
+
+<p>
+  <strong>Kennzeichen:</strong>
+  <%= @shuttle_car.registration_number %>
+</p>
+
+<%= link_to 'Edit', edit_shuttle_car_path(@shuttle_car) %> |
+<%= link_to 'Back', shuttle_cars_path %>

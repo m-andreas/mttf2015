@@ -42,8 +42,6 @@ var fade_flash = function() {
 fade_flash();
 
 var show_ajax_message = function(msg, type) {
-  console.log(msg)
-  console.log(type)
   if( type == "notice" ){
     type = 'success'
   }
