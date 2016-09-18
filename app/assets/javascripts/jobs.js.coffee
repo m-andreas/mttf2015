@@ -111,6 +111,18 @@ ready = ->
   $("#from_filter").keyup ->
     $("#job_from_id").change();
 
+  checkDriveIds = () ->
+    if( $('#job_driver_id').val() == "1")
+      return true
+    else
+      found = false
+    $("select[name='co_driver_ids[]']").each ( index, value ) ->
+      if $(value).val() == "1"
+        found = true
+        return false
+    return found
+
+
   checkTimespan = () ->
     strDate = $("#job_actual_collection_time").val()
     dateParts = strDate.split(".");
@@ -295,6 +307,10 @@ ready = ->
       if checkTimespan()
         if (!confirm("Die Zeitspanne zwischen Abholung und Lieferung ist ungewöhlich groß. Fortfahren?"))
           event.preventDefault();
+      if checkDriveIds()
+        if (!confirm("Der Eventualfahrer mit der ID 1 ist eingetragen. Fortfahren?"))
+          event.preventDefault();
+
 
 # Shuttle verwaltung für edit
 
