@@ -123,23 +123,35 @@ ready = ->
     return found
 
 
-  checkTimespan = () ->
+  calcTimespan = () ->
     strDate = $("#job_actual_collection_time").val()
+    if strDate == ""
+      return false
     dateParts = strDate.split(".");
     time = dateParts[2].split(":");
     hour = time[0].slice(-2)
     dateStart = new Date(dateParts[2].substring(0,4), dateParts[1]-1, dateParts[0], time[0].slice(-2), time[1]);
     strDate = $("#job_actual_delivery_time").val()
+    if strDate == ""
+      return false
     dateParts = strDate.split(".");
     time = dateParts[2].split(":");
     hour = time[0].slice(-2)
     dateEnd = new Date(dateParts[2].substring(0,4), dateParts[1]-1, dateParts[0], time[0].slice(-2), time[1]);
     oneDay = 24*60*60*1000;
-    daysBetween = (dateEnd.getTime()- dateStart.getTime())/oneDay
-    daysBetween > 2
+    return (dateEnd.getTime()- dateStart.getTime())/oneDay
+
+
+  checkTimespan = () ->
+    daysBetween = calcTimespan()
+    if daysBetween == false
+      return false
+    daysBetween > 2 || daysBetween < 0
 
   checkDaysBetween = (e) ->
     strDate = $(e).val()
+    if strDate == ""
+      return false
     dateParts = strDate.split(".");
     time = dateParts[2].split(":");
     hour = time[0].slice(-2)
@@ -282,7 +294,6 @@ ready = ->
     date = new Date(dateParts[2].substring(0,4), dateParts[1]-1, dateParts[0], time[0].slice(-2), time[1]);
     oneDay = 24*60*60*1000;
     daysBetween = (date.getTime()- Date.now())/oneDay
-    console.log(daysBetween)
 
     if daysBetween > 1 || daysBetween < -30
       $(e).parent().css('background-color', 'red');
@@ -305,8 +316,12 @@ ready = ->
         if (!confirm("Der Liefertermin wirkt ungewöhnlich ( " + $("#job_actual_collection_time").val() + " ). Fortfahren?"))
           event.preventDefault();
       if checkTimespan()
-        if (!confirm("Die Zeitspanne zwischen Abholung und Lieferung ist ungewöhlich groß. Fortfahren?"))
-          event.preventDefault();
+        if calcTimespan() < 0
+          if (!confirm("Die Zeitspanne zwischen Abholung und Lieferung ist kleiner 0. Fortfahren?"))
+            event.preventDefault();
+        else
+          if (!confirm("Die Zeitspanne zwischen Abholung und Lieferung ist ungewöhlich groß ( " + calcTimespan().toString() + " Tage ). Fortfahren?"))
+            event.preventDefault();
       if checkDriveIds()
         if (!confirm("Der Eventualfahrer mit der ID 1 ist eingetragen. Fortfahren?"))
           event.preventDefault();
