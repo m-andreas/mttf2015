@@ -1,8 +1,13 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
-    :add_to_current_bill, :print_job, :set_to_print, :add_shuttle_breakpoint, :remove_shuttle_breakpoint, :change_breakpoint_distance, :add_shuttle_passenger, :remove_shuttle_passenger,
+    :add_to_current_bill, :print_job, :set_to_print, :add_shuttle_breakpoint, :remove_shuttle_breakpoint,
+    :change_breakpoint_distance, :add_shuttle_passenger, :remove_shuttle_passenger,
     :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route_and_pay, :unset_shuttle ]
   before_action :check_transfair, except: [ :multible_cars, :create_sixt, :new_sixt, :index  ]
+
+  before_action :check_editable, only: [ :add_co_driver, :add_shuttle_breakpoint, :remove_shuttle_breakpoint,
+    :add_shuttle_passenger, :remove_shuttle_passenger,:update, :edit, :add_to_current_bill, :change_breakpoint_distance,
+    :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route_and_pay, :unset_shuttle ]
   # GET /jobs
   # GET /jobs.json
   def index
@@ -436,6 +441,11 @@ class JobsController < ApplicationController
     params.require(:job).permit( :driver_id, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :car_brand, :car_type, :registration_number,
       :scheduled_collection_time, :scheduled_delivery_time, :actual_collection_time, :actual_delivery_time, :chassis_number, :mileage_delivery, :mileage_collection,
       :job_notice, :transport_notice, :transport_notice_extern )
+  end
+
+  #Check if the job is editable, which is required for most actions
+  def check_editable
+    redirect_to jobs_path, notice: "Diese Aktion ist ausschließlich für offene Aufträge" unless @job.is_open?
   end
 
   def address_params

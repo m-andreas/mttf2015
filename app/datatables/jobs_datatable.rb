@@ -30,6 +30,9 @@ private
           edit = link_to 'Editieren', "#{ENV['URL_PREFIX']}jobs/#{job.id}/edit"
           add_to_current = link_to "verrechnen", "#{ENV['URL_PREFIX']}jobs/add_to_current_bill/#{job.id}", method: :post, remote: true
           delete = link_to I18n.translate(:delete), "#{ENV['URL_PREFIX']}jobs/delete/#{job.id}", method: :post, data: { confirm: I18n.translate("jobs.really_delete") }, remote: true
+        elsif job.is_deleted?
+          edit = ""
+          add_to_current = I18n.translate("deleted")
         else
           edit = ""
           add_to_current = link_to "Rechnung", "#{ENV['URL_PREFIX']}bills/#{job.bill.id}"
