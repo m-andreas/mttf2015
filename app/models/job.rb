@@ -239,6 +239,10 @@ class Job < ActiveRecord::Base
     self.save
   end
 
+  def is_deleted?
+    status == DELETED
+  end
+
   def breakpoints
     if self.shuttle_data.is_a? Hash
       breakpoints = self.shuttle_data["breakpoints"]
