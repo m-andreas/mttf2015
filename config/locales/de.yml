@@ -54,6 +54,7 @@ de:
   routes:
     deleted: Die Route wurde gelöscht
   jobs:
+    only_open: "Diese Aktion ist ausschließlich für offene Aufträge"
     save_error: Ein Fehler ist aufgetreten. Aufträge wurden nicht gespeichert.
     sent_to_printer: Ihr Job wird in spätestens 5 Minuten gedruckt. Bitte um etwas Geduld.
     bill_open: Alle Offenen Aufträge verrechnen

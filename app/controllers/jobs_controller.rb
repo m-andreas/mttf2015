@@ -445,7 +445,7 @@ class JobsController < ApplicationController
 
   #Check if the job is editable, which is required for most actions
   def check_editable
-    redirect_to jobs_path, notice: "Diese Aktion ist ausschließlich für offene Aufträge" unless @job.is_open?
+    redirect_to jobs_path, notice: I18n.t( "jobs.only_open" ) unless @job.is_open?
   end
 
   def address_params

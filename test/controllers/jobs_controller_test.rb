@@ -154,7 +154,7 @@ class JobsControllerTest < ActionController::TestCase
       co_driver_ids: [ drivers(:two).id, drivers(:three).id ], id: jobs(:one)
     assert_redirected_to jobs_path
     assert flash[:notice].present?
-    assert_equal "Diese Aktion ist ausschließlich für offene Aufträge", flash[:notice]
+    assert_equal I18n.t( "jobs.only_open" ), flash[:notice]
   end
 
   test "should edit job and add co drivers" do
@@ -634,7 +634,7 @@ class JobsControllerTest < ActionController::TestCase
     jobs(:one).delete
     post :add_to_current_bill, id: jobs(:one)
     jobs(:one).reload
-    assert "Diese Aktion ist ausschließlich für offene Aufträge", flash[:notice]
+    assert I18n.t( "jobs.only_open" ), flash[:notice]
     assert_equal nil, jobs(:one).bill
     assert_redirected_to jobs_path
   end
