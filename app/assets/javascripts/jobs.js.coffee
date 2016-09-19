@@ -167,7 +167,7 @@ ready = ->
      $(e).parent().css('background-color', 'transparent');
 
   high_distance = () ->
-    Math.abs(parseInt($("#job_mileage_delivery").val()) - parseInt($("#job_mileage_collection").val())) > 1500
+    Math.abs(parseInt($("#job_mileage_delivery").val()) || 0 - parseInt($("#job_mileage_collection").val()) || 0) > 1500
 
   calculate_distance = () ->
     $("#distance").text(parseInt($("#job_mileage_delivery").val()) - parseInt($("#job_mileage_collection").val()) + " km");
