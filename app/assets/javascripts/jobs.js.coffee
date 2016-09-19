@@ -170,7 +170,7 @@ ready = ->
     Math.abs(parseInt($("#job_mileage_delivery").val()) || 0 - parseInt($("#job_mileage_collection").val()) || 0) > 1500
 
   calculate_distance = () ->
-    $("#distance").text(parseInt($("#job_mileage_delivery").val()) - parseInt($("#job_mileage_collection").val()) + " km");
+    $("#distance").text(parseInt($("#job_mileage_delivery").val() || 0) - parseInt($("#job_mileage_collection").val() || 0) + " km");
     if high_distance()
       $("#distance").css('background-color', 'red');
     else
