@@ -142,20 +142,6 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal "Auftrag kann nicht mehrere Fahrer haben und ein Shuttle sein.", flash[:error]
   end
 
-  test "should not edit deleted job" do
-    sign_in @user
-    @request.env['HTTP_REFERER'] = edit_job_path(jobs(:one))
-    jobs(:one).status = Job::DELETED
-    jobs(:one).save
-    patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, to_id: routes(:one).to_id,
-      car_brand: "BMW", car_type: "Z4", registration_number: "W123", actual_collection_time: "", actual_delivery_time: "",
-      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123", mileage_delivery: "100000",
-      mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice", transport_notice_extern: "transport_notice_extern"},
-      co_driver_ids: [ drivers(:two).id, drivers(:three).id ], id: jobs(:one)
-    assert_redirected_to jobs_path
-    assert flash[:notice].present?
-    assert_equal "Diese Aktion ist ausschließlich für offene Aufträge", flash[:notice]
-  end
 
   test "should edit job and add co drivers" do
     sign_in @user
@@ -626,16 +612,6 @@ class JobsControllerTest < ActionController::TestCase
     jobs(:one).reload
     assert jobs(:one).is_finished?, flash[:error]
     assert_equal Bill.get_current, jobs(:one).bill
-    assert_redirected_to jobs_path
-  end
-
-  test "dont_set_deleted_to_current_bill" do
-    sign_in @user
-    jobs(:one).delete
-    post :add_to_current_bill, id: jobs(:one)
-    jobs(:one).reload
-    assert "Diese Aktion ist ausschließlich für offene Aufträge", flash[:notice]
-    assert_equal nil, jobs(:one).bill
     assert_redirected_to jobs_path
   end
 

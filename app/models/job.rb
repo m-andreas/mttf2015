@@ -402,10 +402,6 @@ class Job < ActiveRecord::Base
     self.save
   end
 
-  def is_deleted?
-    status == DELETED
-  end
-
   def is_finished?
     status == FINISHED
   end
