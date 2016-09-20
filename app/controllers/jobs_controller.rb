@@ -5,7 +5,7 @@ class JobsController < ApplicationController
     :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route_and_pay, :unset_shuttle ]
   before_action :check_transfair, except: [ :multible_cars, :create_sixt, :new_sixt, :index  ]
 
-  before_action :check_editable, only: [ :add_co_driver, :add_shuttle_breakpoint, :remove_shuttle_breakpoint,
+  before_action :check_editable, only: [ :add_shuttle_breakpoint, :remove_shuttle_breakpoint,
     :add_shuttle_passenger, :remove_shuttle_passenger,:update, :edit, :add_to_current_bill, :change_breakpoint_distance,
     :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route_and_pay, :unset_shuttle ]
   # GET /jobs
