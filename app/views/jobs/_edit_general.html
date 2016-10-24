@@ -91,6 +91,16 @@
         <% end %>
       </div>
       <div class="row">
+        <div class="field large-6 columns abroad_time_start_container">
+          <h3><%= f.label "abroad_time_start", "Startzeit Auslandsaufenthalt" %></h3><br>
+          <%= f.time_select :abroad_time_start, { include_blank: true, time_separator: '<span class="large-2 column center-seperator">:</span>'.html_safe}, { :class => "large-5 columns" } %>
+        </div>
+        <div class="field large-6 columns abroad_time_end_container">
+          <h3><%= f.label "abroad_time_end", "Endzeit Auslandsaufenthalt" %></h3><br>
+          <%= f.time_select :abroad_time_end, { include_blank: true, time_separator: '<span class="large-2 column center-seperator">:</span>'.html_safe}, { :class => "large-5 columns" } %>
+        </div>
+      </div>
+      <div class="row">
         <div class="field large-4 columns">
           <h3><%= f.label :Auftragsbemerkungen %></h3><br>
           <%= f.text_field :job_notice %>

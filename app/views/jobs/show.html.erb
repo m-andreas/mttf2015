@@ -88,6 +88,20 @@
       <strong>Kilometerstand Lieferung:</strong>
       <%= @job.mileage_delivery %>
     </p>
+    <% unless @job.shuttle? %>
+      <p>
+        <strong>Startzeit Auslandsaufenthalt:</strong>
+        <%= @job.abroad_time_start.to_s(:time) unless @job.abroad_time_start.nil?%>
+      </p>
+      <p>
+        <strong>Endzeit Auslandsaufenthalt:</strong>
+        <%= @job.abroad_time_end.to_s(:time) unless @job.abroad_time_end.nil? %>
+      </p>
+    <% end %>
+    <p>
+      <strong>Dauer Auslandsaufenthalt:</strong>
+      <%= @job.get_abroad_time.round(2).to_s + " Stunden" %>
+    </p>
     <p>
       <strong>Notiz:</strong>
       <%= @job.job_notice %>
@@ -131,6 +145,7 @@
             <th>Distanz</th>
             <th>Anzahl</th>
             <th>Fahrer</th>
+            <th>Auslandszeit</th>
           </thead>
           <tbody>
             <% stops = @job.stops %>
@@ -145,6 +160,7 @@
                 <td><%= leg.distance %></td>
                 <td><%= leg.driver_ids.length %></td>
                 <td><%= leg.driver_ids.join(', ') %></td>
+                <td><%= AbroadTime.calc(leg.abroad_time_start, leg.abroad_time_end) %></td>
               </tr>
             <% end %>
           </tbody>

@@ -26,7 +26,10 @@
               <%= text_field_tag 'start_milage', @job.mileage_collection %>
             </div>
           <% elsif i == @shuttle_data.stops.length - 1 %>
-            <div class="small-12 medium-2 medium-offset-2 columns shuttle_mileage">
+            <div class="small-12 medium-2 columns shuttle_mileage">
+                <%= get_html_abroad_time( @job ) %>
+            </div>
+            <div class="small-12 medium-2 columns shuttle_mileage">
               Kilometerstand Ende
               <%= text_field_tag 'end_milage', @job.mileage_delivery %><br>
               <div class="row">

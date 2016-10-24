@@ -2,7 +2,8 @@ class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :remove_from_current_bill,
     :add_to_current_bill, :print_job, :set_to_print, :add_shuttle_breakpoint, :remove_shuttle_breakpoint,
     :change_breakpoint_distance, :add_shuttle_passenger, :remove_shuttle_passenger,
-    :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route_and_pay, :unset_shuttle ]
+    :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route_and_pay, :unset_shuttle,
+    :change_abroad_start_time, :change_abroad_end_time, :remove_leg_abroad_time_end, :remove_leg_abroad_time_start ]
   before_action :check_transfair, except: [ :multible_cars, :create_sixt, :new_sixt, :index  ]
 
   before_action :check_editable, only: [ :add_shuttle_breakpoint, :remove_shuttle_breakpoint,
@@ -88,6 +89,58 @@ class JobsController < ApplicationController
     end
     respond_to do | format |
       format.json { render 'change_breakpoint_address.js.erb' }
+    end
+  end
+
+  def change_abroad_start_time
+    @count = params[:count].to_i
+    @time = params[:time]
+    if @time =~ /^[0-2][0-9]:[0-9][0-9]$/
+      @job.change_leg_abroad_start_time @time, @count
+    end
+    respond_to do | format |
+      @shuttle_data = @job.get_shuttle_data
+      @drivers = Driver.get_active
+      @addresses = Address.get_active
+      format.js { render 'rerender_shuttle.js.erb' }
+    end
+  end
+
+  def change_abroad_end_time
+    @count = params[:count].to_i
+    @time = params[:time]
+    if @time =~ /^[0-2][0-9]:[0-9][0-9]$/
+      @job.change_leg_abroad_end_time @time, @count
+    end
+    respond_to do | format |
+      @shuttle_data = @job.get_shuttle_data
+      @drivers = Driver.get_active
+      @addresses = Address.get_active
+      format.js { render 'rerender_shuttle.js.erb' }
+    end
+  end
+
+  def remove_leg_abroad_time_start
+    @count = params[:count].to_i
+    @job.shuttle_data["legs"][@count].delete("abroad_time_start")
+    @job.save
+    respond_to do | format |
+      @shuttle_data = @job.get_shuttle_data
+      @drivers = Driver.get_active
+      @addresses = Address.get_active
+      format.js { render 'rerender_shuttle.js.erb' }
+    end
+  end
+
+  def remove_leg_abroad_time_end
+    @count = params[:count].to_i
+    @job.shuttle_data["legs"][@count].delete("abroad_time_end")
+    @job.save
+    respond_to do | format |
+      @shuttle_data = @job.get_shuttle_data
+      @drivers = Driver.get_active
+      @addresses = Address.get_active
+      format.js { render 'rerender_shuttle.js.erb' }
     end
   end
 
@@ -392,7 +445,7 @@ class JobsController < ApplicationController
             flash[:error] = msg
             @drivers = Driver.get_active
             @addresses = Address.get_active
-            format.html { redirect_to :back }
+            format.html { redirect_to edit_job_path(@job) }
           end
         else
           if params[:subaction] == "update_and_edit"
@@ -440,7 +493,7 @@ class JobsController < ApplicationController
   def job_params
     params.require(:job).permit( :driver_id, :cost_center_id, :route_id, :from_id, :to_id, :shuttle, :car_brand, :car_type, :registration_number,
       :scheduled_collection_time, :scheduled_delivery_time, :actual_collection_time, :actual_delivery_time, :chassis_number, :mileage_delivery, :mileage_collection,
-      :job_notice, :transport_notice, :transport_notice_extern )
+      :job_notice, :transport_notice, :transport_notice_extern, :abroad_time_start, :abroad_time_end )
   end
 
   #Check if the job is editable, which is required for most actions

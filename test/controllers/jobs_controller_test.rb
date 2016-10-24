@@ -100,6 +100,18 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal 2, job.co_drivers.length
   end
 
+  test "should create job with abroad time" do
+    sign_in @user
+    post :create, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, to_id: routes(:one).to_id,
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", "abroad_time_start(1i)" => "1",
+      "abroad_time_start(2i)" => "1", "abroad_time_start(3i)" => "1", "abroad_time_start(4i)" => "12", "abroad_time_start(5i)" => "20",
+      "abroad_time_end(1i)" => "1", "abroad_time_end(2i)" => "1", "abroad_time_end(3i)" => "1", "abroad_time_end(4i)" => "15",
+      "abroad_time_end(5i)" => "50" }
+    job = Job.find(assigns(:job).id)
+    assert_equal "12:20", job.abroad_time_start.to_s(:time)
+    assert_equal "15:50", job.abroad_time_end.to_s(:time)
+  end
+
   test "should not edit with wrong date" do
     sign_in @user
     @request.env['HTTP_REFERER'] = edit_job_path(jobs(:one))
@@ -168,6 +180,21 @@ class JobsControllerTest < ActionController::TestCase
     assert job.co_drivers.include? drivers(:two)
     assert job.co_drivers.include? drivers(:three)
     assert_equal 2, job.co_drivers.length
+  end
+
+  test "should edit job with abroad time" do
+    sign_in @user
+    patch :update, job: { cost_center_id: @job.cost_center_id, from_id: routes(:one).from_id, driver_id: drivers(:one).id, to_id: routes(:one).to_id,
+      car_brand: "BMW", car_type: "Z4", registration_number: "W123", actual_collection_time: "", actual_delivery_time: "",
+      scheduled_collection_time: "02.04.2015 00:00", scheduled_delivery_time: "02.04.2015 00:01", chassis_number: "123",
+      mileage_delivery: "100000", mileage_collection: "200000", job_notice: "job_notice", transport_notice: "transport_notice",
+      transport_notice_extern: "transport_notice_extern", "abroad_time_start(1i)" => "1", "abroad_time_start(2i)" => "1",
+      "abroad_time_start(3i)" => "1", "abroad_time_start(4i)" => "15", "abroad_time_start(5i)" => "20",
+      "abroad_time_end(1i)" => "1", "abroad_time_end(2i)" => "1", "abroad_time_end(3i)" => "1", "abroad_time_end(4i)" => "17",
+      "abroad_time_end(5i)" => "00" }, id: jobs(:one)
+    job = Job.find(assigns(:job).id)
+    assert_equal "15:20", job.abroad_time_start.to_s(:time)
+    assert_equal "17:00", job.abroad_time_end.to_s(:time)
   end
 
   test "should edit shuttle job allgemein" do
@@ -355,6 +382,40 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal jobs(:shuttle).stops.length - 1, jobs(:shuttle).legs.length
   end
 
+  test "should remove leg abroad_time_end" do
+    sign_in @user
+    legs_before = jobs(:shuttle).legs.length
+    stops_before = jobs(:shuttle).stops.length
+    xhr :post, :remove_leg_abroad_time_end, id: jobs(:shuttle), count: 1
+    assert_response :success
+    jobs(:shuttle).reload
+    legs_after = jobs(:shuttle).legs.length
+    stops_after = jobs(:shuttle).stops.length
+    assert_equal legs_before, legs_after
+    assert_equal stops_before, stops_after
+    assert_equal nil, jobs(:shuttle).legs[1].abroad_time_end
+  end
+
+  test "should remove leg abroad_time_start" do
+    sign_in @user
+    legs_before = jobs(:shuttle).legs.length
+    stops_before = jobs(:shuttle).stops.length
+    xhr :post, :remove_leg_abroad_time_start, id: jobs(:shuttle), count: 1
+    assert_response :success
+    jobs(:shuttle).reload
+    legs_after = jobs(:shuttle).legs.length
+    stops_after = jobs(:shuttle).stops.length
+    assert_equal legs_before, legs_after
+    assert_equal stops_before, stops_after
+    assert_equal nil, jobs(:shuttle).legs[1].abroad_time_start
+  end
+
+  test "add co driver graphicaly" do
+    sign_in @user
+    xhr :post, :add_co_driver, id: jobs(:shuttle), number_of_co_drivers: 2
+    assert_response :success
+  end
+
   test "should add shuttle stop" do
     sign_in @user
     legs_before = jobs(:shuttle).legs.length
@@ -382,6 +443,51 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal stops_before, stops_after
     assert_equal 666, jobs(:shuttle).legs[1].distance
     assert_equal jobs(:shuttle).stops.length - 1, jobs(:shuttle).legs.length
+  end
+
+  test "should add abroad_time start to shuttle stop" do
+    sign_in @user
+    legs_before = jobs(:shuttle).legs.length
+    stops_before = jobs(:shuttle).stops.length
+    xhr :post, :change_abroad_start_time, id: jobs(:shuttle), count: 1, time: "05:00"
+    assert_response :success
+    jobs(:shuttle).reload
+    legs_after = jobs(:shuttle).legs.length
+    stops_after = jobs(:shuttle).stops.length
+    assert_equal legs_before, legs_after
+    assert_equal stops_before, stops_after
+    assert_equal "05:00", jobs(:shuttle).legs[1]["abroad_time_start"].to_time.to_s(:time)
+  end
+
+  test "should change to shuttle" do
+    sign_in @user
+    post :change_to_shuttle, id: jobs(:one)
+    assert_response :success
+    jobs(:one).reload
+    assert jobs(:one).shuttle?
+  end
+
+  test "should unset_shuttle" do
+    sign_in @user
+    post :unset_shuttle, id: jobs(:shuttle)
+    assert_response :success
+    jobs(:shuttle).reload
+    assert !jobs(:shuttle).shuttle?
+  end
+
+
+  test "should add abroad_time end to shuttle stop" do
+    sign_in @user
+    legs_before = jobs(:shuttle).legs.length
+    stops_before = jobs(:shuttle).stops.length
+    xhr :post, :change_abroad_end_time, id: jobs(:shuttle), count: 0, time: "03:00"
+    assert_response :success
+    jobs(:shuttle).reload
+    legs_after = jobs(:shuttle).legs.length
+    stops_after = jobs(:shuttle).stops.length
+    assert_equal legs_before, legs_after
+    assert_equal stops_before, stops_after
+    assert_equal "03:00", jobs(:shuttle).legs[0]["abroad_time_end"].to_time.to_s(:time)
   end
 
   test "should add milage to shuttle start" do

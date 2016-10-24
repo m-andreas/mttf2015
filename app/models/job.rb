@@ -53,6 +53,24 @@ class Job < ActiveRecord::Base
     self.save
   end
 
+  def change_leg_abroad_start_time time, count
+    if count.is_a? Integer
+      self.shuttle_data["legs"][count]["abroad_time_start"] = time.to_time.to_s unless self.shuttle_data["legs"][count].nil?
+    else
+      return "Nur Zahlen erlaubt"
+    end
+    self.save
+  end
+
+  def change_leg_abroad_end_time time, count
+    if count.is_a? Integer
+      self.shuttle_data["legs"][count]["abroad_time_end"] = time.to_time.to_s unless self.shuttle_data["legs"][count].nil?
+    else
+      return "Nur Zahlen erlaubt"
+    end
+    self.save
+  end
+
   def change_breakpoint_distance distance, count
     if count.is_a? Integer
       self.shuttle_data["legs"][count]["distance"] = distance unless self.shuttle_data["legs"][count].nil?
@@ -149,12 +167,16 @@ class Job < ActiveRecord::Base
 
   def get_route_string
     route_string = ""
-    self.stops.each_with_index do |stop, i|
-      stop_address = Address.where( id: stop.address_id ).first
-      route_string += stop_address.city.to_s
-      unless i + 1 == self.stops.length
-        route_string += " - "
+    if self.shuttle?
+      self.stops.each_with_index do |stop, i|
+        stop_address = Address.where( id: stop.address_id ).first
+        route_string += stop_address.city.to_s
+        unless i + 1 == self.stops.length
+          route_string += " - "
+        end
       end
+    else
+      route_string = "#{self.from.show_address} - #{self.to.show_address}"
     end
     return route_string
   end
@@ -256,7 +278,8 @@ class Job < ActiveRecord::Base
   end
 
   def stops
-    get_shuttle_data.stops if self.is_shuttle?
+    return get_shuttle_data.stops if self.is_shuttle?
+    return []
   end
 
   def price_driver_shuttle( driver, get_array = false )
@@ -509,5 +532,31 @@ class Job < ActiveRecord::Base
     else
       return "Status nicht bekannt"
     end
+  end
+
+  def get_abroad_time driver="total"
+    if self.is_shuttle?
+      abroad_time = 0
+      if self.shuttle_data["legs"].is_a? Array
+        self.shuttle_data["legs"].each do |leg|
+
+          if ( driver == "total" || leg["driver_ids"].include?( driver.id ) ) && !leg["abroad_time_end"].nil? && !leg["abroad_time_start"].nil?
+            abroad_time += AbroadTime.calc leg["abroad_time_start"].to_time, leg["abroad_time_end"].to_time
+          end
+        end
+      end
+      return abroad_time
+    else
+      if self.abroad_time_start.is_a?( Time ) && self.abroad_time_end.is_a?( Time )
+        abroad_time = AbroadTime.calc( self.abroad_time_start, self.abroad_time_end )
+        return abroad_time
+      else
+        return 0
+      end
+    end
+  end
+
+  def group_date
+    self.actual_collection_time.to_date.to_s
   end
 end

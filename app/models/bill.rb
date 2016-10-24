@@ -105,13 +105,13 @@ class Bill < ActiveRecord::Base
   def driver_total( driver )
     total = 0
     jobs = self.get_drives( driver )
-    jobs.each do |job|
-      job_price = job_price( job, driver )
+    jobs.each do |job| job_price = job_price( job, driver )
       return false unless job_price
       total += job_price
     end
     return total
   end
+
 
   def sixt_total
     total = 0

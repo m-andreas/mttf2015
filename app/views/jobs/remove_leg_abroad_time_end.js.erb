@@ -1,0 +1,4 @@
+<% if @count.is_a? Integer %>
+  $($(".shuttle_driver_row")[<%= @count %>]).find("#abroad_time_end_abroad_time_end_4i").first().val("00")
+  $($(".shuttle_driver_row")[<%= @count %>]).find("#abroad_time_end_abroad_time_end_5i").first().val("00")
+<% end %>

@@ -85,6 +85,8 @@ de:
     updated: Auftrag wurde erfolgreicht aktualisiert.
     deleted: Auftrag gelöscht
     cant_delete_billed: Verrechnete Aufträge können nicht gelöscht werden
+    leg_abroad_start_delete: Anfangzeit entfernen
+    leg_abroad_end_delete: Endzeit entfernen
   views:
     pagination:
       next: Nächste
@@ -140,6 +142,7 @@ de:
       default: "%d.%m.%Y"
       long: "%e. %B %Y"
       short: "%e. %b"
+      month_with_year: "%B %Y"
     month_names:
     -
     - Januar

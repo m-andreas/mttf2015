@@ -1,0 +1,47 @@
+<h1>Auslandzeiten für <%= @date_string %> von <%= @driver.fullname_id %></h1>
+<table>
+  <thead>
+    <tr>
+      <td>Nummer</td>
+      <td>Datum</td>
+      <td>Strecke</td>
+      <td>Gesamtzeit</td>
+    </tr>
+  </thead>
+  <tbody>
+  <% @jobs.each do |job| %>
+    <% if job.get_abroad_time > 0 %>
+      <tr>
+        <td>
+          <%= link_to( job.id, job_path(job)) %>
+        <td>
+          <%=l job.actual_collection_time %>
+        </td>
+        <td>
+          <%= job.get_route_string %>
+        </td>
+        <td>
+          <% if job.get_abroad_time(@driver) < AbroadTime::MIN_TIME %>
+            <span class="line-trough"><%= job.get_abroad_time(@driver) %></span>
+          <% else %>
+            <%= job.get_abroad_time(@driver) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  <% end %>
+  <tr>
+  <td>
+  </td>
+  <td>
+  </td>
+  <td>
+  GESAMT:
+  </td>
+  <td>
+    <%= @total_time %>
+  </td>
+</tr>
+  </tbody>
+</table>
+

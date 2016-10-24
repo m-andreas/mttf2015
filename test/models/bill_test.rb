@@ -15,7 +15,7 @@ class BillTest < ActiveSupport::TestCase
 
   test "create_bill_from_current_jobs" do
     jobs = Job.get_open
-    assert_equal 1, jobs_billed = Job.where( status: Job::FINISHED ).length
+    assert_equal 1, jobs_billed = Job.where( status: Job::FINISHED ).where.not( bill: bills(:abroad)).length
     bill = Bill.get_current
     allready_in_bill = bill.jobs.length
     jobs.delete(jobs(:one_no_date))

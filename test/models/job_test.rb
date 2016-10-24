@@ -75,4 +75,31 @@ class JobTest < ActiveSupport::TestCase
   test "get_route_string" do
     assert_equal "Graz -  - Graz - Graz", jobs(:shuttle).get_route_string
   end
+
+  test "get_abroad_time" do
+    assert_equal 4, jobs(:one).get_abroad_time(jobs(:one).driver)
+  end
+
+  test "get_abroad_time_empty" do
+    assert_equal 0, jobs(:one_no_date).get_abroad_time(jobs(:one_no_date).driver)
+  end
+
+  test "get_abroad_time_shuttle" do
+    assert_equal 1.5, jobs(:shuttle).get_abroad_time(drivers(:three))
+  end
+
+  test "get_abroad_time_not_in_shuttle" do
+    assert_equal 0, jobs(:shuttle).get_abroad_time(drivers(:entered_today))
+  end
+
+  test "monthly_abroad_time" do
+    assert_equal 8.5, AbroadTime.driver_total_abroad_time( drivers(:one), 1.day.ago )
+  end
+
+  test "monthly_abroad_time_to_low" do
+    jobs(:with_co_drivers_abroad).actual_collection_time = 1.day.ago
+    jobs(:with_co_drivers_abroad).abroad_time_start= "12:15".to_time
+    jobs(:with_co_drivers_abroad).save
+    assert_equal 5.5, AbroadTime.driver_total_abroad_time( drivers(:one), 1.day.ago )
+  end
 end

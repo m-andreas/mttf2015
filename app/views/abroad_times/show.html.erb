@@ -1,0 +1,22 @@
+<h1>Auslandzeiten für <%= @date_string %></h1>
+<table>
+  <thead>
+    <tr>
+      <td>Name</td>
+      <td>Gesamtzeit</td>
+    </tr>
+  </thead>
+  <tbody>
+  <% @abroad_times.each do |driver_abroad_time| %>
+    <tr>
+      <td>
+        <%= link_to( driver_abroad_time[:name], get_abroad_drives_for_driver_path( date: @date, driver_id: driver_abroad_time[:id] )) %><br>
+      </td>
+      <td>
+        <%= driver_abroad_time[:time] %><br>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+

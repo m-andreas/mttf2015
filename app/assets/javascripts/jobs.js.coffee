@@ -60,6 +60,7 @@ ready = ->
       calculate_time_gap(this)
   ,1000
 
+
   $('#jobs-in-bill-table').DataTable({
     responsive: false,
     columnDefs: [ {
@@ -344,22 +345,46 @@ ready = ->
       url = window._url_prefix + "jobs/change_breakpoint_distance/" + $("#id").val() + "?count=" + a + "&distance=" + $(this).val()
       $.ajax(url: url, dataType: 'script' ).done (html) ->
 
+    $('.shuttle_abroad_time_start_container select').change ->
+      parent = $(this).parent().parent().parent().parent()
+      a = parent.attr("id")
+      hour = parent.find('#abroad_time_start_abroad_time_start_4i').val()
+      if(hour.length == 0)
+        hour = "00";
+      minute = parent.find('#abroad_time_start_abroad_time_start_5i').val()
+      if(minute.length == 0)
+        minute = "00";
+      url = window._url_prefix + "jobs/change_abroad_start_time/" + $("#id").val() + "?count=" + a + "&time=" + hour + ":" + minute
+      $.ajax(url: url, dataType: 'script' ).done (html) ->
+
+    $('.shuttle_abroad_time_end_container select').change ->
+      parent = $(this).parent().parent().parent().parent()
+      a = parent.attr("id")
+      hour = parent.find('#abroad_time_end_abroad_time_end_4i').val()
+      if(hour.length == 0)
+        hour = "00";
+      minute = parent.find('#abroad_time_end_abroad_time_end_5i').val()
+      if(minute.length == 0)
+        minute = "00";
+      url = window._url_prefix + "jobs/change_abroad_end_time/" + $("#id").val() + "?count=" + a + "&time=" + hour + ":" + minute
+      $.ajax(url: url, dataType: 'script' ).done (html) ->
+
+
     $('.add_shuttle_passenger').click ->
       a = $(this).parent().parent().parent().attr("id")
 
       url = window._url_prefix + "jobs/add_shuttle_passenger/" + $("#id").val() + "?count=" + a + "&driver_id=" + $(this).parent().parent().find(".driver_ids").val()
       $.ajax(url: url, dataType: 'html', context: this )
       .done (html) ->
-        console.log("done")
-        console.log($($(this).parent().parent()))
         $(this).parent().parent().find(".shuttle_passengers").replaceWith(html)
-        console.log(html)
         true
       .fail (html) ->
-        console.log("fail")
-        console.log(this)
-        console.log(html)
         true
+    $('.addresses_select').change ->
+      a = $(this).parent().parent().parent().attr("id")
+      url = window._url_prefix + "jobs/change_breakpoint_address/" + $("#id").val() + "?count=" + a + "&address_id=" + $(this).val()
+      $.ajax(url: url, dataType: 'script' ).done (html) ->
+
     $('.addresses_select').change ->
       a = $(this).parent().parent().parent().attr("id")
       url = window._url_prefix + "jobs/change_breakpoint_address/" + $("#id").val() + "?count=" + a + "&address_id=" + $(this).val()

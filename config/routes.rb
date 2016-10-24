@@ -41,6 +41,10 @@ Rails.application.routes.draw do
   get 'jobs/change_breakpoint_address/:id', to: 'jobs#change_breakpoint_address', as: 'job_change_breakpoint_address'
   get 'jobs/add_shuttle_passenger/:id', to: 'jobs#add_shuttle_passenger', as: 'job_add_shuttle_passenger'
   get 'jobs/remove_shuttle_passenger/:id', to: 'jobs#remove_shuttle_passenger', as: 'job_remove_shuttle_passenger'
+  get 'jobs/change_abroad_start_time/:id', to: 'jobs#change_abroad_start_time', as: 'job_change_abroad_start_time'
+  get 'jobs/change_abroad_end_time/:id', to: 'jobs#change_abroad_end_time', as: 'job_change_abroad_end_time'
+  get 'jobs/remove_leg_abroad_time_end/:id', to: 'jobs#remove_leg_abroad_time_end', as: 'remove_leg_abroad_time_end'
+  get 'jobs/remove_leg_abroad_time_start/:id', to: 'jobs#remove_leg_abroad_time_start', as: 'remove_leg_abroad_time_start'
   get 'jobs/print_job/:id', to: 'jobs#print_job', as: 'print_job'
   post 'jobs/delete/:id', to: 'jobs#destroy', as: 'job_delete'
   get 'jobs/multible_cars/:job_amount', to: 'jobs#multible_cars', as: 'job_multible_cars'
@@ -49,6 +53,10 @@ Rails.application.routes.draw do
   resources :jobs
   get 'jobs_ajax/show_all', to: 'jobs#show_all'
   get 'jobs_ajax/show_regular_jobs', to: 'jobs#show_regular_jobs'
+
+  get 'auslandszeiten/auslandszeiten_pro_fahrer/', to: 'abroad_times#show_driver', as: 'get_abroad_drives_for_driver'
+  get 'auslandszeiten/index', to: 'abroad_times#index', as: 'abroad_time_index'
+  get 'auslandszeiten/:month_string', to: 'abroad_times#show', as: 'show_abroad_times'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

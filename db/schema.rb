@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160411205201) do
+ActiveRecord::Schema.define(version: 20161010153214) do
 
   create_table "Adressenpool", primary_key: "AdressenpoolID", force: true do |t|
     t.integer "LoginID",                                null: false
@@ -523,6 +523,8 @@ ActiveRecord::Schema.define(version: 20160411205201) do
     t.integer  "id_extern"
     t.boolean  "to_print",                             default: true
     t.text     "shuttle_data"
+    t.time     "abroad_time_start"
+    t.time     "abroad_time_end"
   end
 
   create_table "passengers", force: true do |t|

@@ -3,7 +3,7 @@ require 'simplecov'
 SimpleCov.start
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
-
+AbroadTime::MIN_TIME = 3
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all
@@ -12,5 +12,5 @@ class ActiveSupport::TestCase
 end
 
 class ActionController::TestCase
-  include Devise::TestHelpers    
+  include Devise::TestHelpers
 end
