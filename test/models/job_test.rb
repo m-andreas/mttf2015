@@ -93,13 +93,13 @@ class JobTest < ActiveSupport::TestCase
   end
 
   test "monthly_abroad_time" do
-    assert_equal 8.5, AbroadTime.driver_total_abroad_time( drivers(:one), 1.day.ago )
+    assert_equal 9, AbroadTime.driver_total_abroad_time( drivers(:one), 1.day.ago )
   end
 
   test "monthly_abroad_time_to_low" do
     jobs(:with_co_drivers_abroad).actual_collection_time = 1.day.ago
     jobs(:with_co_drivers_abroad).abroad_time_start= "12:15".to_time
     jobs(:with_co_drivers_abroad).save
-    assert_equal 5.5, AbroadTime.driver_total_abroad_time( drivers(:one), 1.day.ago )
+    assert_equal 6, AbroadTime.driver_total_abroad_time( drivers(:one), 1.day.ago )
   end
 end

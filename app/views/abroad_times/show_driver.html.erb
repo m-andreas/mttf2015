@@ -6,6 +6,7 @@
       <td>Datum</td>
       <td>Strecke</td>
       <td>Gesamtzeit</td>
+      <td>Bezahlung</td>
     </tr>
   </thead>
   <tbody>
@@ -15,18 +16,27 @@
         <td>
           <%= link_to( job.id, job_path(job)) %>
         <td>
-          <%=l job.actual_collection_time %>
+          <%=l job.actual_collection_time.to_date %>
         </td>
         <td>
           <%= job.get_route_string %>
         </td>
-        <td>
           <% if job.get_abroad_time(@driver) < AbroadTime::MIN_TIME %>
-            <span class="line-trough"><%= job.get_abroad_time(@driver) %></span>
+            <td>
+              <span class="line-trough"><%= job.get_abroad_time(@driver) %></span>
+            </td>
+            <td>
+              0
+            </td>
           <% else %>
-            <%= job.get_abroad_time(@driver) %>
+            <td>
+              <% aboad_time = job.get_abroad_time(@driver) %>
+              <%= aboad_time %>
+            </td>
+            <td>
+              <%= aboad_time * AbroadTime::PRICE %>
+            </td>
           <% end %>
-        </td>
       </tr>
     <% end %>
   <% end %>
@@ -40,6 +50,9 @@
   </td>
   <td>
     <%= @total_time %>
+  </td>
+  <td>
+    <%= @total_time * AbroadTime::PRICE %>
   </td>
 </tr>
   </tbody>

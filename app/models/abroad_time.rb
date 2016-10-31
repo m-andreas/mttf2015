@@ -1,5 +1,6 @@
 class AbroadTime
   MIN_TIME = 8
+  PRICE = 0.38
 
   def self.get_times_per_month date
     jobs = Job.eager_load(:passengers, :driver, :from, :to).where("(shuttle = false and actual_collection_time >= :time_start and " +
@@ -11,7 +12,6 @@ class AbroadTime
     @abroad_times = []
     drivers = []
     jobs_no_empty = jobs.reject { |j| j.shuttle? && j.get_abroad_time == 0 }
-    puts jobs_no_empty.inspect
     jobs_no_empty.each do |job|
       drivers << job.driver unless job.driver.nil?
       job.passengers.each do |passenger|
@@ -35,11 +35,12 @@ class AbroadTime
 
   def self.driver_total_abroad_time( driver, date, with_jobs = false )
     jobs = Job.eager_load(:passengers).where("(shuttle = false and actual_collection_time >= :time_start and " +
-      "actual_collection_time <= :time_end and jobs.driver_id = :driver_id and status in (:status) AND " +
+      "actual_collection_time < :time_end and jobs.driver_id = :driver_id and status in (:status) AND " +
       "abroad_time_start IS NOT NULL AND abroad_time_end IS NOT NULL AND abroad_time_start != '' AND " +
       "abroad_time_end != '') or " +
       "( passengers.driver_id = :driver_id and status in (:status) )",
-      time_start: date.beginning_of_month, time_end: date.end_of_month, driver_id: driver.id, status: [ Job::FINISHED, Job::CHARGED ] )
+      time_start: date.beginning_of_month, time_end: date.beginning_of_month + 1.month, driver_id: driver.id, status: [ Job::FINISHED, Job::CHARGED ] )
+
     if with_jobs
       return get_abroad_time_for_jobs( driver, jobs ), jobs
     else
@@ -72,6 +73,6 @@ class AbroadTime
         end
         total_time += day_abroad_time if day_abroad_time >= MIN_TIME
       end
-      return total_time
+      return total_time.round
     end
 end
