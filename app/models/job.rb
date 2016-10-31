@@ -549,7 +549,7 @@ class Job < ActiveRecord::Base
     else
       if self.abroad_time_start.is_a?( Time ) && self.abroad_time_end.is_a?( Time )
         abroad_time = AbroadTime.calc( self.abroad_time_start, self.abroad_time_end )
-        return abroad_time
+        return abroad_time.round(2)
       else
         return 0
       end

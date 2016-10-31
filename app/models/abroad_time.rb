@@ -73,6 +73,6 @@ class AbroadTime
         end
         total_time += day_abroad_time if day_abroad_time >= MIN_TIME
       end
-      return total_time.round
+      return total_time
     end
 end

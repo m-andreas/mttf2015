@@ -10,18 +10,22 @@
     </tr>
   </thead>
   <tbody>
-  <% @jobs.each do |job| %>
-    <% if job.get_abroad_time > 0 %>
-      <tr>
-        <td>
-          <%= link_to( job.id, job_path(job)) %>
-        <td>
-          <%=l job.actual_collection_time.to_date %>
-        </td>
-        <td>
-          <%= job.get_route_string %>
-        </td>
-          <% if job.get_abroad_time(@driver) < AbroadTime::MIN_TIME %>
+  <% @jobs.group_by(&:group_date).each do |date, job_group| %>
+    <% puts job_group.inspect %>
+    <% day_time = 0 %>
+    <% job_group.each{ |j| day_time += j.get_abroad_time(@driver)} %>
+    <% job_group.each do |job| %>
+      <% if job.get_abroad_time > 0 %>
+        <tr>
+          <td>
+            <%= link_to( job.id, job_path(job)) %>
+          <td>
+            <%=l job.actual_collection_time.to_date %>
+          </td>
+          <td>
+            <%= job.get_route_string %>
+          </td>
+          <% if day_time < AbroadTime::MIN_TIME %>
             <td>
               <span class="line-trough"><%= job.get_abroad_time(@driver) %></span>
             </td>
@@ -34,10 +38,11 @@
               <%= aboad_time %>
             </td>
             <td>
-              <%= aboad_time * AbroadTime::PRICE %>
+              <%= ( aboad_time * AbroadTime::PRICE ).round(2) %>
             </td>
           <% end %>
-      </tr>
+        </tr>
+      <% end %>
     <% end %>
   <% end %>
   <tr>

@@ -23,7 +23,7 @@ class AbroadTimesControllerTest < ActionController::TestCase
   test "should show user" do
     sign_in @user
     get :show_driver, date: Date.today, driver_id: drivers(:one).id
-    assert_equal 9, assigns(:total_time)
+    assert_equal 6, assigns(:total_time)
     assert_equal 3, assigns(:jobs).length
     assert_response :success
   end

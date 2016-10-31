@@ -213,7 +213,7 @@ finished:
   mileage_collection: 100
   mileage_delivery: 200
   abroad_time_start: <%= "10:00".to_time %>
-  abroad_time_end: <%= "15:00".to_time %>
+  abroad_time_end: <%= "12:00".to_time %>
 
 finished_shuttle_abroad:
   transport_notice: "finished"
