@@ -1,6 +1,6 @@
 class AbroadTime
   MIN_TIME = 8
-  PRICE = 0.38
+  PRICE = 0.83
 
   def self.get_times_per_month date
     jobs = Job.eager_load(:passengers, :driver, :from, :to).where("(shuttle = 'false' and actual_collection_time >= :time_start and " +
