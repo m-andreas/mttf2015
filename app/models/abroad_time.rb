@@ -3,10 +3,10 @@ class AbroadTime
   PRICE = 0.38
 
   def self.get_times_per_month date
-    jobs = Job.eager_load(:passengers, :driver).where("(shuttle = false and actual_collection_time >= :time_start and " +
+    jobs = Job.eager_load(:passengers, :driver, :from, :to).where("(shuttle = 'false' and actual_collection_time >= :time_start and " +
       "actual_collection_time <= :time_end and status in (:status) AND abroad_time_start IS NOT NULL AND " +
       "abroad_time_end IS NOT NULL AND abroad_time_start != '' AND " +
-      "abroad_time_end != '') OR (shuttle = true AND actual_collection_time >= :time_start AND " +
+      "abroad_time_end != '') OR (shuttle = 'true' AND actual_collection_time >= :time_start AND " +
       "actual_collection_time <= :time_end AND status in (:status))",
       time_start: date.beginning_of_month, time_end: date.end_of_month, status: [ Job::FINISHED, Job::CHARGED ] )
     if jobs.nil?
