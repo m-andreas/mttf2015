@@ -9,6 +9,9 @@ class AbroadTime
       "abroad_time_end != '') OR (shuttle = true and actual_collection_time >= :time_start and " +
       "actual_collection_time <= :time_end and status in (:status))",
       time_start: date.beginning_of_month, time_end: date.end_of_month, status: [ Job::FINISHED, Job::CHARGED ] )
+    if jobs.nil?
+      return []
+    end
     @abroad_times = []
     drivers = []
     jobs_no_empty = jobs.reject { |j| j.shuttle? && j.get_abroad_time == 0 }
