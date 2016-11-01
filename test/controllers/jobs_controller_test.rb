@@ -671,6 +671,36 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal date, assigns(:job).actual_delivery_time.strftime("%d.%m.%Y %H:%M")
   end
 
+  test "should update foreign time to nil" do
+    sign_in @user
+    date = "02.04.2015 00:00"
+    @job.abroad_time_start = Time.now
+    @job.abroad_time_end = 2.hours.from_now
+    @job.save
+    patch :update, id: @job, subaction: "update", job: { "abroad_time_start(1i)"=>"2000", "abroad_time_start(2i)"=>"1",
+      "abroad_time_start(3i)"=>"1", "abroad_time_start(4i)"=>"", "abroad_time_start(5i)"=>"", "abroad_time_end(1i)"=>"2000",
+      "abroad_time_end(2i)"=>"1", "abroad_time_end(3i)"=>"1", "abroad_time_end(4i)"=>"", "abroad_time_end(5i)"=>"" }
+    assert_redirected_to jobs_path
+    @job.reload
+    assert_nil @job.abroad_time_start
+    assert_nil @job.abroad_time_end
+  end
+
+  test "should update foreign time to time" do
+    sign_in @user
+    date = "02.04.2015 00:00"
+    @job.abroad_time_start = nil
+    @job.abroad_time_end = nil
+    @job.save
+    patch :update, id: @job, subaction: "update", job: { "abroad_time_start(1i)"=>"2000", "abroad_time_start(2i)"=>"1",
+      "abroad_time_start(3i)"=>"1", "abroad_time_start(4i)"=>"18", "abroad_time_start(5i)"=>"15", "abroad_time_end(1i)"=>"2000",
+      "abroad_time_end(2i)"=>"1", "abroad_time_end(3i)"=>"1", "abroad_time_end(4i)"=>"20", "abroad_time_end(5i)"=>"30" }
+    assert_redirected_to jobs_path
+    @job.reload
+    assert_equal "18:15", @job.abroad_time_start.to_s(:time)
+    assert_equal "20:30", @job.abroad_time_end.to_s(:time)
+  end
+
   test "should update address id" do
     sign_in @user
     date = "02.04.2015 00:00"
@@ -679,9 +709,24 @@ class JobsControllerTest < ActionController::TestCase
     assert_equal routes(:four), assigns(:job).route
   end
 
-  test "should remove shuttle_passenbers on remove shuttle" do
+  test "should remove abroad time start on shuttle" do
     sign_in @user
+    jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_start"] = "2:30".to_time
+    jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_end"] = "4:30".to_time
+    jobs(:shuttle).save
+    xhr :post, :change_abroad_start_time, id: jobs(:shuttle), count: "0", time:":"
+    jobs(:shuttle).reload
+    assert_nil jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_start"]
+  end
 
+  test "should remove abroad time end on shuttle" do
+    sign_in @user
+    jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_start"] = "2:30".to_time
+    jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_end"] = "4:30".to_time
+    jobs(:shuttle).save
+    xhr :post, :change_abroad_end_time, id: jobs(:shuttle), count: "0", time:":"
+    jobs(:shuttle).reload
+    assert_nil jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_end"]
   end
 
   test "should update job and set to current" do
@@ -750,6 +795,56 @@ class JobsControllerTest < ActionController::TestCase
     post :add_to_current_bill, id: jobs(:one_no_date)
     jobs(:one_no_date).reload
     assert_not jobs(:one_no_date).is_finished?
+    assert_redirected_to jobs_path
+  end
+
+  test "should_not_set_shuttle_to_current_bill_with single abroad time" do
+    sign_in @user
+    jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_start"] = "2:30".to_time
+    jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_end"] = nil
+    jobs(:shuttle).save
+    post :add_to_current_bill, id: jobs(:shuttle)
+    jobs(:shuttle).reload
+    assert_not jobs(:shuttle).is_finished?
+    assert_redirected_to jobs_path
+    jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_start"] = nil
+    jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_end"] = "2:30".to_time
+    jobs(:shuttle).save
+    post :add_to_current_bill, id: jobs(:shuttle)
+    jobs(:shuttle).reload
+    assert_not jobs(:shuttle).is_finished?
+    assert_redirected_to jobs_path
+    jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_start"] = "1:30".to_time
+    jobs(:shuttle).shuttle_data["legs"][0]["abroad_time_end"] = "2:30".to_time
+    jobs(:shuttle).save
+    post :add_to_current_bill, id: jobs(:shuttle)
+    jobs(:shuttle).reload
+    assert jobs(:shuttle).is_finished?
+    assert_redirected_to jobs_path
+  end
+
+  test "should_not_set_to_current_bill_with single abroad time" do
+    sign_in @user
+    jobs(:one).abroad_time_start = Time.now
+    jobs(:one).abroad_time_end = nil
+    jobs(:one).save
+    post :add_to_current_bill, id: jobs(:one)
+    jobs(:one).reload
+    assert_not jobs(:one).is_finished?
+    assert_redirected_to jobs_path
+    jobs(:one).abroad_time_start = nil
+    jobs(:one).abroad_time_end = Time.now
+    jobs(:one).save
+    post :add_to_current_bill, id: jobs(:one)
+    jobs(:one).reload
+    assert_not jobs(:one).is_finished?
+    assert_redirected_to jobs_path
+    jobs(:one).abroad_time_start = Time.now
+    jobs(:one).abroad_time_end = 1.hour.from_now
+    jobs(:one).save
+    post :add_to_current_bill, id: jobs(:one)
+    jobs(:one).reload
+    assert jobs(:one).is_finished?
     assert_redirected_to jobs_path
   end
 

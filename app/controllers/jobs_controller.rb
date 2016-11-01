@@ -9,6 +9,8 @@ class JobsController < ApplicationController
   before_action :check_editable, only: [ :add_shuttle_breakpoint, :remove_shuttle_breakpoint,
     :add_shuttle_passenger, :remove_shuttle_passenger,:update, :edit, :add_to_current_bill, :change_breakpoint_distance,
     :change_breakpoint_address, :change_to_shuttle, :set_shuttle_route_and_pay, :unset_shuttle ]
+
+  before_action :make_empty_times_empty, only: [:create, :update]
   # GET /jobs
   # GET /jobs.json
   def index
@@ -95,6 +97,10 @@ class JobsController < ApplicationController
   def change_abroad_start_time
     @count = params[:count].to_i
     @time = params[:time]
+    if @time == ":"
+      @job.shuttle_data["legs"][@count].delete("abroad_time_start")
+      @job.save
+    end
     if @time =~ /^[0-2][0-9]:[0-9][0-9]$/
       @job.change_leg_abroad_start_time @time, @count
     end
@@ -109,6 +115,10 @@ class JobsController < ApplicationController
   def change_abroad_end_time
     @count = params[:count].to_i
     @time = params[:time]
+    if @time == ":"
+      @job.shuttle_data["legs"][@count].delete("abroad_time_end")
+      @job.save
+    end
     if @time =~ /^[0-2][0-9]:[0-9][0-9]$/
       @job.change_leg_abroad_end_time @time, @count
     end
@@ -507,5 +517,22 @@ class JobsController < ApplicationController
 
   def jobs_params
     params.permit( :jobs => [ :registration_number, :cost_center_id, :car_brand, :car_type, :from_id, :to_id, :job_notice, :opening_hours ]  )
+  end
+
+  def make_empty_times_empty
+    if params[:job]['abroad_time_end(4i)'].blank? || params[:job]['abroad_time_end(5i)'].blank?
+      params[:job]['abroad_time_end(1i)'] = ""
+      params[:job]['abroad_time_end(2i)'] = ""
+      params[:job]['abroad_time_end(3i)'] = ""
+      params[:job]['abroad_time_end(4i)'] = ""
+      params[:job]['abroad_time_end(5i)'] = ""
+    end
+    if params[:job]['abroad_time_start(4i)'].blank? || params[:job]['abroad_time_start(5i)'].blank?
+      params[:job]['abroad_time_start(1i)'] = ""
+      params[:job]['abroad_time_start(2i)'] = ""
+      params[:job]['abroad_time_start(3i)'] = ""
+      params[:job]['abroad_time_start(4i)'] = ""
+      params[:job]['abroad_time_start(5i)'] = ""
+    end
   end
 end

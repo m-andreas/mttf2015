@@ -40,7 +40,6 @@ class AbroadTime
       "abroad_time_end != '') or " +
       "( passengers.driver_id = :driver_id and status in (:status) )",
       time_start: date.beginning_of_month, time_end: date.beginning_of_month + 1.month, driver_id: driver.id, status: [ Job::FINISHED, Job::CHARGED ] )
-
     if with_jobs
       return get_abroad_time_for_jobs( driver, jobs ), jobs
     else
@@ -65,7 +64,6 @@ class AbroadTime
   private
     def self.get_abroad_time_for_jobs driver, jobs
       total_time = 0
-
       jobs.group_by(&:group_date).each do |date, job_group|
         day_abroad_time = 0
         job_group.each do |job|

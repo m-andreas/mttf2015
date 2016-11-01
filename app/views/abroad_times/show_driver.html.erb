@@ -11,7 +11,6 @@
   </thead>
   <tbody>
   <% @jobs.group_by(&:group_date).each do |date, job_group| %>
-    <% puts job_group.inspect %>
     <% day_time = 0 %>
     <% job_group.each{ |j| day_time += j.get_abroad_time(@driver)} %>
     <% job_group.each do |job| %>

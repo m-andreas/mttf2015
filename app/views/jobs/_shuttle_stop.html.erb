@@ -22,21 +22,21 @@
   <div class="abroad-time-container small-12 medium-2 columns">
     <div class="shuttle_abroad_time_start_container row">
       <h3><%= label_tag "abroad_time_start", "Startzeit Auslandsaufenthalt" %></h3><br>
+      <% time_start = @shuttle_data.legs[i]["abroad_time_start"].nil? ? nil : @shuttle_data.legs[i]["abroad_time_start"].to_time %>
       <%= time_select :abroad_time_start, "abroad_time_start", {
-          default: {
-            hour: get_abroad_hours( @shuttle_data.legs[i]["abroad_time_start"] ),
-            minute: get_abroad_minutes( @shuttle_data.legs[i]["abroad_time_start"] )
-          }, time_separator: '<span class="large-2 column center-seperator">:</span>'.html_safe, minute_step: 15},
+          include_blank: true,
+          selected: time_start,
+          time_separator: '<span class="large-2 column center-seperator">:</span>'.html_safe, minute_step: 15},
         { :class => "large-5 columns" } %>&nbsp
         <%= link_to fa_icon( "remove" ), remove_leg_abroad_time_start_path(:id => @job.id, :count => i.to_s), remote: true, title: I18n.t("jobs.leg_abroad_start_delete") %>
     </div>
     <div class="shuttle_abroad_time_end_container row">
       <h3><%= label_tag "abroad_time_end", "Endzeit Auslandsaufenthalt" %></h3><br>
+        <% time_end = @shuttle_data.legs[i]["abroad_time_end"].nil? ? nil : @shuttle_data.legs[i]["abroad_time_end"].to_time %>
         <%= time_select :abroad_time_end, "abroad_time_end", {
-          default: {
-            hour:  get_abroad_hours( @shuttle_data.legs[i]["abroad_time_end"] ),
-            minute:  get_abroad_minutes( @shuttle_data.legs[i]["abroad_time_end"] )
-          }, time_separator: '<span class="large-2 column center-seperator">:</span>'.html_safe, minute_step: 15},
+          include_blank: true,
+          selected: time_end,
+          time_separator: '<span class="large-2 column center-seperator">:</span>'.html_safe, minute_step: 15},
         { :class => "large-5 columns" } %>&nbsp
         <%= link_to fa_icon( "remove" ), remove_leg_abroad_time_end_path(:id => @job.id, :count => i.to_s), remote: true, title: I18n.t("jobs.leg_abroad_end_delete") %>
     </div>

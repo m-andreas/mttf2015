@@ -288,6 +288,12 @@ ready = ->
   $('#show_deleted').change ->
     $('#show_jobs').dataTable().fnFilter();
 
+  $('#remove-foreign-time').click ->
+    $("#job_abroad_time_start_4i").val("")
+    $("#job_abroad_time_start_5i").val("")
+    $("#job_abroad_time_end_4i").val("")
+    $("#job_abroad_time_end_5i").val("")
+
   calculate_time_gap = (e) ->
     strDate = $(e).val()
     dateParts = strDate.split(".");
@@ -302,6 +308,11 @@ ready = ->
     else
      $(e).parent().css('background-color', 'transparent');
 
+  checkForeignTime = () ->
+    ( $("#job_abroad_time_end_4i").val() == "" || $("#job_abroad_time_end_5i").val() == "" ||
+    $("#job_abroad_time_start_4i").val() == "" || $("#job_abroad_time_start_5i").val() == "" ) &&
+    ( $("#job_abroad_time_end_4i").val() != "" || $("#job_abroad_time_end_5i").val() != "" ||
+    $("#job_abroad_time_start_4i").val() != "" || $("#job_abroad_time_start_5i").val() != "" )
 
 
   $('form[class="edit_job"]').submit ( event ) ->
@@ -327,6 +338,9 @@ ready = ->
       if checkDriveIds()
         if (!confirm("Der Eventualfahrer mit der ID 1 ist eingetragen. Fortfahren?"))
           event.preventDefault();
+      if checkForeignTime()
+        alert("Es ist nur einer der Auslandswerte gesetzt. Die Konstelation ist nicht möglich.")
+        event.preventDefault();
 
 
 # Shuttle verwaltung für edit
@@ -350,10 +364,11 @@ ready = ->
       a = parent.attr("id")
       hour = parent.find('#abroad_time_start_abroad_time_start_4i').val()
       if(hour.length == 0)
-        hour = "00";
+        parent.find('#abroad_time_start_abroad_time_start_5i').val("")
       minute = parent.find('#abroad_time_start_abroad_time_start_5i').val()
-      if(minute.length == 0)
-        minute = "00";
+      if(minute.length == 0 && hour.length != 0)
+        parent.find('#abroad_time_start_abroad_time_start_5i').val("00")
+        minute = "00"
       url = window._url_prefix + "jobs/change_abroad_start_time/" + $("#id").val() + "?count=" + a + "&time=" + hour + ":" + minute
       $.ajax(url: url, dataType: 'script' ).done (html) ->
 
@@ -362,10 +377,11 @@ ready = ->
       a = parent.attr("id")
       hour = parent.find('#abroad_time_end_abroad_time_end_4i').val()
       if(hour.length == 0)
-        hour = "00";
+        parent.find('#abroad_time_end_abroad_time_end_5i').val("")
       minute = parent.find('#abroad_time_end_abroad_time_end_5i').val()
-      if(minute.length == 0)
-        minute = "00";
+      if(minute.length == 0 && hour.length != 0)
+        parent.find('#abroad_time_end_abroad_time_end_5i').val("00")
+        minute = "00"
       url = window._url_prefix + "jobs/change_abroad_end_time/" + $("#id").val() + "?count=" + a + "&time=" + hour + ":" + minute
       $.ajax(url: url, dataType: 'script' ).done (html) ->
 
@@ -389,6 +405,12 @@ ready = ->
       a = $(this).parent().parent().parent().attr("id")
       url = window._url_prefix + "jobs/change_breakpoint_address/" + $("#id").val() + "?count=" + a + "&address_id=" + $(this).val()
       $.ajax(url: url, dataType: 'script' ).done (html) ->
+
+    $('#remove-foreign-time').click ->
+      $("#job_abroad_time_start_4i").val("")
+      $("#job_abroad_time_start_5i").val("")
+      $("#job_abroad_time_end_4i").val("")
+      $("#job_abroad_time_end_5i").val("")
 
   window.attach_shuttle_functions()
 

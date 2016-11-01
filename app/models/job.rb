@@ -359,6 +359,21 @@ class Job < ActiveRecord::Base
     return self.get_shuttle_milage_calculation.to_i == 0
   end
 
+  def check_foreign_time
+    if self.is_shuttle?
+      self.legs.each do |leg|
+        if ( leg.abroad_time_start.nil? || leg.abroad_time_end.nil? ) && ( !leg.abroad_time_start.nil? || !leg.abroad_time_end.nil? )
+          return false
+        end
+      end
+    else
+      if ( self.abroad_time_start.nil? || self.abroad_time_end.nil? ) && ( !self.abroad_time_start.nil? || !self.abroad_time_end.nil? )
+        return false
+      end
+    end
+    return true
+  end
+
   def check_for_billing
     if self.driver.nil? && !self.is_shuttle?
       error = html_escape ( I18n.translate("jobs.not_billed_no_driver") + self.id.to_s ).encode("ISO-8859-1")
@@ -367,6 +382,11 @@ class Job < ActiveRecord::Base
 
     if self.is_shuttle? && !self.check_legs
       error = html_escape ( I18n.translate("jobs.not_billed_wrong_distance") + self.id.to_s ).encode("ISO-8859-1")
+      return error
+    end
+
+    if !self.check_foreign_time
+      error = html_escape ( I18n.translate("jobs.not_billed_single_foreign_time") + self.id.to_s ).encode("ISO-8859-1")
       return error
     end
 
