@@ -37,7 +37,7 @@ class AbroadTime
   end
 
   def self.driver_total_abroad_time( driver, date, with_jobs = false )
-    jobs = Job.eager_load(:passengers).where("(shuttle = false and actual_collection_time >= :time_start and " +
+    jobs = Job.eager_load(:passengers).where("(shuttle = 'false' and actual_collection_time >= :time_start and " +
       "actual_collection_time < :time_end and jobs.driver_id = :driver_id and status in (:status) AND " +
       "abroad_time_start IS NOT NULL AND abroad_time_end IS NOT NULL AND abroad_time_start != '' AND " +
       "abroad_time_end != '') or " +
