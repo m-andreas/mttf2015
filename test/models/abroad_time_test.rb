@@ -20,6 +20,8 @@ class AbroadTimeTest < ActiveSupport::TestCase
   def test_if_times_are_sent
     returned_array = AbroadTime.get_times_per_month Date.today
     assert_equal 5.0, returned_array.first[:time]
+    assert_equal 3.0, returned_array.second[:time]
+    assert_equal 0, returned_array.last[:time]
   end
 
 end

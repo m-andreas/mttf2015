@@ -555,13 +555,12 @@ class Job < ActiveRecord::Base
     end
   end
 
-  def get_abroad_time driver="total"
+  def get_abroad_time for_driver="total"
     if self.is_shuttle?
       abroad_time = 0
       if self.shuttle_data["legs"].is_a? Array
         self.shuttle_data["legs"].each do |leg|
-
-          if ( driver == "total" || leg["driver_ids"].include?( driver.id ) ) && !leg["abroad_time_end"].nil? && !leg["abroad_time_start"].nil?
+          if ( for_driver == "total" || leg["driver_ids"].include?( for_driver.id ) ) && !leg["abroad_time_end"].nil? && !leg["abroad_time_start"].nil?
             abroad_time += AbroadTime.calc leg["abroad_time_start"].to_time, leg["abroad_time_end"].to_time
           end
         end
@@ -569,6 +568,9 @@ class Job < ActiveRecord::Base
       return abroad_time
     else
       if self.abroad_time_start.is_a?( Time ) && self.abroad_time_end.is_a?( Time )
+        if for_driver != "total" && self.driver != for_driver && !self.passengers_drivers.include?( for_driver )
+          return 0
+        end
         abroad_time = AbroadTime.calc( self.abroad_time_start, self.abroad_time_end )
         return abroad_time.round(2)
       else
