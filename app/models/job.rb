@@ -7,6 +7,7 @@ class Job < ActiveRecord::Base
   belongs_to :created_by, class_name: "User"
   belongs_to :bill
   has_many :passengers
+  has_many :passengers_drivers,  through: :passengers, source: "driver"
   paginates_per 10
   #validates :driver_id, presence: true
   validates :status, numericality: { only_integer: true }

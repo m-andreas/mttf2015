@@ -3,7 +3,7 @@ class AbroadTime
   PRICE = 0.83
 
   def self.get_times_per_month date
-    jobs = Job.eager_load(:passengers, :driver, :from, :to).where("(shuttle = 'false' and actual_collection_time >= :time_start and " +
+    jobs = Job.eager_load(:passengers, :driver, :from, :to, :passengers_drivers).where("(shuttle = 'false' and actual_collection_time >= :time_start and " +
       "actual_collection_time <= :time_end and status in (:status) AND abroad_time_start IS NOT NULL AND " +
       "abroad_time_end IS NOT NULL AND abroad_time_start != '' AND " +
       "abroad_time_end != '') OR (shuttle = 'true' AND actual_collection_time >= :time_start AND " +
@@ -17,8 +17,8 @@ class AbroadTime
     jobs_no_empty = jobs.reject { |j| j.shuttle? && j.get_abroad_time == 0 }
     jobs_no_empty.each do |job|
       drivers << job.driver unless job.driver.nil?
-      job.passengers.each do |passenger|
-        drivers << passenger.driver
+      job.passengers_drivers.each do |passenger|
+        drivers << passenger
       end
     end
 
@@ -28,7 +28,7 @@ class AbroadTime
       drivers_jobs = []
       abroad_line = {name: driver.fullname_id}
       abroad_line[:id] = driver.id
-      drivers_jobs = jobs.where( "jobs.driver_id = :driver_id or passengers.driver_id = :driver_id", driver_id: driver.id )
+      #drivers_jobs = jobs.where( "jobs.driver_id = :driver_id or passengers.driver_id = :driver_id", driver_id: driver.id )
       abroad_line[:time] = get_abroad_time_for_jobs( driver, drivers_jobs )
       #abroad_line[:jobs] = drivers_jobs
       @abroad_times << abroad_line
