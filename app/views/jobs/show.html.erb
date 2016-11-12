@@ -126,6 +126,7 @@
           <th>ID</th>
           <th>Name</th>
           <th>Teilstrecken</th>
+          <th>Auslandszeit</th>
         </thead>
         <tbody>
           <% @job.passengers.map(&:driver).each do |driver| %>
@@ -133,6 +134,7 @@
               <td><%= driver.id.to_s %></td>
               <td><%= driver.fullname %></td>
               <td><%= @job.driver_legs(driver).join(", ") %></td>
+              <td><%= @job.get_abroad_time(driver) %></td>
             </tr>
           <% end %>
         </tbody>
