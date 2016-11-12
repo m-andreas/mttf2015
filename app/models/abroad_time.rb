@@ -29,7 +29,7 @@ class AbroadTime
       abroad_line = {name: driver.fullname_id}
       abroad_line[:id] = driver.id
       #drivers_jobs = jobs.where( "jobs.driver_id = :driver_id or passengers.driver_id = :driver_id", driver_id: driver.id )
-      abroad_line[:time] = get_abroad_time_for_jobs( driver, drivers_jobs )
+      abroad_line[:time] = get_abroad_time_for_jobs( driver, jobs )
       #abroad_line[:jobs] = drivers_jobs
       @abroad_times << abroad_line
     end

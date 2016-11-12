@@ -51,8 +51,10 @@ class JobsController < ApplicationController
   def add_shuttle_passenger
     count = params[:count].to_i
     passenger = Driver.find_by_id(params[:driver_id].to_i)
-    @job.add_shuttle_passenger passenger, count
-    @job.set_passengers
+    unless passenger.nil?
+      @job.add_shuttle_passenger passenger, count
+      @job.set_passengers
+    end
     @shuttle_data = @job.get_shuttle_data
     respond_to do | format |
       format.js { render '_shuttle_passengers.html.erb', :locals => {  :i => count } }

@@ -17,4 +17,9 @@ class AbroadTimeTest < ActiveSupport::TestCase
     assert_equal 4, AbroadTime.calc( "00:00".to_time, "04:00".to_time )
   end
 
+  def test_if_times_are_sent
+    returned_array = AbroadTime.get_times_per_month Date.today
+    assert_equal 5.0, returned_array.first[:time]
+  end
+
 end
