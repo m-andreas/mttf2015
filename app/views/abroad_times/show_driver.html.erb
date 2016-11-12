@@ -56,7 +56,7 @@
     <%= @total_time %>
   </td>
   <td>
-    <%= @total_time * AbroadTime::PRICE %>
+    <%= ( @total_time * AbroadTime::PRICE ).round(2) %>
   </td>
 </tr>
   </tbody>
