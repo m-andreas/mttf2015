@@ -72,6 +72,18 @@ class JobTest < ActiveSupport::TestCase
     assert jobs(:one).is_open?
   end
 
+  test "check for billing not finished shuttle" do
+    jobs(:not_finished_shuttle).bill_id = nil
+    jobs(:not_finished_shuttle).status = Job::OPEN
+    jobs(:not_finished_shuttle).save
+    assert_equal ( I18n.translate("jobs.not_billed_not_all_stops_present") + jobs(:not_finished_shuttle).id.to_s ),
+      jobs(:not_finished_shuttle).check_for_billing
+    assert jobs(:not_finished_shuttle).is_open?
+      jobs(:not_finished_shuttle).bill_id = bills(:store)
+    jobs(:not_finished_shuttle).status = Job::CHARGED
+    jobs(:not_finished_shuttle).save
+  end
+
   test "get_route_string" do
     assert_equal "Graz -  - Graz - Graz", jobs(:shuttle).get_route_string
   end

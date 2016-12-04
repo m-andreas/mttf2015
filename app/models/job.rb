@@ -356,6 +356,13 @@ class Job < ActiveRecord::Base
     self.save
   end
 
+  def check_shuttle_stops_present
+    self.shuttle_data["stops"].each do |stop|
+      return false if stop["address_id"].nil?
+    end
+    return true
+  end
+
   def check_legs
     return self.get_shuttle_milage_calculation.to_i == 0
   end
@@ -383,6 +390,11 @@ class Job < ActiveRecord::Base
 
     if self.is_shuttle? && !self.check_legs
       error = html_escape ( I18n.translate("jobs.not_billed_wrong_distance") + self.id.to_s ).encode("ISO-8859-1")
+      return error
+    end
+
+    if self.is_shuttle? && !self.check_shuttle_stops_present
+      error = html_escape ( I18n.translate("jobs.not_billed_not_all_stops_present") + self.id.to_s ).encode("ISO-8859-1")
       return error
     end
 

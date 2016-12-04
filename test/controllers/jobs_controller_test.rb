@@ -1521,10 +1521,10 @@ class JobsControllerTest < ActionController::TestCase
     xhr :post, :add_shuttle_breakpoint, id: job, count: 1
     assert_response :success
 
-    xhr :post, :remove_shuttle_passenger, id: job, count: 1, driver_id: drivers(:three).id
+    xhr :post, :remove_shuttle_passenger, id: job, count: 2, driver_id: drivers(:three).id
     assert_response :success
 
-    xhr :post, :change_breakpoint_address, id: job, count: 1, address_id: addresses(:four).id
+    xhr :post, :change_breakpoint_address, id: job, count: 2, address_id: addresses(:four).id
     assert_response :success
 
     xhr :post, :remove_shuttle_passenger, id: job, count: 2, driver_id: drivers(:two).id
@@ -1549,6 +1549,7 @@ class JobsControllerTest < ActionController::TestCase
     assert_redirected_to jobs_path
 
     job.reload
+
     assert job.is_shuttle?
     assert 3, job.passengers.length
 

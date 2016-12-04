@@ -10,7 +10,7 @@ class BillTest < ActiveSupport::TestCase
   end
 
   test "get_old" do
-    assert_equal 2, Bill.get_old.length
+    assert_equal 3, Bill.get_old.length
   end
 
   test "create_bill_from_current_jobs" do
