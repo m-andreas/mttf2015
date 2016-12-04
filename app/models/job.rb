@@ -171,7 +171,11 @@ class Job < ActiveRecord::Base
     if self.shuttle?
       self.stops.each_with_index do |stop, i|
         stop_address = Address.where( id: stop.address_id ).first
-        route_string += stop_address.city.to_s
+        if stop_address.nil?
+          logger.info self.inspect
+        else
+          route_string += stop_address.city.to_s
+        end
         unless i + 1 == self.stops.length
           route_string += " - "
         end
