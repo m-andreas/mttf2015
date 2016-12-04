@@ -72,6 +72,10 @@ class JobTest < ActiveSupport::TestCase
     assert jobs(:one).is_open?
   end
 
+  test "route string with missing adress" do
+    jobs(:not_finished_shuttle).get_route_string
+  end
+
   test "check for billing not finished shuttle" do
     jobs(:not_finished_shuttle).bill_id = nil
     jobs(:not_finished_shuttle).status = Job::OPEN
