@@ -1,0 +1,22 @@
+<h1>Überstunden für <%= @date_string %></h1>
+<table>
+  <thead>
+    <tr>
+      <td>Name</td>
+      <td>Gesamtzeit</td>
+    </tr>
+  </thead>
+  <tbody>
+  <% @overtimes.each do |driver_overtime| %>
+    <tr>
+      <td>
+        <%= link_to( driver_overtime[:name], get_overtimes_for_driver_path( date: @date, driver_id: driver_overtime[:id] )) %><br>
+      </td>
+      <td>
+        <%= driver_overtime[:time] %><br>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+

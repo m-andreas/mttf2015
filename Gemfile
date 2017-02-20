@@ -76,3 +76,5 @@ gem 'ruby-ntlm'
 
 gem 'recursive-open-struct', '~> 1.0'
 # Für Shuttle data
+gem 'time_difference'
+# Für Überstunden

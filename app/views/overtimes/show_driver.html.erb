@@ -1,0 +1,54 @@
+<h1>Stundenaufstellung für <%= @date_string %> von <%= @driver.fullname_id %></h1>
+<table>
+  <thead>
+    <tr>
+      <td>Datum</td>
+      <td>Start erste Fahrt</td>
+      <td>Ende letzte Fahrt</td>
+      <td>Gesamtzeit</td>
+      <td>Berechnung</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @jobs.group_by(&:group_date).each do |date, job_group| %>
+      <tr>
+        <td>
+          <% job_day = DateTime.strptime( date + " 12:00", "%Y-%m-%d %H:%M") %>
+          <%= job_day.strftime("%d.%m.%Y")  %>
+        <td>
+          <%= sort_jobs(job_group).first.actual_collection_time.strftime("%H:%M") %>
+        </td>
+        <td>
+          <%= sort_jobs(job_group).last.actual_delivery_time.strftime("%H:%M")  %>
+        </td>
+        <td>
+          <%= Overtime.daily_overtime( job_day, job_group, @driver ).first %>
+        </td>
+        <td>
+          <% identifier = "drop" + date.tr('-', '') %>
+          <a data-dropdown=<%= identifier %> aria-controls=<%= identifier %> aria-expanded="false">Berechnung</a>
+          <ul id=<%= identifier %> class="f-dropdown medium" data-dropdown-content aria-hidden="true" tabindex="-1">
+          <% @calculations[date].each do |line|%>
+            <li><%=line%></li>
+          <% end %>
+          </ul>
+        </td>
+      </tr>
+    <% end %>
+    <tr>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>
+      GESAMT:
+      </td>
+      <td>
+        <%= @total %>
+      </td>
+      <td>
+      </td>
+    </tr>
+  </tbody>
+</table>
+

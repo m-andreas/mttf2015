@@ -58,6 +58,10 @@ Rails.application.routes.draw do
   get 'auslandszeiten/index', to: 'abroad_times#index', as: 'abroad_time_index'
   get 'auslandszeiten/:month_string', to: 'abroad_times#show', as: 'show_abroad_times'
 
+  get 'ueberstunden/fahrer/', to: 'overtimes#show_driver', as: 'get_overtimes_for_driver'
+  get 'ueberstunden/index', to: 'overtimes#index', as: 'overtimes_index'
+  get 'ueberstunden/:month_string', to: 'overtimes#show', as: 'show_overtimes'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
