@@ -129,14 +129,29 @@ class Overtime
         #Am Abend
         if jobs_with_driver.last.actual_delivery_time > end_time_core
           if jobs_with_driver.last.actual_delivery_time > start_time_double
-            time_diff = TimeDifference.between( start_time_double, end_time_core ).in_hours
-            overtime += time_diff * 1.5
-            calculation << "#{time_diff} x 1,5 ( nach #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
-            "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 1.5}"
-            time_diff = TimeDifference.between( start_time_double, jobs_with_driver.last.actual_delivery_time).in_hours
-            overtime += time_diff * 2
-            calculation << "#{time_diff} x 2 ( nach #{OVERTIME_DOUBLE_START}" +
-              "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 2}"
+            if jobs_with_driver.last.actual_delivery_time > end_time_double
+              time_diff = TimeDifference.between( start_time_double, end_time_core ).in_hours
+              overtime += time_diff * 1.5
+              calculation << "#{time_diff} x 1,5 ( nach #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
+              "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 1.5}"
+              time_diff = TimeDifference.between( start_time_double, end_time_double).in_hours
+              overtime += time_diff * 2
+              calculation << "#{time_diff} x 2 ( nach #{OVERTIME_DOUBLE_START}" +
+                "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 2}"
+              time_diff = TimeDifference.between( end_time_double, jobs_with_driver.last.actual_delivery_time ).in_hours
+              overtime += time_diff
+              calculation << "#{time_diff} ( nach #{OVERTIME_DOUBLE_END}" +
+              "#{job_day.saturday? ? " Samstags" : " Wochentags"} am Tag darauf ) = #{time_diff}"
+            else
+              time_diff = TimeDifference.between( start_time_double, end_time_core ).in_hours
+              overtime += time_diff * 1.5
+              calculation << "#{time_diff} x 1,5 ( nach #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
+              "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 1.5}"
+              time_diff = TimeDifference.between( start_time_double, jobs_with_driver.last.actual_delivery_time).in_hours
+              overtime += time_diff * 2
+              calculation << "#{time_diff} x 2 ( nach #{OVERTIME_DOUBLE_START}" +
+                "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 2}"
+            end
           else
             time_diff =  TimeDifference.between( end_time_core, jobs_with_driver.last.actual_delivery_time).in_hours
             overtime += time_diff * 1.5
