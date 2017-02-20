@@ -13,7 +13,7 @@
         <%= link_to( driver_overtime[:name], get_overtimes_for_driver_path( date: @date, driver_id: driver_overtime[:id] )) %><br>
       </td>
       <td>
-        <%= driver_overtime[:time] %><br>
+        <%= driver_overtime[:time].round(2) %><br>
       </td>
     </tr>
   <% end %>

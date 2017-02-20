@@ -22,7 +22,7 @@
           <%= sort_jobs(job_group).last.actual_delivery_time.strftime("%H:%M")  %>
         </td>
         <td>
-          <%= Overtime.daily_overtime( job_day, job_group, @driver ).first %>
+          <%= Overtime.daily_overtime( job_day, job_group, @driver ).first.round(2) %>
         </td>
         <td>
           <% identifier = "drop" + date.tr('-', '') %>
@@ -44,7 +44,7 @@
       GESAMT:
       </td>
       <td>
-        <%= @total %>
+        <%= @total.round(2) %>
       </td>
       <td>
       </td>

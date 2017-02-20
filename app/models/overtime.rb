@@ -90,7 +90,7 @@ class Overtime
         # Am Morgen
           time_diff = TimeDifference.between( jobs_with_driver.first.actual_collection_time, jobs_with_driver.last.actual_delivery_time).in_hours
           overtime += time_diff * 2
-          calculation << "\n#{time_diff} x 2 ( Sonntagszuschlag ) = #{overtime}"
+          calculation << "#{time_diff} x 2 ( Sonntagszuschlag ) = #{overtime}"
       else
         if job_day.saturday?
           start_time_core = DateTime.strptime( date + " " + CORE_START_TIME_SATURDAY, "%Y-%m-%d %H:%M" )
@@ -122,7 +122,7 @@ class Overtime
         elsif jobs_with_driver.first.actual_collection_time > start_time_core
           time_diff = TimeDifference.between( start_time_core, jobs_with_driver.first.actual_collection_time).in_hours
           overtime -= time_diff
-          calculation << "#-{time_diff} ( nach #{job_day.saturday? ? CORE_START_TIME_SATURDAY : CORE_START_TIME_WEEKDAY}" +
+          calculation << "-#{time_diff} ( nach #{job_day.saturday? ? CORE_START_TIME_SATURDAY : CORE_START_TIME_WEEKDAY}" +
             "#{job_day.saturday? ? " Samstags" : " Wochentags"} )"
         end
 
@@ -146,11 +146,11 @@ class Overtime
         elsif jobs_with_driver.last.actual_delivery_time < end_time_core
           time_diff =  TimeDifference.between( end_time_core, jobs_with_driver.last.actual_delivery_time).in_hours
           overtime -= time_diff
-          calculation << "\n-#{time_diff} ( vor #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
+          calculation << "-#{time_diff} ( vor #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
             "#{job_day.saturday? ? " Samstags" : " Wochentags"} )"
         end
       end
-      calculation << "\nGesamt = #{overtime}"
+      calculation << "Gesamt = #{overtime}"
       return overtime, calculation
     end
 end
