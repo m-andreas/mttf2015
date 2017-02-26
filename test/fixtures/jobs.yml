@@ -284,3 +284,105 @@ with_co_drivers:
   actual_collection_time:  <%= Time.now.to_time %>
   abroad_time_start: <%= "10:00".to_time %>
   abroad_time_end: <%= "17:00".to_time %>
+
+finished_shuttle_overtime:
+  transport_notice: "finished"
+  bill: abroad
+  driver_id: 1
+  cost_center_id: 1
+  status: 2
+  created_by_id: 1
+  route_id: 2
+  from_id: 1
+  to_id: 2
+  shuttle: true
+  actual_collection_time:  <%= "3/09/2016 06:00".to_datetime %>
+  actual_delivery_time: <%= "3/09/2016 23:00".to_datetime %>
+  mileage_collection: 100
+  mileage_delivery: 200
+  shuttle_data: '{"stops":[{"address_id":2},{"address_id":3}],"legs":[{"driver_ids":[1],"distance":100},{"driver_ids":[1, 3],"distance":50, "abroad_time_start": "<%= "5:00".to_time.to_s %>", "abroad_time_end": "<%= "5:30".to_time.to_s %>"},{"driver_ids":[3, 2],"distance":150, "abroad_time_start": "<%= "6:00".to_time.to_s %>", "abroad_time_end": "<%= "7:00".to_time.to_s %>"}]}'
+
+with_co_drivers_overtime:
+  transport_notice: "with_co_drivers"
+  driver_id: 1
+  cost_center_id: 1
+  status: 2
+  created_by_id: 1
+  route_id: 2
+  from_id: 2
+  to_id: 1
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+  actual_collection_time:  <%= "4/09/2016 03:00".to_datetime %>
+  actual_delivery_time: <%= "4/09/2016 14:00".to_datetime %>
+
+three_overtime:
+  transport_notice: "three"
+  driver_id: 1
+  cost_center_id: 1
+  status: 2
+  created_by_id: 1
+  route_id: 4
+  from_id: 4
+  to_id: 3
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+  actual_collection_time:  <%= "6/09/2016 07:00".to_datetime %>
+  actual_delivery_time: <%= "5/09/2016 14:30".to_datetime %>
+  registration_number: "wu123"
+  car_brand: "BMW"
+
+three_overtime1:
+  transport_notice: "three"
+  driver_id: 3
+  cost_center_id: 1
+  status: 2
+  created_by_id: 1
+  route_id: 4
+  from_id: 4
+  to_id: 3
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+  actual_collection_time:  <%= "20/09/2016 10:30".to_datetime %>
+  actual_delivery_time: <%= "20/09/2016 13:30".to_datetime %>
+  registration_number: "wu123"
+  car_brand: "BMW"
+
+three_overtime2:
+  transport_notice: "three"
+  driver_id: 3
+  cost_center_id: 1
+  status: 2
+  created_by_id: 1
+  route_id: 4
+  from_id: 4
+  to_id: 3
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+  actual_collection_time:  <%= "20/09/2016 13:30".to_datetime %>
+  actual_delivery_time: <%= "20/09/2016 16:30".to_datetime %>
+  registration_number: "wu123"
+  car_brand: "BMW"
+<% Time.days_in_month(2, 2016 ).times do |i| %>
+<% next if "#{i+1}/09/2016 08:00".to_datetime.sunday? %>
+overtime<%= i + 1 %>:
+  transport_notice: "three"
+  driver_id: 1
+  cost_center_id: 1
+  status: 2
+  created_by_id: 1
+  route_id: 4
+  from_id: 4
+  to_id: 3
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+  actual_collection_time:  <%= "#{i+1}/09/2016 08:00".to_datetime %>
+  actual_delivery_time: <%= "#{i+1}/09/2016 17:00".to_datetime %>
+  registration_number: "wu123"
+  car_brand: "BMW"
+<%  end %>

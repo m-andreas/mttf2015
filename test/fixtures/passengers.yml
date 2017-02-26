@@ -35,3 +35,19 @@ finished_shuttle3:
 abroad_co_driver:
   job: with_co_drivers_abroad
   driver_id: 1
+
+finished_shuttle_overtime1:
+  job: finished_shuttle_overtime
+  driver_id: 1
+
+finished_shuttle_overtime2:
+  job: finished_shuttle_overtime
+  driver_id: 2
+
+finished_shuttle_overtime3:
+  job: finished_shuttle_overtime
+  driver_id: 3
+
+overtime_co_driver:
+  job: with_co_drivers_overtime
+  driver_id: 2

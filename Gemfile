@@ -5,6 +5,7 @@ source 'http://rubygems.org'
 gem 'rails', '4.1.9'
 # Use mysql as the database for Active Record
 gem 'mysql2', '~> 0.3.18', group: :development
+gem 'awesome_print', group: :development
 #i18n for internationalisation
 gem 'rails-i18n', '~> 4.0.0'
 #foundation is used for graphics

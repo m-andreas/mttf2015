@@ -1765,3 +1765,12 @@ a.button:visited {
   right: 0;
   margin: 2px;
 }
+
+tr.not_all_days td:first-of-type, tr.not_all_days td:first-of-type a, tr.not_all_days td:first-of-type a:visited{
+  background-color: #FF7900;
+  color: black;
+}
+
+#missing-days ul{
+  list-style-type: circle;
+}

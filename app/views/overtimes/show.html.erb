@@ -8,7 +8,7 @@
   </thead>
   <tbody>
   <% @overtimes.each do |driver_overtime| %>
-    <tr>
+    <tr class=<%= (driver_overtime[:missing_days] == true)? "" : "not_all_days" %>>
       <td>
         <%= link_to( driver_overtime[:name], get_overtimes_for_driver_path( date: @date, driver_id: driver_overtime[:id] )) %><br>
       </td>

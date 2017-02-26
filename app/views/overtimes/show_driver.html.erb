@@ -52,3 +52,15 @@
   </tbody>
 </table>
 
+<div class="small-12 columns" id="missing-days">
+  <h2>Für folgende Arbeitstage wurde kein Eintrag gefunden:</h2>
+  <ul>
+    <% @missing_days.each do |day| %>
+      <li>
+      <%= day.strftime("%d.%m.%Y") %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+

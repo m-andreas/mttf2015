@@ -28,12 +28,39 @@ class Overtime
       overtime_line = {name: driver.fullname_id}
       overtime_line[:id] = driver.id
       #drivers_jobs = jobs.where( "jobs.driver_id = :driver_id or passengers.driver_id = :driver_id", driver_id: driver.id )
-      puts driver.inspect
+      overtime_line[:missing_days] = missing_days?( driver, jobs )
       overtime_line[:time] = get_overtime( driver, jobs )["total"]
       #abroad_line[:jobs] = drivers_jobs
       @overtimes << overtime_line
     end
     return @overtimes
+  end
+
+  def self.missing_days? driver, jobs, values = false
+    job_day = DateTime.strptime( jobs.first.group_date + " 12:00", "%Y-%m-%d %H:%M")
+    workdays = workdays( job_day )
+    jobs.group_by(&:group_date).each do |date, job_group|
+      jobs_with_driver = job_group.select{ |job| job.driver == driver || job.passengers.map(&:driver_id).include?( driver.id ) }
+      unless jobs_with_driver.empty?
+        day = DateTime.strptime( date + " 12:00", "%Y-%m-%d %H:%M")
+        workdays.delete(day)
+      end
+    end
+    if values
+      return workdays
+    else
+      return workdays.empty?
+    end
+  end
+
+  def self.workdays date
+    workdays = []
+
+    Time.days_in_month(2).times do |i|
+      day = date.change( day: i + 1 )
+      workdays << day unless day.sunday?
+    end
+    return workdays
   end
 
   def self.driver_total_overtime( driver, date )
@@ -70,6 +97,7 @@ class Overtime
         overtime_count += daily_overtime
         calculations[ date ] = calculation
       end
+      overtime[ "missing_days" ] = missing_days? driver, jobs, true
       overtime["total"] = overtime_count
       overtime["calculations"] = calculations
       overtime["jobs"] = jobs
@@ -77,9 +105,9 @@ class Overtime
     end
 
     def self.daily_overtime job_day, job_group, driver
+      date = job_day.strftime( "%Y-%m-%d" )
       overtime = 0
       calculation = []
-      date = job_day.strftime( "%Y-%m-%d" )
       jobs_with_driver = job_group.select{ |job| job.driver == driver || job.passengers.map(&:driver_id).include?( driver.id ) }
       return 0, "" if jobs_with_driver.empty?
       jobs_with_driver = jobs_with_driver.sort_by {|j| j.actual_collection_time }
@@ -87,7 +115,6 @@ class Overtime
         calculation << "Fahrt #{i + 1}: #{single_job.from.show_address} - #{single_job.to.show_address} ( #{single_job.actual_collection_time.strftime('%H:%M')} - #{single_job.actual_delivery_time.strftime('%H:%M')})"
       end
       if job_day.sunday?
-        # Am Morgen
           time_diff = TimeDifference.between( jobs_with_driver.first.actual_collection_time, jobs_with_driver.last.actual_delivery_time).in_hours
           overtime += time_diff * 2
           calculation << "#{time_diff} x 2 ( Sonntagszuschlag ) = #{overtime}"

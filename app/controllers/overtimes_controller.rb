@@ -23,6 +23,7 @@ class OvertimesController < ApplicationController
     @driver = Driver.find(params[:driver_id])
     @date = params[:date].to_date
     overtime = Overtime.driver_total_overtime @driver, @date
+    @missing_days = overtime["missing_days"]
     @total= overtime["total"]
     @jobs = overtime["jobs"]
     @calculations = overtime["calculations"]

@@ -41,7 +41,8 @@ class AbroadTime
       "actual_collection_time < :time_end and jobs.driver_id = :driver_id and status in (:status) AND " +
       "abroad_time_start IS NOT NULL AND abroad_time_end IS NOT NULL AND abroad_time_start != '' AND " +
       "abroad_time_end != '') or " +
-      "( passengers.driver_id = :driver_id and status in (:status) )",
+      "( passengers.driver_id = :driver_id and status in (:status) and actual_collection_time >= :time_start and " +
+      "actual_collection_time < :time_end)",
       time_start: date.beginning_of_month, time_end: date.beginning_of_month + 1.month, driver_id: driver.id, status: [ Job::FINISHED, Job::CHARGED ] )
     if with_jobs
       return get_abroad_time_for_jobs( driver, jobs ), jobs
