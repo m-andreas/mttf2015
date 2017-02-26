@@ -77,6 +77,7 @@ de:
     not_billed_date_not_correct: "Kilometerstand Abholung höher als Kilometerstand Lieferung. Auftrag nicht verrechnet. Auftrag "
     not_billed_milage_breakpoint: "Kein Wert für Km Stand in Zwischenstop eingetragen. Auftrag nicht verrechnet. Auftrag "
     not_billed_not_all_stops_present: "Nicht alle Zwischenstops eingetragen. Auftrag nicht verrechnet. Auftrag "
+    not_billed_no_empty_distance: "Es sind keine leeren Distanzen in Shuttleteilstrecken erlaubt. Auftrag nicht verrechnet. Auftrag "
     shuttle_for_drivers: "Shuttle für die Fahrer:"
     shuttle_for_jobs: "Shuttle für die Fahrer:"
     really_delete: Auftrag wirklich löschen?

@@ -823,6 +823,35 @@ class JobsControllerTest < ActionController::TestCase
     assert_redirected_to jobs_path
   end
 
+  test "should_not_set_shuttle_to_current_bill_without distance" do
+    sign_in @user
+    old_distance = []
+    old_distance[0] = jobs(:shuttle).shuttle_data["legs"][0]["distance"]
+    old_distance[1] = jobs(:shuttle).shuttle_data["legs"][1]["distance"]
+    distance = ( old_distance[0].to_i + old_distance[1].to_i ).to_s
+    jobs(:shuttle).shuttle_data["legs"][0]["distance"] = ""
+    jobs(:shuttle).shuttle_data["legs"][1]["distance"] = distance
+    jobs(:shuttle).save
+    post :add_to_current_bill, id: jobs(:shuttle)
+    jobs(:shuttle).reload
+    assert_not jobs(:shuttle).is_finished?
+    assert_redirected_to jobs_path
+    jobs(:shuttle).shuttle_data["legs"][0]["distance"] = "100"
+    jobs(:shuttle).shuttle_data["legs"][1]["distance"] = ""
+    jobs(:shuttle).save
+    post :add_to_current_bill, id: jobs(:shuttle)
+    jobs(:shuttle).reload
+    assert_not jobs(:shuttle).is_finished?
+    assert_redirected_to jobs_path
+    jobs(:shuttle).shuttle_data["legs"][0]["distance"] = old_distance[0]
+    jobs(:shuttle).shuttle_data["legs"][1]["distance"] = old_distance[1]
+    jobs(:shuttle).save
+    post :add_to_current_bill, id: jobs(:shuttle)
+    jobs(:shuttle).reload
+    assert jobs(:shuttle).is_finished?
+    assert_redirected_to jobs_path
+  end
+
   test "should_not_set_to_current_bill_with single abroad time" do
     sign_in @user
     jobs(:one).abroad_time_start = Time.now

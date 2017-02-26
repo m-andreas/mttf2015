@@ -435,6 +435,11 @@ class Job < ActiveRecord::Base
         error = html_escape ( I18n.t("jobs.not_billed_breakpoints_not_correct") + self.id.to_s ).encode("ISO-8859-1")
         return error
       end
+
+      if self.shuttle_data["legs"].map{|leg| leg["distance"].to_i }.include? 0
+        error = html_escape ( I18n.t("jobs.not_billed_no_empty_distance") + self.id.to_s ).encode("ISO-8859-1")
+        return error
+      end
     end
 
     unless self.actual_collection_time.is_a?( Time ) && self.actual_delivery_time.is_a?( Time )

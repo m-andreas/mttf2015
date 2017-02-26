@@ -28,7 +28,7 @@ $(function(){ $(document).foundation(); });
 $(document).ready(function(){
   setTimeout(function(){
     $('.alert-box').fadeOut("slow");
-  }, 5000);
+  }, 8000);
   $(function() {
     $('.datepicker').datepicker();
   });
@@ -37,7 +37,7 @@ $(document).ready(function(){
 var fade_flash = function() {
   setTimeout(function(){
     $('.alert-box').fadeOut("slow");
-  }, 5000);
+  }, 8000);
 };
 fade_flash();
 
