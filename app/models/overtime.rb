@@ -29,11 +29,12 @@ class Overtime
       overtime_line[:id] = driver.id
       #drivers_jobs = jobs.where( "jobs.driver_id = :driver_id or passengers.driver_id = :driver_id", driver_id: driver.id )
       overtime_line[:missing_days] = missing_days?( driver, jobs )
-      overtime_line[:total] = get_overtime( driver, jobs )["total"]
-      overtime_line[:one] = get_overtime( driver, jobs )["one"]
-      overtime_line[:one_and_half] = get_overtime( driver, jobs )["one_and_half"]
-      overtime_line[:two] = get_overtime( driver, jobs )["two"]
-      overtime_line[:minus] = get_overtime( driver, jobs )["minus"]
+      overtime = get_overtime( driver, jobs )
+      overtime_line[:total] = overtime["total"]
+      overtime_line[:one] = overtime["one"]
+      overtime_line[:one_and_half] = overtime["one_and_half"]
+      overtime_line[:two] = overtime["two"]
+      overtime_line[:minus] = overtime["minus"]
       #abroad_line[:jobs] = drivers_jobs
       @overtimes << overtime_line
     end
