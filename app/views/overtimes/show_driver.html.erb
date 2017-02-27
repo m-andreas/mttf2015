@@ -1,56 +1,98 @@
 <h1>Stundenaufstellung für <%= @date_string %> von <%= @driver.fullname_id %></h1>
-<table>
-  <thead>
-    <tr>
-      <td>Datum</td>
-      <td>Start erste Fahrt</td>
-      <td>Ende letzte Fahrt</td>
-      <td>Gesamtzeit</td>
-      <td>Berechnung</td>
-    </tr>
-  </thead>
-  <tbody>
-    <% @jobs.group_by(&:group_date).each do |date, job_group| %>
+<div class="small-12 medium-8 large-6 columns">
+  <table>
+    <thead>
+      <tr>
+        <td>Datum</td>
+        <td>Start erste Fahrt</td>
+        <td>Ende letzte Fahrt</td>
+        <td>Gesamtzeit</td>
+        <td>Berechnung</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @jobs.group_by(&:group_date).each do |date, job_group| %>
+        <tr>
+          <td>
+            <% job_day = DateTime.strptime( date + " 12:00", "%Y-%m-%d %H:%M") %>
+            <%= job_day.strftime("%d.%m.%Y")  %>
+          </td>
+          <td>
+            <%= sort_jobs(job_group).first.actual_collection_time.strftime("%H:%M") %>
+          </td>
+          <td>
+            <%= sort_jobs(job_group).last.actual_delivery_time.strftime("%H:%M")  %>
+          </td>
+          <td>
+            <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["total"].round(2) %>
+          </td>
+          <td>
+            <% identifier = "drop" + date.tr('-', '') %>
+            <a data-dropdown=<%= identifier %> aria-controls=<%= identifier %> aria-expanded="false">Berechnung</a>
+            <ul id=<%= identifier %> class="f-dropdown medium" data-dropdown-content aria-hidden="true" tabindex="-1">
+            <% @calculations[date].each do |line|%>
+              <li><%=line%></li>
+            <% end %>
+            </ul>
+          </td>
+        </tr>
+      <% end %>
       <tr>
         <td>
-          <% job_day = DateTime.strptime( date + " 12:00", "%Y-%m-%d %H:%M") %>
-          <%= job_day.strftime("%d.%m.%Y")  %>
-        <td>
-          <%= sort_jobs(job_group).first.actual_collection_time.strftime("%H:%M") %>
         </td>
         <td>
-          <%= sort_jobs(job_group).last.actual_delivery_time.strftime("%H:%M")  %>
         </td>
         <td>
-          <%= Overtime.daily_overtime( job_day, job_group, @driver ).first.round(2) %>
+        GESAMT:
         </td>
         <td>
-          <% identifier = "drop" + date.tr('-', '') %>
-          <a data-dropdown=<%= identifier %> aria-controls=<%= identifier %> aria-expanded="false">Berechnung</a>
-          <ul id=<%= identifier %> class="f-dropdown medium" data-dropdown-content aria-hidden="true" tabindex="-1">
-          <% @calculations[date].each do |line|%>
-            <li><%=line%></li>
-          <% end %>
-          </ul>
+          <%= @overtime["total"].round(2) %>
+        </td>
+        <td>
         </td>
       </tr>
-    <% end %>
-    <tr>
-      <td>
-      </td>
-      <td>
-      </td>
-      <td>
-      GESAMT:
-      </td>
-      <td>
-        <%= @total.round(2) %>
-      </td>
-      <td>
-      </td>
-    </tr>
-  </tbody>
-</table>
+    </tbody>
+  </table>
+</div>
+
+<div class="small-12 medium-4 large-6 columns">
+  <table>
+    <tbody>
+      <tr>
+        <td>
+          1-fache:
+        </td>
+        <td>
+          <%= @overtime["one"].round(2) %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          1,5-fache:
+        </td>
+        <td>
+          <%= @overtime["one_and_half"].round(2) %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          2-fache:
+        </td>
+        <td>
+          <%= @overtime["two"].round(2) %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Minusstunden:
+        </td>
+        <td>
+          <%= @overtime["minus"].round(2) %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 <div class="small-12 columns" id="missing-days">
   <h2>Für folgende Arbeitstage wurde kein Eintrag gefunden:</h2>
