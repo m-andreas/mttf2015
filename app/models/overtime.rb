@@ -35,6 +35,7 @@ class Overtime
       overtime_line[:one_and_half] = overtime["one_and_half"]
       overtime_line[:two] = overtime["two"]
       overtime_line[:minus] = overtime["minus"]
+      overtime_line[:error] = overtime["error"]
       #abroad_line[:jobs] = drivers_jobs
       @overtimes << overtime_line
     end
@@ -72,7 +73,6 @@ class Overtime
     jobs = Job.eager_load(:passengers, :driver, :from, :to).where("actual_collection_time >= :time_start and " +
       "actual_collection_time < :time_end and ( jobs.driver_id = :driver_id or passengers.driver_id = :driver_id ) and status in (:status)",
       time_start: date.beginning_of_month, time_end: date.beginning_of_month + 1.month, driver_id: driver.id, status: [ Job::FINISHED, Job::CHARGED ] )
-
     return get_overtime( driver, jobs )
   end
 
@@ -98,6 +98,7 @@ class Overtime
       overtime["one_and_half"] = 0
       overtime["two"] = 0
       overtime["minus"] = 0
+      overtime["error"] = false
       calculations = {}
       jobs.group_by(&:group_date).each do |date, job_group|
         job_day = DateTime.strptime( date + " 12:00", "%Y-%m-%d %H:%M")
@@ -107,6 +108,7 @@ class Overtime
         overtime["one_and_half"] += daily_overtime["one_and_half"]
         overtime["two"] += daily_overtime["two"]
         overtime["minus"] += daily_overtime["minus"]
+        overtime["error"] = true if daily_overtime["error"]
         calculations[ date ] = calculation
       end
       overtime[ "missing_days" ] = missing_days? driver, jobs, true
@@ -123,18 +125,54 @@ class Overtime
       overtime["one_and_half"] = 0
       overtime["two"] = 0
       overtime["minus"] = 0
+      overtime["error"] = false
       calculation = []
       jobs_with_driver = job_group.select{ |job| job.driver == driver || job.passengers.map(&:driver_id).include?( driver.id ) }
       return overtime, "" if jobs_with_driver.empty?
-      jobs_with_driver = jobs_with_driver.sort_by {|j| j.actual_collection_time }
-      jobs_with_driver.each_with_index do |single_job, i|
-        calculation << "Fahrt #{i + 1}: #{single_job.from.show_address} - #{single_job.to.show_address} ( #{single_job.actual_collection_time.strftime('%H:%M')} - #{single_job.actual_delivery_time.strftime('%H:%M')})"
-      end
+      jobs_with_driver.sort_by!(&:actual_collection_time)
+
+      # Doppelte Fahrten finden
+      end_before = nil
+      begin_after = nil
+      indexes_to_remove = []
+      jobs_with_driver.delete_if{ |job|
+        if job.shuttle || job.co_drivers.nil?
+          false
+        else
+          overlaping_jobs = jobs_with_driver.select{|single_job|
+             ( single_job.actual_collection_time - job.actual_delivery_time ) *
+             ( job.actual_collection_time - single_job.actual_delivery_time ) > 0
+          }
+          if overlaping_jobs.length == 1 # Because it overlaps itself
+            false
+          else
+            main_driver_jobs = overlaping_jobs.select{ |single_job| driver.id == single_job.driver_id }
+            if main_driver_jobs.length == 1
+              if main_driver_jobs.first != job
+              calculation << "Bei der Fahrt mit ID #{job.id} gab es Überlappungen, der Hauptjob hat die ID #{main_driver_jobs.first.id} => Auftrag nicht in Berechnung"
+                true
+              else main_driver_jobs.first == job
+                false
+              end
+            else
+              other_jobs = main_driver_jobs.map(&:id)
+              other_jobs.delete(job.id)
+              calculation << "Bei der Fahrt mit ID #{job.id} gab es Überlappungen mit den IDs #{other_jobs.join(",")}. Es konnte jedoch kein eindeutiger Hauptjob gefunden werden. Alle Fahrten sind weiterhin in der Berechnung."
+              overtime["error"] = true
+              false
+            end
+          end
+        end
+      }
+
       if job_day.sunday?
+          jobs_with_driver.each_with_index do |single_job, i|
+            calculation << "Fahrt #{i + 1}: #{single_job.from.show_address} - #{single_job.to.show_address} ( #{single_job.actual_collection_time.strftime('%H:%M')} - #{single_job.actual_delivery_time.strftime('%H:%M')})"
+          end
           time_diff = TimeDifference.between( jobs_with_driver.first.actual_collection_time, jobs_with_driver.last.actual_delivery_time).in_hours
           overtime["total"] += time_diff * 2
           overtime["two"] += time_diff
-          calculation << "#{time_diff} x 2 ( Sonntagszuschlag ) = #{overtime["total"]}"
+          calculation << "#{time_diff} ( 2-fach ) ( Sonntagszuschlag ) = #{overtime["total"]}"
       else
         if job_day.saturday?
           start_time_core = DateTime.strptime( date + " " + CORE_START_TIME_SATURDAY, "%Y-%m-%d %H:%M" )
@@ -146,71 +184,78 @@ class Overtime
         start_time_double = DateTime.strptime( date + " " + OVERTIME_DOUBLE_START, "%Y-%m-%d %H:%M" )
         end_time_double = DateTime.strptime( date + " " + ( OVERTIME_DOUBLE_END ), "%Y-%m-%d %H:%M" ) + 1.day
 
+        jobs_with_driver.each_with_index do |job, i|
+          calculation << "Fahrt #{i + 1}: #{job.from.show_address} - #{job.to.show_address} ( #{job.actual_collection_time.strftime('%H:%M')} - #{job.actual_delivery_time.strftime('%H:%M')})"
+        end
+
         # Am Morgen
-        if jobs_with_driver.first.actual_collection_time < start_time_core
-          if jobs_with_driver.first.actual_collection_time < ( end_time_double - 1.day )
+
+        job = jobs_with_driver.first
+        if job.actual_collection_time < start_time_core
+          if job.actual_collection_time < ( end_time_double - 1.day )
             time_diff = TimeDifference.between( start_time_core, ( end_time_double - 1.day )).in_hours
             overtime["total"] += time_diff
             overtime["one"] += time_diff
-            calculation << "#{time_diff} ( vor #{job_day.saturday? ? CORE_START_TIME_SATURDAY : CORE_START_TIME_WEEKDAY}" +
+            calculation << "#{time_diff} ( 1-fach ) ( vor #{job_day.saturday? ? CORE_START_TIME_SATURDAY : CORE_START_TIME_WEEKDAY}" +
             "#{job_day.saturday? ? " Samstags" : " Wochentags"} )"
-            time_diff = TimeDifference.between( (end_time_double - 1.day), jobs_with_driver.first.actual_collection_time).in_hours
+            time_diff = TimeDifference.between( (end_time_double - 1.day), job.actual_collection_time).in_hours
             overtime["total"] += time_diff * 2
             overtime["two"] += time_diff
-            calculation << "#{time_diff} x 2 ( vor #{OVERTIME_DOUBLE_END}" +
+            calculation << "#{time_diff} ( 2-fach ) ( vor #{OVERTIME_DOUBLE_END}" +
               "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 2}"
           else
-            time_diff = TimeDifference.between( start_time_core, jobs_with_driver.first.actual_collection_time).in_hours
+            time_diff = TimeDifference.between( start_time_core, job.actual_collection_time).in_hours
             overtime["total"] += time_diff
             overtime["one"] += time_diff
-            calculation << "#{time_diff} ( vor #{job_day.saturday? ? CORE_START_TIME_SATURDAY : CORE_START_TIME_WEEKDAY}" +
+            calculation << "#{time_diff} ( 1-fach ) ( vor #{job_day.saturday? ? CORE_START_TIME_SATURDAY : CORE_START_TIME_WEEKDAY}" +
               "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff}"
           end
-        elsif jobs_with_driver.first.actual_collection_time > start_time_core
-          time_diff = TimeDifference.between( start_time_core, jobs_with_driver.first.actual_collection_time).in_hours
+        elsif job.actual_collection_time > start_time_core
+          time_diff = TimeDifference.between( start_time_core, job.actual_collection_time).in_hours
           overtime["total"] -= time_diff
           overtime["minus"] += time_diff
           calculation << "-#{time_diff} ( nach #{job_day.saturday? ? CORE_START_TIME_SATURDAY : CORE_START_TIME_WEEKDAY}" +
             "#{job_day.saturday? ? " Samstags" : " Wochentags"} )"
         end
 
-        #Am Abend
-        if jobs_with_driver.last.actual_delivery_time > end_time_core
-          if jobs_with_driver.last.actual_delivery_time > start_time_double
-            if jobs_with_driver.last.actual_delivery_time > end_time_double
+      #Am Abend
+        job = jobs_with_driver.last
+        if job.actual_delivery_time > end_time_core
+          if job.actual_delivery_time > start_time_double
+            if job.actual_delivery_time > end_time_double
               time_diff = TimeDifference.between( start_time_double, end_time_core ).in_hours
               overtime["total"] += time_diff * 1.5
               overtime["one_and_half"] += time_diff
-              calculation << "#{time_diff} x 1,5 ( nach #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
-              "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 1.5}"
+              calculation << "#{time_diff} ( 1-fach ) ( nach #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
+              "#{job_day.saturday? ? " Samstags" : " Wochentags"} )"
               time_diff = TimeDifference.between( start_time_double, end_time_double).in_hours
               overtime["total"] += time_diff * 2
               overtime["two"] += time_diff
-              calculation << "#{time_diff} x 2 ( nach #{OVERTIME_DOUBLE_START}" +
-                "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 2}"
-              time_diff = TimeDifference.between( end_time_double, jobs_with_driver.last.actual_delivery_time ).in_hours
+              calculation << "#{time_diff} x ( 2-fach ) ( nach #{OVERTIME_DOUBLE_START}" +
+                "#{job_day.saturday? ? " Samstags" : " Wochentags"} )"
+              time_diff = TimeDifference.between( end_time_double, job.actual_delivery_time ).in_hours
               overtime["total"] += time_diff
               overtime["one"] += time_diff
-              calculation << "#{time_diff} ( nach #{OVERTIME_DOUBLE_END}" +
+              calculation << "#{time_diff} ( 1-fach ) ( nach #{OVERTIME_DOUBLE_END}" +
               "#{job_day.saturday? ? " Samstags" : " Wochentags"} am Tag darauf ) = #{time_diff}"
             else
               time_diff = TimeDifference.between( start_time_double, end_time_core ).in_hours
               overtime["total"] += time_diff * 1.5
               overtime["one_and_half"] += time_diff
-              calculation << "#{time_diff} x 1,5 ( nach #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
-              "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 1.5}"
-              time_diff = TimeDifference.between( start_time_double, jobs_with_driver.last.actual_delivery_time).in_hours
+              calculation << "#{time_diff} ( 1 1/2-fach ) ( nach #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
+              "#{job_day.saturday? ? " Samstags" : " Wochentags"} )"
+              time_diff = TimeDifference.between( start_time_double, job.actual_delivery_time).in_hours
               overtime["total"] += time_diff * 2
               overtime["two"] += time_diff
               calculation << "#{time_diff} x 2 ( nach #{OVERTIME_DOUBLE_START}" +
-                "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 2}"
+                "#{job_day.saturday? ? " Samstags" : " Wochentags"} )"
             end
           else
             time_diff =  TimeDifference.between( end_time_core, jobs_with_driver.last.actual_delivery_time).in_hours
             overtime["total"] += time_diff * 1.5
             overtime["one_and_half"] += time_diff
-            calculation << "#{time_diff} x 1.5 ( nach #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
-              "#{job_day.saturday? ? " Samstags" : " Wochentags"} ) = #{time_diff * 1.5}"
+            calculation << "#{time_diff} ( 1 1/2-fach ) ( nach #{job_day.saturday? ? CORE_END_TIME_SATURDAY : CORE_END_TIME_WEEKDAY}" +
+              "#{job_day.saturday? ? " Samstags" : " Wochentags"} )"
           end
         elsif jobs_with_driver.last.actual_delivery_time < end_time_core
           time_diff =  TimeDifference.between( end_time_core, jobs_with_driver.last.actual_delivery_time).in_hours
@@ -220,7 +265,10 @@ class Overtime
             "#{job_day.saturday? ? " Samstags" : " Wochentags"} )"
         end
       end
-      calculation << "Gesamt = #{overtime["total"]}"
+      calculation << "=============================="
+      calculation << "1-fache: #{overtime["one"]}"
+      calculation << "1 1/2-fache: #{overtime["one_and_half"]}"
+      calculation << "2-fache: #{overtime["two"]}"
       return overtime, calculation
     end
 end

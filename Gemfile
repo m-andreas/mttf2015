@@ -68,6 +68,7 @@ gem 'thin'
 
 #to check test coverage
 gem 'simplecov', :require => false, :group => :test
+gem 'awesome_print', :require => false, :group => [ :test, :development ]
 
 #sort the stops of shuttles
 gem 'activerecord-sortable'

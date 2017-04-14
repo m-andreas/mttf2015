@@ -48,6 +48,26 @@ finished_shuttle_overtime3:
   job: finished_shuttle_overtime
   driver_id: 3
 
-overtime_co_driver:
-  job: with_co_drivers_overtime
+overtime_co_driver1:
+  job: with_co_drivers_overtime_first_car
+  driver_id: 2
+
+overtime_co_driver2:
+  job: with_co_drivers_overtime_first_car
+  driver_id: 3
+
+overtime_co_driver_second_car1:
+  job: with_co_drivers_overtime_second_car
+  driver_id: 1
+
+overtime_co_driver_second_car2:
+  job: with_co_drivers_overtime_second_car
+  driver_id: 3
+
+overtime_co_driver_third_car1:
+  job: with_co_drivers_overtime_third_car
+  driver_id: 1
+
+overtime_co_driver_third_car2:
+  job: with_co_drivers_overtime_third_car
   driver_id: 2

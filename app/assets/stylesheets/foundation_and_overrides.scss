@@ -1766,8 +1766,8 @@ a.button:visited {
   margin: 2px;
 }
 
-tr.not_all_days td:first-of-type, tr.not_all_days td:first-of-type a, tr.not_all_days td:first-of-type a:visited{
-  background-color: #FF7900;
+tr.overtime_error{
+  background-color: red;
   color: black;
 }
 

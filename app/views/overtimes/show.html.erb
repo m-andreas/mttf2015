@@ -3,7 +3,6 @@
   <thead>
     <tr>
       <td>Name</td>
-      <td>Gesamtzeit</td>
       <td>1-fach</td>
       <td>1,5-fach</td>
       <td>2-fach</td>
@@ -12,12 +11,9 @@
   </thead>
   <tbody>
   <% @overtimes.each do |driver_overtime| %>
-    <tr class=<%= (driver_overtime[:missing_days] == true)? "" : "not_all_days" %>>
+    <tr>
       <td>
         <%= link_to( driver_overtime[:name], get_overtimes_for_driver_path( date: @date, driver_id: driver_overtime[:id] )) %><br>
-      </td>
-      <td>
-        <%= driver_overtime[:total].round(2) %><br>
       </td>
       <td>
         <%= driver_overtime[:one].round(2) %><br>

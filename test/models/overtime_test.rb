@@ -17,19 +17,24 @@ class OvertimeTest < ActiveSupport::TestCase
   def test_driver_2
     driver_2 = drivers(:two)
     overtime = Overtime.driver_total_overtime driver_2, "10/09/2016 12:00".to_datetime
-    assert_equal 39.5, overtime["total"]
+    assert_equal 23.5, overtime["total"]
+    assert_equal false, overtime["error"]
   end
 
-  def test_driver_1
-    driver_1 = drivers(:one)
-    overtime = Overtime.driver_total_overtime driver_1, "10/09/2016 12:00".to_datetime
-    assert_equal 49, overtime["total"]
+  def test_overtime_error
+    driver_2 = drivers(:two)
+    jobs(:with_co_drivers_overtime_second_car).driver_id = 1
+    jobs(:with_co_drivers_overtime_second_car).save
+    passengers(:overtime_co_driver_second_car1).driver_id = 2
+    passengers(:overtime_co_driver_second_car1).save
+    overtime = Overtime.driver_total_overtime driver_2, "10/09/2016 12:00".to_datetime
+    assert_equal true, overtime["error"]
   end
 
   def test_driver_3
     driver_3 = drivers(:three)
     overtime = Overtime.driver_total_overtime driver_3, "10/09/2016 12:00".to_datetime
-    assert_equal 14.5, overtime["total"]
+    assert_equal 21.5, overtime["total"]
+    assert_equal false, overtime["error"]
   end
-
 end

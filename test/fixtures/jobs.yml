@@ -302,8 +302,8 @@ finished_shuttle_overtime:
   mileage_delivery: 200
   shuttle_data: '{"stops":[{"address_id":2},{"address_id":3}],"legs":[{"driver_ids":[1],"distance":100},{"driver_ids":[1, 3],"distance":50, "abroad_time_start": "<%= "5:00".to_time.to_s %>", "abroad_time_end": "<%= "5:30".to_time.to_s %>"},{"driver_ids":[3, 2],"distance":150, "abroad_time_start": "<%= "6:00".to_time.to_s %>", "abroad_time_end": "<%= "7:00".to_time.to_s %>"}]}'
 
-with_co_drivers_overtime:
-  transport_notice: "with_co_drivers"
+with_co_drivers_overtime_first_car:
+  transport_notice: "with_co_drivers1"
   driver_id: 1
   cost_center_id: 1
   status: 2
@@ -314,8 +314,38 @@ with_co_drivers_overtime:
   shuttle: false
   mileage_collection: 100
   mileage_delivery: 200
-  actual_collection_time:  <%= "4/09/2016 03:00".to_datetime %>
-  actual_delivery_time: <%= "4/09/2016 14:00".to_datetime %>
+  actual_collection_time:  <%= "1/09/2016 03:00".to_datetime %>
+  actual_delivery_time: <%= "1/09/2016 14:00".to_datetime %>
+
+with_co_drivers_overtime_second_car:
+  transport_notice: "with_co_drivers2"
+  driver_id: 2
+  cost_center_id: 1
+  status: 2
+  created_by_id: 1
+  route_id: 2
+  from_id: 2
+  to_id: 1
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+  actual_collection_time:  <%= "1/09/2016 02:00".to_datetime %>
+  actual_delivery_time: <%= "1/09/2016 14:00".to_datetime %>
+
+with_co_drivers_overtime_third_car:
+  transport_notice: "with_co_drivers3"
+  driver_id: 3
+  cost_center_id: 1
+  status: 2
+  created_by_id: 1
+  route_id: 2
+  from_id: 2
+  to_id: 1
+  shuttle: false
+  mileage_collection: 100
+  mileage_delivery: 200
+  actual_collection_time:  <%= "1/09/2016 01:30".to_datetime %>
+  actual_delivery_time: <%= "1/09/2016 14:00".to_datetime %>
 
 three_overtime:
   transport_notice: "three"

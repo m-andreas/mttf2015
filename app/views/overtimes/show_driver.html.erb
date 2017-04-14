@@ -6,15 +6,18 @@
         <td>Datum</td>
         <td>Start erste Fahrt</td>
         <td>Ende letzte Fahrt</td>
-        <td>Gesamtzeit</td>
+        <td>Einfache Stunden</td>
+        <td>1 1/2 fache Stunden</td>
+        <td>Doppelte Stunden</td>
         <td>Berechnung</td>
       </tr>
     </thead>
     <tbody>
       <% @jobs.group_by(&:group_date).each do |date, job_group| %>
-        <tr>
+        <% job_day = DateTime.strptime( date + " 12:00", "%Y-%m-%d %H:%M") %>
+        <% daily_overtime = Overtime.daily_overtime( job_day, job_group, @driver ) %>
+        <tr class=<%= (daily_overtime.first[:error] == true)? "overtime_error" : "" %>>
           <td>
-            <% job_day = DateTime.strptime( date + " 12:00", "%Y-%m-%d %H:%M") %>
             <%= job_day.strftime("%d.%m.%Y")  %>
           </td>
           <td>
@@ -24,7 +27,13 @@
             <%= sort_jobs(job_group).last.actual_delivery_time.strftime("%H:%M")  %>
           </td>
           <td>
-            <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["total"].round(2) %>
+            <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["one"].round(2) %>
+          </td>
+          <td>
+            <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["one_and_half"].round(2) %>
+          </td>
+          <td>
+            <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["two"].round(2) %>
           </td>
           <td>
             <% identifier = "drop" + date.tr('-', '') %>
@@ -37,20 +46,6 @@
           </td>
         </tr>
       <% end %>
-      <tr>
-        <td>
-        </td>
-        <td>
-        </td>
-        <td>
-        GESAMT:
-        </td>
-        <td>
-          <%= @overtime["total"].round(2) %>
-        </td>
-        <td>
-        </td>
-      </tr>
     </tbody>
   </table>
 </div>
