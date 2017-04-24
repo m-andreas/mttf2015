@@ -1,31 +1,15 @@
-<h1>Überstunden für <%= @date_string %></h1>
+<h1>Folgene Fahrer wahren im <%= @date_string %> aktiv</h1>
 <table>
   <thead>
     <tr>
       <td>Name</td>
-      <td>1-fach</td>
-      <td>1,5-fach</td>
-      <td>2-fach</td>
-      <td>Minus</td>
     </tr>
   </thead>
   <tbody>
-  <% @overtimes.each do |driver_overtime| %>
+  <% @drivers.each do |driver| %>
     <tr>
       <td>
-        <%= link_to( driver_overtime[:name], get_overtimes_for_driver_path( date: @date, driver_id: driver_overtime[:id] )) %><br>
-      </td>
-      <td>
-        <%= driver_overtime[:one].round(2) %><br>
-      </td>
-      <td>
-        <%= driver_overtime[:one_and_half].round(2) %><br>
-      </td>
-      <td>
-        <%= driver_overtime[:two].round(2) %><br>
-      </td>
-      <td>
-        <%= driver_overtime[:minus].round(2) %><br>
+        <%= link_to( driver.fullname, get_overtimes_for_driver_path( date: @date, driver_id: driver[:id] )) %><br>
       </td>
     </tr>
   <% end %>

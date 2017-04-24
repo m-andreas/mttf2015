@@ -16,7 +16,7 @@ class OvertimesController < ApplicationController
     month_number = I18n.t( :month_names, :scope => :date ).index(month.capitalize)
     @date = Date.strptime("#{month_number}.#{year}", "%m.%Y")
     @date_string = "#{month.capitalize} #{year.to_s}"
-    @overtimes = Overtime.get_times_per_month( @date )
+    @drivers, jobs = Overtime.get_drivers_per_month( @date )
   end
 
   def show_driver

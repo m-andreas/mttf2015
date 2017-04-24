@@ -5,7 +5,8 @@ class Overtime
   CORE_END_TIME_SATURDAY = "13:00"
   OVERTIME_DOUBLE_START = "22:00"
   OVERTIME_DOUBLE_END = "05:00"
-  def self.get_times_per_month date
+
+  def self.get_drivers_per_month date
     jobs = Job.eager_load(:passengers, :driver, :from, :to, :passengers_drivers).where("actual_collection_time >= :time_start and " +
       "actual_collection_time <= :time_end and status in (:status)",
       time_start: date.beginning_of_month, time_end: date.end_of_month, status: [ Job::FINISHED, Job::CHARGED ] )
@@ -22,7 +23,12 @@ class Overtime
     end
 
     drivers.uniq!
-    drivers = drivers.sort_by{|e| e[:id]}
+    return [ drivers.sort_by{|e| e[:id]}, jobs ]
+  end
+
+  def self.get_times_per_month date
+    drivers, jobs = get_drivers_per_month date
+
     drivers.each do |driver|
       drivers_jobs = []
       overtime_line = {name: driver.fullname_id}
