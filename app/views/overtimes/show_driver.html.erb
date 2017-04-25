@@ -22,7 +22,7 @@
         <% job_group = grouped_jobs[day.to_s] %>
         <% daily_overtime = Overtime.daily_overtime( day, job_group, @driver ).first %>
 
-        <tr class=<%= (daily_overtime[:error] == true)? "overtime_error" : "" %>>
+        <tr class=<%= (daily_overtime["error"] == true)? "overtime_error" : "" %>>
           <td>
             <%= I18n.t(:"date.day_names")[ day.wday ] %>
           </td>
