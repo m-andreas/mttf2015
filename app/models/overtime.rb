@@ -173,7 +173,7 @@ class Overtime
 
       if job_day.sunday?
           jobs_with_driver.each_with_index do |single_job, i|
-            calculation << "Fahrt #{i + 1}: #{single_job.from.show_address} - #{single_job.to.show_address} ( #{single_job.actual_collection_time.strftime('%H:%M')} - #{single_job.actual_delivery_time.strftime('%H:%M')})"
+            calculation << "Fahrt #{i + 1} (ID: #{single_job.id}: #{single_job.from.show_address} - #{single_job.to.show_address} ( #{single_job.actual_collection_time.strftime('%H:%M')} - #{single_job.actual_delivery_time.strftime('%H:%M')})"
           end
           time_diff = TimeDifference.between( jobs_with_driver.first.actual_collection_time, jobs_with_driver.last.actual_delivery_time).in_hours
           overtime["total"] += time_diff * 2
