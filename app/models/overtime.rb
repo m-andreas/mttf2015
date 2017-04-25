@@ -143,11 +143,11 @@ class Overtime
       begin_after = nil
       indexes_to_remove = []
       jobs_with_driver.delete_if{ |job|
-        if job.shuttle || job.co_drivers.nil?
+        if job.shuttle || job.co_drivers.empty?
           false
         else
           overlaping_jobs = jobs_with_driver.select{|single_job|
-             !single_job.shuttle? && !job.co_drivers.nil? && ( single_job.actual_collection_time - job.actual_delivery_time ) *
+             !single_job.shuttle? && !job.co_drivers.empty? && ( single_job.actual_collection_time - job.actual_delivery_time ) *
              ( job.actual_collection_time - single_job.actual_delivery_time ) > 0
           }
           if overlaping_jobs.length == 1 # Because it overlaps itself
