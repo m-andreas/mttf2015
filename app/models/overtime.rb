@@ -147,7 +147,7 @@ class Overtime
           false
         else
           overlaping_jobs = jobs_with_driver.select{|single_job|
-             ( single_job.actual_collection_time - job.actual_delivery_time ) *
+             !single_job.shuttle? && ( single_job.actual_collection_time - job.actual_delivery_time ) *
              ( job.actual_collection_time - single_job.actual_delivery_time ) > 0
           }
           if overlaping_jobs.length == 1 # Because it overlaps itself
@@ -162,9 +162,9 @@ class Overtime
                 false
               end
             else
-              other_jobs = main_driver_jobs.map(&:id)
+              other_jobs = overlaping_jobs.map(&:id)
               other_jobs.delete(job.id)
-              calculation << "Bei der Fahrt mit ID #{job.id}  gibt es zeitgleiche Fahrten mit den IDs #{other_jobs.join(",")}. Es konnte jedoch kein eindeutiger Hauptjob gefunden werden. Alle Fahrten sind weiterhin in der Berechnung."
+              calculation << "Die Fahrten mit den IDs #{other_jobs.join(",")} sind zeitgleich. Es konnte jedoch kein eindeutiger Hauptjob gefunden werden. Alle Fahrten sind weiterhin in der Berechnung."
               overtime["error"] = true
               false
             end
