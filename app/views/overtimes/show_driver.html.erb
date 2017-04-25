@@ -6,9 +6,10 @@
         <td>Datum</td>
         <td>Start erste Fahrt</td>
         <td>Ende letzte Fahrt</td>
-        <td>Einfache Stunden</td>
-        <td>1 1/2 fache Stunden</td>
-        <td>Doppelte Stunden</td>
+        <td>Minusstunden</td>
+        <td>Einfache Überstunden</td>
+        <td>Ü 50</td>
+        <td>Ü 100</td>
         <td>Berechnung</td>
       </tr>
     </thead>
@@ -25,6 +26,9 @@
           </td>
           <td>
             <%= sort_jobs(job_group).last.actual_delivery_time.strftime("%H:%M")  %>
+          </td>
+          <td>
+            <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["minus"].round(2) %>
           </td>
           <td>
             <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["one"].round(2) %>
