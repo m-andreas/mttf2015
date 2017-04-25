@@ -133,6 +133,7 @@ class Overtime
       overtime["minus"] = 0
       overtime["error"] = false
       calculation = []
+      return overtime, "" if job_group.nil?
       jobs_with_driver = job_group.select{ |job| job.driver == driver || job.passengers.map(&:driver_id).include?( driver.id ) }
       return overtime, "" if jobs_with_driver.empty?
       jobs_with_driver.sort_by!(&:actual_collection_time)
@@ -173,7 +174,7 @@ class Overtime
 
       if job_day.sunday?
           jobs_with_driver.each_with_index do |single_job, i|
-            calculation << "Fahrt #{i + 1} (ID: #{single_job.id}: #{single_job.from.show_address} - #{single_job.to.show_address} ( #{single_job.actual_collection_time.strftime('%H:%M')} - #{single_job.actual_delivery_time.strftime('%H:%M')})"
+            calculation << "Fahrt #{i + 1} (ID: #{single_job.id}): #{single_job.from.show_address} - #{single_job.to.show_address} ( #{single_job.actual_collection_time.strftime('%H:%M')} - #{single_job.actual_delivery_time.strftime('%H:%M')})"
           end
           time_diff = TimeDifference.between( jobs_with_driver.first.actual_collection_time, jobs_with_driver.last.actual_delivery_time).in_hours
           overtime["total"] += time_diff * 2
@@ -191,7 +192,7 @@ class Overtime
         end_time_double = DateTime.strptime( date + " " + ( OVERTIME_DOUBLE_END ), "%Y-%m-%d %H:%M" ) + 1.day
 
         jobs_with_driver.each_with_index do |job, i|
-          calculation << "Fahrt #{i + 1}: #{job.from.show_address} - #{job.to.show_address} ( #{job.actual_collection_time.strftime('%H:%M')} - #{job.actual_delivery_time.strftime('%H:%M')})"
+          calculation << "Fahrt #{i + 1} (ID: #{job.id}): #{job.from.show_address} - #{job.to.show_address} ( #{job.actual_collection_time.strftime('%H:%M')} - #{job.actual_delivery_time.strftime('%H:%M')})"
         end
 
         # Am Morgen

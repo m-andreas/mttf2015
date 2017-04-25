@@ -3,6 +3,7 @@
   <table>
     <thead>
       <tr>
+        <td>Tag</td>
         <td>Datum</td>
         <td>Start erste Fahrt</td>
         <td>Ende letzte Fahrt</td>
@@ -14,37 +15,48 @@
       </tr>
     </thead>
     <tbody>
-      <% @jobs.group_by(&:group_date).each do |date, job_group| %>
-        <% job_day = DateTime.strptime( date + " 12:00", "%Y-%m-%d %H:%M") %>
-        <% daily_overtime = Overtime.daily_overtime( job_day, job_group, @driver ) %>
-        <tr class=<%= (daily_overtime.first[:error] == true)? "overtime_error" : "" %>>
+      <% grouped_jobs = @jobs.group_by(&:group_date) %>
+      <% (@jobs.first.actual_collection_time.at_beginning_of_month.to_date..@jobs.first.actual_collection_time.end_of_month.to_date).each do |day| %>
+
+        <% #job_day = DateTime.strptime( date + " 12:00", "%Y-%m-%d %H:%M") %>
+        <% job_group = grouped_jobs[day.to_s] %>
+        <% daily_overtime = Overtime.daily_overtime( day, job_group, @driver ).first %>
+
+        <tr class=<%= (daily_overtime[:error] == true)? "overtime_error" : "" %>>
           <td>
-            <%= job_day.strftime("%d.%m.%Y")  %>
+            <%= I18n.t(:"date.day_names")[ day.wday ] %>
           </td>
           <td>
-            <%= sort_jobs(job_group).first.actual_collection_time.strftime("%H:%M") %>
+            <%= day.strftime("%d.%m.%Y")  %>
           </td>
           <td>
-            <%= sort_jobs(job_group).last.actual_delivery_time.strftime("%H:%M")  %>
+            <%= sort_jobs(job_group).first.actual_collection_time.strftime("%H:%M") unless job_group.nil? %>
           </td>
           <td>
-            <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["minus"].round(2) %>
+            <%= sort_jobs(job_group).last.actual_delivery_time.strftime("%H:%M") unless job_group.nil?  %>
           </td>
           <td>
-            <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["one"].round(2) %>
+            <%= daily_overtime["minus"].round(2) %>
           </td>
           <td>
-            <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["one_and_half"].round(2) %>
+            <%= daily_overtime["one"].round(2) %>
           </td>
           <td>
-            <%= Overtime.daily_overtime( job_day, job_group, @driver ).first["two"].round(2) %>
+            <%= daily_overtime["one_and_half"].round(2) %>
           </td>
           <td>
-            <% identifier = "drop" + date.tr('-', '') %>
+            <%= daily_overtime["two"].round(2) %>
+          </td>
+          <td>
+            <% identifier = "drop" + day.to_s.tr('-', '') %>
             <a data-dropdown=<%= identifier %> aria-controls=<%= identifier %> aria-expanded="false">Berechnung</a>
             <ul id=<%= identifier %> class="f-dropdown medium" data-dropdown-content aria-hidden="true" tabindex="-1">
-            <% @calculations[date].each do |line|%>
-              <li><%=line%></li>
+            <% unless @calculations[day.to_s].nil? %>
+              <% @calculations[day.to_s].each do |line|%>
+                <li><%=line%></li>
+              <% end %>
+            <% else %>
+              <li>Keine Fahrten gefunden</li>
             <% end %>
             </ul>
           </td>
