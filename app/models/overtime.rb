@@ -78,7 +78,7 @@ class Overtime
   def self.driver_total_overtime( driver, date )
     jobs = Job.eager_load(:passengers, :driver, :from, :to).where("actual_collection_time >= :time_start and " +
       "actual_collection_time < :time_end and ( jobs.driver_id = :driver_id or passengers.driver_id = :driver_id ) and status in (:status)",
-      time_start: date.beginning_of_month, time_end: date.beginning_of_month + 1.month, driver_id: driver.id, status: [ Job::FINISHED, Job::CHARGED ] )
+      time_start: date.beginning_of_month, time_end: date.beginning_of_month + 1.month, driver_id: driver.id, status: [ Job::FINISHED, Job::CHARGED ] ).order(:actual_collection_time)
     return get_overtime( driver, jobs )
   end
 
