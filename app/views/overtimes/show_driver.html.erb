@@ -30,10 +30,10 @@
             <%= day.strftime("%d.%m.%Y")  %>
           </td>
           <td>
-            <%= sort_jobs(job_group).first.actual_collection_time.strftime("%H:%M") unless job_group.nil? %>
+            <%= daily_overtime["start"] unless job_group.nil? %>
           </td>
           <td>
-            <%= sort_jobs(job_group).last.actual_delivery_time.strftime("%H:%M") unless job_group.nil?  %>
+            <%= daily_overtime["end"] unless job_group.nil?  %>
           </td>
           <td>
             <%= daily_overtime["minus"].round(2) %>

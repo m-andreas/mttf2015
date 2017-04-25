@@ -132,6 +132,8 @@ class Overtime
       overtime["two"] = 0
       overtime["minus"] = 0
       overtime["error"] = false
+      overtime["start"] = ""
+      overtime["end"] = ""
       calculation = []
       return overtime, "" if job_group.nil?
       jobs_with_driver = job_group.select{ |job| job.driver == driver || job.passengers.map(&:driver_id).include?( driver.id ) }
@@ -276,6 +278,8 @@ class Overtime
       calculation << "1-fache: #{overtime["one"]}"
       calculation << "1 1/2-fache: #{overtime["one_and_half"]}"
       calculation << "2-fache: #{overtime["two"]}"
+      overtime["start"] = jobs_with_driver.first.actual_collection_time.strftime("%H:%M")
+      overtime["end"] = jobs_with_driver.last.actual_delivery_time.strftime("%H:%M")
       return overtime, calculation
     end
 end
